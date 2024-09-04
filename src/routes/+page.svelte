@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import { Video, Playlist, Alternates, Notes } from '$lib';
+</script>
+
+<div class="flex h-screen w-screen">
+	<div class="flex-col">
+		<Video />
+
+		<div class="flex">
+			<Notes />
+
+			<Alternates />
+		</div>
+	</div>
+
+	<Playlist />
+</div>
