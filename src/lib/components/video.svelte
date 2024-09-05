@@ -29,3 +29,10 @@
 </svelte:head>
 
 <div id={ytPlayerId} />
+
+<style>
+	#youtube-player {
+		width: 70vw;
+		height: 70vh;
+	}
+</style>

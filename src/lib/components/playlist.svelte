@@ -1,1 +1,1 @@
-<div class="h-max w-64 bg-gray-300">playlist</div>
+<div class="w-full bg-gray-300">playlist</div>
