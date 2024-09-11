@@ -24,9 +24,9 @@
 	});
 </script>
 
-<svelte:head>
-	<script src="https://www.youtube.com/iframe_api"></script>
-</svelte:head>
+<!-- <svelte:head> -->
+<!-- 	<script src="https://www.youtube.com/iframe_api"></script> -->
+<!-- </svelte:head> -->
 
 <div id={ytPlayerId} />
 
