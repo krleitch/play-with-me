@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+  import type { Collection } from '$lib/types';
 
 	import Collections from '$lib/components/collections.svelte';
 	import Video from '$lib/components/video.svelte';
 	import Timestamp from '$lib/components/timestamp.svelte';
 
-	let { data }: { data: PageData } = $props();
+  export let data: {collections: Collection[] }
+
 </script>
 
 <div class="flex h-screen flex-row p-2">
@@ -14,5 +15,5 @@
 		<Timestamp />
 	</div>
 
-	<Collections />
+	<Collections collections={data.collections}/>
 </div>
