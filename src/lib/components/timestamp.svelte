@@ -1,3 +1,5 @@
-<div class="bg-slate-950 text-white h-28 p-2">
-  Timestamps
-</div>
+<script lang="ts">
+	import type { Timestamp } from '$lib/types';
+</script>
+
+<div class="bg-slate-700">Timestamp</div>

@@ -1,10 +1,18 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 
-	let player;
+	let player: any;
 	let initialVideoId = '';
 
 	const ytPlayerId = 'youtube-player';
+
+	import type { Video } from '$lib/types';
+
+	interface Props {
+		selectedVideo: Video | undefined;
+	}
+
+	let { selectedVideo = $bindable() }: Props = $props();
 
 	onMount(() => {
 		function load() {
@@ -22,6 +30,17 @@
 			window.onYouTubeIframeAPIReady = load;
 		}
 	});
+
+	const toggle = () => {
+		console.log('changing video id');
+		player.loadVideoById('dQw4w9WgXcQ');
+	};
+
+	$effect(() => {
+		if (selectedVideo) {
+			player.loadVideoById(selectedVideo?.youtubeId);
+		}
+	});
 </script>
 
 <svelte:head>
@@ -29,3 +48,5 @@
 </svelte:head>
 
 <div id={ytPlayerId}></div>
+
+<button onclick={toggle}>change video</button>
