@@ -11,33 +11,38 @@ export type Video = {
   title: string;
   created: string;
   updated: string;
-  youtubeId: Video[];
+  youtubeId: string;
   timestamps: Timestamp[];
 };
 
 export enum Genre {
   Rock = 'rock',
   Metal = 'metal',
+  Pop = 'pop',
   Blues = 'blues',
   Jazz = 'jazz',
-  Folk = 'folk'
+  Classical = 'classical'
 }
 
 export enum Instrument {
+  Electric = 'electric',
   Acoustic = 'acoustic',
-  Electric = 'electric'
+  Slide = 'slide'
 }
 
 export enum Tag {
+  BackingTrack = 'backing-track',
   Tutorial = 'tutorial',
   Cover = 'cover',
-  Theory = 'Theory',
-  BackingTrack = 'backing-track'
+  Theory = 'theory',
 }
 
 export enum Tuning {
   Standard = 'standard',
-  HalfStepDown = 'half-step-down'
+  HalfStepDown = 'half-step-down',
+  Drop = 'drop',
+  Open = 'open',
+  Alt = 'alt'
 }
 
 export type Collection = {

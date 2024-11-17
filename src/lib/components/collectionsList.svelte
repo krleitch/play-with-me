@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Collection } from '$lib/types';
+	import CollectionsSearch from '$lib/components/collectionsSearch.svelte';
+	import { Genre, Instrument, Tag, Tuning } from '$lib/types';
 
 	interface Props {
 		selectedCollection: Collection | undefined;
@@ -7,10 +9,33 @@
 	}
 
 	let { selectedCollection = $bindable(), collections }: Props = $props();
+	let searchTerm = $state('');
+	let filters = $state({
+		tags: [],
+		genres: [],
+		instruments: [],
+		tunings: []
+	});
+
+	let filterdCollections = $derived(
+		collections.filter((x) => {
+			let titles = x.title.includes(searchTerm);
+			let tags = filters.tags.every((tag) => x.tags.includes(tag));
+			let genres = filters.genres.every((genre) => x.genres.includes(genre));
+			let instruments = filters.instruments.every((instrument) =>
+				x.instruments.includes(instrument)
+			);
+			let tunings = filters.tunings.every((tuning) => x.tunings.includes(tuning));
+			return titles && tags && genres && instruments && tunings;
+		})
+	);
 </script>
 
-<div class="flex w-96 flex-col bg-slate-950 p-2 text-slate-50">
-	{#each collections as collection}
+<div class="flex w-96 flex-col bg-gray-950 p-2 text-slate-50">
+	<!-- Search and filter -->
+	<CollectionsSearch bind:searchTerm bind:filters />
+
+	{#each filterdCollections as collection}
 		<button
 			class={selectedCollection?.id == collection.id
 				? 'p1 flex w-full flex-row bg-slate-800'

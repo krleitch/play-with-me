@@ -1,18 +1,12 @@
-<script lang="ts">
+<script>
+	// @ts-nocheck
 	import { onMount } from 'svelte';
 
-	let player: any;
 	let initialVideoId = '';
-
 	const ytPlayerId = 'youtube-player';
 
-	import type { Video } from '$lib/types';
-
-	interface Props {
-		selectedVideo: Video | undefined;
-	}
-
-	let { selectedVideo = $bindable() }: Props = $props();
+	// pass the player to let the collection viewer control it
+	let { player = $bindable() } = $props();
 
 	onMount(() => {
 		function load() {
@@ -30,17 +24,6 @@
 			window.onYouTubeIframeAPIReady = load;
 		}
 	});
-
-	const toggle = () => {
-		console.log('changing video id');
-		player.loadVideoById('dQw4w9WgXcQ');
-	};
-
-	$effect(() => {
-		if (selectedVideo) {
-			player.loadVideoById(selectedVideo?.youtubeId);
-		}
-	});
 </script>
 
 <svelte:head>
@@ -48,5 +31,3 @@
 </svelte:head>
 
 <div id={ytPlayerId}></div>
-
-<button onclick={toggle}>change video</button>

@@ -26,7 +26,6 @@ export const load: PageServerLoad = async ({ locals }) => {
       created: record.created,
       updated: record.updated,
       videos: record.expand.videos.map((video) => {
-        console.log(video)
         return {
           id: video.id,
           title: video.title,

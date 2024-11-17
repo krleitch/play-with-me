@@ -7,17 +7,52 @@
 	interface Props {
 		selectedCollection: Collection | undefined;
 	}
+	interface YoutubePlayer {
+		seekTo: (time: number) => void;
+		loadVideoById: (id: string) => void;
+	}
 
 	let { selectedCollection = $bindable() }: Props = $props();
 
 	let selectedVideo: Video | undefined = $state();
+	let player: YoutubePlayer | undefined = $state();
+
+	const seekTo = (time: string) => {
+		if (player) {
+			const [minutes, seconds] = time.split(':');
+			const totalSeconds = +minutes * 60 + +seconds;
+			player.seekTo(totalSeconds);
+		}
+	};
+
+	$effect(() => {
+		if (selectedVideo && player) {
+			player.loadVideoById(selectedVideo.youtubeId);
+		}
+	});
 </script>
 
 <div class="flex flex-1 flex-col pr-2">
 	<!-- Video player -->
-	<VideoPlayer bind:selectedVideo />
+	<VideoPlayer bind:player />
 	<div class="flex h-80 flex-row bg-slate-950 p-2 text-white">
-		<Timestamp />
+		<!-- Timestamps -->
+		<div class="bg-slate-700">
+			Timestamps:
+			{#if selectedVideo !== undefined && selectedVideo.timestamps.length > 0}
+				{#each selectedVideo.timestamps as timestamp}
+					<button
+						onclick={() => {
+							seekTo(timestamp.time);
+						}}
+					>
+						{timestamp.title}
+						-
+						{timestamp.time}
+					</button>
+				{/each}
+			{/if}
+		</div>
 
 		<div class="flex flex-1 flex-col">
 			{#if selectedCollection}
