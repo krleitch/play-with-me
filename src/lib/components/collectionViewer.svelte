@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Collection, Video } from '$lib/types';
 
-	import Timestamp from '$lib/components/timestamp.svelte';
 	import VideoPlayer from '$lib/components/videoPlayer.svelte';
+	import Timestamp from '$lib/components/timestamp.svelte';
+	import Note from '$lib/components/note.svelte';
 
 	interface Props {
 		selectedCollection: Collection | undefined;
@@ -35,52 +36,59 @@
 <div class="flex flex-1 flex-col pr-2">
 	<!-- Video player -->
 	<VideoPlayer bind:player />
-	<div class="flex h-80 flex-row bg-slate-950 p-2 text-white">
-		<!-- Timestamps -->
-		<div class="bg-slate-700">
-			Timestamps:
-			{#if selectedVideo !== undefined && selectedVideo.timestamps.length > 0}
-				{#each selectedVideo.timestamps as timestamp}
-					<button
-						onclick={() => {
-							seekTo(timestamp.time);
-						}}
-					>
-						{timestamp.title}
-						-
-						{timestamp.time}
-					</button>
-				{/each}
-			{/if}
+
+	<!-- Bottom Info -->
+	<div class="mt-2 flex h-80 flex-row text-white">
+		<!-- Time and Notes -->
+		<div class="mr-2 flex flex-1 flex-row space-x-2 bg-gray-800">
+			<Timestamp bind:selectedVideo {seekTo} />
+			<Note bind:selectedVideo />
 		</div>
 
-		<div class="flex flex-1 flex-col">
+		<!-- Video list -->
+		<div class="flex w-96 flex-col bg-gray-950">
+			<div class="flex min-h-9 flex-row items-center space-x-1 bg-gray-900 px-2 pb-1 pt-2">
+				{#if selectedCollection}
+					<span> {selectedCollection.title} - {selectedCollection.artist} </span>
+				{/if}
+			</div>
+			<div class="border-t-2 border-gray-700"></div>
 			{#if selectedCollection}
-				{#each selectedCollection.videos as video}
-					<button
-						class={selectedVideo?.id == video.id
-							? 'p1 flex w-full flex-row bg-slate-800'
-							: 'p1 flex w-full flex-row'}
-						onclick={() => {
-							selectedVideo = video;
-						}}
-					>
-						<!-- Show first video thumbnail -->
-						<img
-							class="w-32"
-							src={'http://img.youtube.com/vi/' + video.youtubeId + '/mqdefault.jpg'}
-							alt=""
-						/>
+				<div class="p-2">
+					{#each selectedCollection.videos as video}
+						<button
+							class={selectedVideo?.id == video.id
+								? 'flex w-full flex-row bg-gray-900 px-1 py-1'
+								: 'flex w-full flex-row px-1 py-1'}
+							onclick={() => {
+								selectedVideo = video;
+							}}
+						>
+							<!-- Thumbnail -->
+							<img
+								class="w-32 rounded-lg"
+								src={'http://img.youtube.com/vi/' + video.youtubeId + '/mqdefault.jpg'}
+								alt=""
+							/>
 
-						<!-- Show video info -->
-						<div class="flex flex-1 flex-col pl-2">
-							<!-- Title -->
-							<div class="flex flex-row items-center justify-between">
-								<span>{video.title}</span>
+							<!-- Info -->
+							<div class="flex flex-1 flex-col pl-2">
+								<div class="flex flex-col text-left">
+									<!-- title -->
+									<div>{video.title}</div>
+									<!-- Artist -->
+									<div class="text-sm font-thin">{video.artist}</div>
+									<!-- Tag -->
+									<div class="mt-1 flex flex-row">
+										<div class="rounded-lg bg-blue-800 px-2 text-sm">
+											{video.tag}
+										</div>
+									</div>
+								</div>
 							</div>
-						</div>
-					</button>
-				{/each}
+						</button>
+					{/each}
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -88,6 +96,6 @@
 
 <style lang="postcss">
 	button:hover {
-		@apply bg-slate-800;
+		@apply bg-gray-900;
 	}
 </style>

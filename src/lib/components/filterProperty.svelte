@@ -18,14 +18,15 @@
 	};
 
 	let getButtonClass = (value: string): string => {
-		let selected = list.indexOf(value) != -1 ? 'selected ' + color : color;
-		return selected;
+		return list.indexOf(value) != -1 ? 'selected ' + color : color;
 	};
 </script>
 
 <div class="flex flex-col">
 	<div class="flex w-36 flex-none flex-row items-center rounded-tl-lg rounded-tr-lg {color} px-1">
-		<ion-icon class="text-sm {color}" name={icon}></ion-icon>
+		<span class="material-symbols-outlined !text-sm {color}">
+			{icon}
+		</span>
 		<span class="text-md ml-1">{title}</span>
 	</div>
 
@@ -41,38 +42,38 @@
 <style lang="postcss">
 	button {
 		@apply rounded-md;
-		@apply text-black;
-		@apply bg-gray-100;
+		@apply text-white;
+		@apply bg-gray-700;
 		@apply mr-1;
 		@apply mb-1;
 		@apply px-2;
 	}
-
-	button.selected {
+	button:hover {
+		@apply bg-gray-600;
 	}
 
 	button.selected.red {
-		@apply bg-red-400;
+		@apply bg-red-800;
 	}
 	button.selected.blue {
-		@apply bg-blue-400;
+		@apply bg-blue-800;
 	}
 	button.selected.amber {
-		@apply bg-amber-400;
+		@apply bg-amber-800;
 	}
 	button.selected.purple {
-		@apply bg-purple-400;
+		@apply bg-purple-800;
 	}
-	ion-icon.red {
-		@apply text-red-300;
+	.material-symbols-outlined.red {
+		@apply text-red-600;
 	}
-	ion-icon.blue {
-		@apply text-blue-300;
+	.material-symbols-outlined.blue {
+		@apply text-blue-600;
 	}
-	ion-icon.amber {
-		@apply text-amber-300;
+	.material-symbols-outlined.amber {
+		@apply text-amber-600;
 	}
-	ion-icon.purple {
-		@apply text-purple-300;
+	.material-symbols-outlined.purple {
+		@apply text-purple-600;
 	}
 </style>

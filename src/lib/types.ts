@@ -6,13 +6,23 @@ export type Timestamp = {
   updated: string;
 };
 
+export type Note = {
+  id: string;
+  text: string;
+  created: string;
+  updated: string;
+};
+
 export type Video = {
   id: string;
   title: string;
+  artist: string;
   created: string;
+  tag: Tag;
   updated: string;
   youtubeId: string;
   timestamps: Timestamp[];
+  notes: Note[];
 };
 
 export enum Genre {

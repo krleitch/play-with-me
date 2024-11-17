@@ -38,8 +38,8 @@
 	{#each filterdCollections as collection}
 		<button
 			class={selectedCollection?.id == collection.id
-				? 'p1 flex w-full flex-row bg-slate-800'
-				: 'p1 flex w-full flex-row'}
+				? 'flex w-full flex-row bg-gray-900 px-1 py-1'
+				: 'flex w-full flex-row px-1 py-1'}
 			onclick={() => {
 				selectedCollection = collection;
 			}}
@@ -47,7 +47,7 @@
 			<!-- Show first video thumbnail -->
 			{#if collection.videos}
 				<img
-					class="w-32"
+					class="w-32 rounded-lg"
 					src={'http://img.youtube.com/vi/' + collection.videos[0].youtubeId + '/mqdefault.jpg'}
 					alt=""
 				/>
@@ -55,23 +55,18 @@
 
 			<!-- Show video info -->
 			<div class="flex flex-1 flex-col pl-2">
-				<!-- Title and # of videos -->
-				<div class="flex flex-row items-center justify-between">
-					<span>{collection.title}</span>
-					{#if collection.videos}
-						<span class="h-4 w-4 rounded-full bg-sky-800 text-center text-xs"
-							>{collection.videos.length}</span
-						>
-					{/if}
+				<!-- Title -->
+				<div class="flex flex-row">
+					{collection.title}
 				</div>
 
 				<!-- Artist -->
 				<span class="text-left text-sm font-thin">{collection.artist}</span>
 
 				<!-- Tags -->
-				<div class="flex flex-row space-x-2">
+				<div class="mt-1 flex flex-row space-x-2">
 					{#each collection.tags as tag}
-						<div class="rounded-lg bg-sky-800 px-2 text-sm">
+						<div class="rounded-lg bg-blue-800 px-2 text-sm">
 							{tag}
 						</div>
 					{/each}
@@ -83,6 +78,6 @@
 
 <style lang="postcss">
 	button:hover {
-		@apply bg-slate-800;
+		@apply bg-gray-900;
 	}
 </style>

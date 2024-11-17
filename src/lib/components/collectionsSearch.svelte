@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	//@ts-ignore
+	// svelte ls issue only
+	import { clickOutside } from '$lib/clickOutside';
 	import { Genre, Instrument, Tag, Tuning } from '$lib/types';
 	import FilterProperty from '$lib/components/filterProperty.svelte';
 
@@ -9,13 +12,22 @@
 	}
 	let { searchTerm = $bindable(), filters = $bindable() }: Props = $props();
 
-	let showFilters = $state(true);
+	let showFilters = $state(false);
+
+	let resetFilters = () => {
+		filters = {
+			tags: [],
+			genres: [],
+			instruments: [],
+			tunings: []
+		};
+	};
 </script>
 
 <div class="relative">
 	<!-- Input -->
 	<div class="m-2 flex flex-row items-center rounded-md bg-gray-900 text-white">
-		<ion-icon class="ml-2 text-2xl text-slate-500" name="search"></ion-icon>
+		<span class="material-symbols-outlined !text-md ml-2 text-gray-300">search</span>
 		<input
 			class="flex-1"
 			bind:value={searchTerm}
@@ -23,16 +35,16 @@
 			placeholder="Search..."
 			id="searchInput"
 		/>
-		<div class="mr-2 flex flex-row items-center space-x-1">
+		<div class="mr-2 flex flex-row items-center">
 			<button
 				class="flex items-center"
 				onclick={() => (showFilters = !showFilters)}
 				aria-label="Filter"
 			>
-				<ion-icon class="text-2xl text-slate-500" name="options"></ion-icon>
+				<span class="material-symbols-outlined !text-md text-gray-300">tune</span>
 			</button>
 			<button class="flex items-center" onclick={() => (searchTerm = '')} aria-label="X">
-				<ion-icon class="text-2xl text-red-800" name="close"></ion-icon>
+				<span class="material-symbols-outlined !text-md text-red-800">close</span>
 			</button>
 		</div>
 	</div>
@@ -42,36 +54,56 @@
 		<div
 			in:fade={{ duration: 200 }}
 			out:fade={{ duration: 100 }}
+			use:clickOutside
+			onoutclick={() => (showFilters = false)}
 			class="absolute left-0 top-14 flex w-full flex-col space-y-1 rounded-md bg-gray-900 p-2 text-white"
 		>
 			<FilterProperty
 				bind:list={filters.tags}
 				title={'Tags'}
-				icon={'pricetag'}
-				color={'red'}
+				icon={'sell'}
+				color={'blue'}
 				values={Object.values(Tag)}
 			/>
 			<FilterProperty
 				bind:list={filters.genres}
-				title={'Genre'}
-				icon={'musical-notes'}
-				color={'blue'}
+				title={'Genres'}
+				icon={'music_note'}
+				color={'red'}
 				values={Object.values(Genre)}
 			/>
 			<FilterProperty
 				bind:list={filters.instruments}
 				title={'Instruments'}
-				icon={'microphone'}
+				icon={'piano'}
 				color={'amber'}
 				values={Object.values(Instrument)}
 			/>
 			<FilterProperty
 				bind:list={filters.tunings}
 				title={'Tunings'}
-				icon={'pulse'}
+				icon={'graphic_eq'}
 				color={'purple'}
 				values={Object.values(Tuning)}
 			/>
+
+			<!-- Buttons -->
+			<div class="flex flex-row justify-end space-x-2">
+				<button
+					onclick={() => resetFilters()}
+					class="flex flex-row items-center rounded-lg bg-red-800 px-2 py-1 text-white hover:bg-red-700"
+				>
+					Reset All
+					<span class="material-symbols-outlined !text-md ml-1"> delete </span>
+				</button>
+				<button
+					onclick={() => (showFilters = false)}
+					class="flex flex-row items-center rounded-lg bg-blue-800 px-2 py-1 text-white hover:bg-blue-700"
+				>
+					Apply Filters
+					<span class="material-symbols-outlined !text-md ml-1"> filter_list </span>
+				</button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -89,5 +121,6 @@
 	}
 	input::placeholder {
 		opacity: 0.5;
+		@apply text-gray-300;
 	}
 </style>
