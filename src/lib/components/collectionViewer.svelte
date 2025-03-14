@@ -40,26 +40,24 @@
 	<!-- Bottom Info -->
 	<div class="mt-2 flex h-80 flex-row text-white">
 		<!-- Time and Notes -->
-		<div class="mr-2 flex flex-1 flex-row space-x-2 bg-gray-800">
+		<div class="mr-2 flex flex-1 flex-row space-x-2 bg-zinc-900">
 			<Timestamp bind:selectedVideo {seekTo} />
 			<Note bind:selectedVideo />
 		</div>
 
 		<!-- Video list -->
-		<div class="flex w-96 flex-col bg-gray-950">
-			<div class="flex min-h-9 flex-row items-center space-x-1 bg-gray-900 px-2 pb-1 pt-2">
+		<div class="flex w-96 flex-col bg-zinc-900">
+			<div class="flex min-h-9 flex-row items-center space-x-1 bg-zinc-900 px-2 pb-1 pt-2">
 				{#if selectedCollection}
 					<span> {selectedCollection.title} - {selectedCollection.artist} </span>
 				{/if}
 			</div>
-			<div class="border-t-2 border-gray-700"></div>
+			<div class="border-t-2 border-zinc-800"></div>
 			{#if selectedCollection}
 				<div class="p-2">
 					{#each selectedCollection.videos as video}
 						<button
-							class={selectedVideo?.id == video.id
-								? 'flex w-full flex-row bg-gray-900 px-1 py-1'
-								: 'flex w-full flex-row px-1 py-1'}
+							class="flex w-full flex-row px-1 py-1"
 							onclick={() => {
 								selectedVideo = video;
 							}}
@@ -80,7 +78,7 @@
 									<div class="text-sm font-thin">{video.artist}</div>
 									<!-- Tag -->
 									<div class="mt-1 flex flex-row">
-										<div class="rounded-lg bg-blue-800 px-2 text-sm">
+										<div class="rounded-lg bg-blue-950 px-2 text-sm">
 											{video.tag}
 										</div>
 									</div>
@@ -95,7 +93,4 @@
 </div>
 
 <style lang="postcss">
-	button:hover {
-		@apply bg-gray-900;
-	}
 </style>

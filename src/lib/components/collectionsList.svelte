@@ -31,15 +31,13 @@
 	);
 </script>
 
-<div class="flex w-96 flex-col bg-gray-950 p-2 text-slate-50">
+<div class="flex w-96 flex-col bg-zinc-900 p-2 text-slate-50">
 	<!-- Search and filter -->
 	<CollectionsSearch bind:searchTerm bind:filters />
 
 	{#each filterdCollections as collection}
 		<button
-			class={selectedCollection?.id == collection.id
-				? 'flex w-full flex-row bg-gray-900 px-1 py-1'
-				: 'flex w-full flex-row px-1 py-1'}
+			class="flex w-full flex-row px-1 py-1"
 			onclick={() => {
 				selectedCollection = collection;
 			}}
@@ -66,7 +64,7 @@
 				<!-- Tags -->
 				<div class="mt-1 flex flex-row space-x-2">
 					{#each collection.tags as tag}
-						<div class="rounded-lg bg-blue-800 px-2 text-sm">
+						<div class="rounded-lg bg-blue-950 px-2 text-sm">
 							{tag}
 						</div>
 					{/each}
@@ -77,7 +75,4 @@
 </div>
 
 <style lang="postcss">
-	button:hover {
-		@apply bg-gray-900;
-	}
 </style>

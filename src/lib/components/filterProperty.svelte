@@ -53,27 +53,27 @@
 	}
 
 	button.selected.red {
-		@apply bg-red-800;
+		@apply bg-red-950;
 	}
 	button.selected.blue {
-		@apply bg-blue-800;
+		@apply bg-blue-950;
 	}
 	button.selected.amber {
-		@apply bg-amber-800;
+		@apply bg-amber-900;
 	}
 	button.selected.purple {
-		@apply bg-purple-800;
+		@apply bg-purple-900;
 	}
 	.material-symbols-outlined.red {
-		@apply text-red-600;
+		@apply text-red-900;
 	}
 	.material-symbols-outlined.blue {
-		@apply text-blue-600;
+		@apply text-blue-900;
 	}
 	.material-symbols-outlined.amber {
-		@apply text-amber-600;
+		@apply text-amber-800;
 	}
 	.material-symbols-outlined.purple {
-		@apply text-purple-600;
+		@apply text-purple-800;
 	}
 </style>

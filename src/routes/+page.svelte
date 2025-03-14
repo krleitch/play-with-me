@@ -8,7 +8,7 @@
 	let selectedCollection: Collection | undefined = $state();
 </script>
 
-<div class="flex h-screen flex-row bg-gray-800 p-2 font-roboto">
+<div class="flex h-screen flex-row bg-zinc-900 px-12 py-2 font-roboto">
 	<CollectionViewer bind:selectedCollection />
 	<CollectionsList bind:selectedCollection collections={data.collections} />
 </div>

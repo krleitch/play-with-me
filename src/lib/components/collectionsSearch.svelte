@@ -26,8 +26,8 @@
 
 <div class="relative">
 	<!-- Input -->
-	<div class="m-2 flex flex-row items-center rounded-md bg-gray-900 text-white">
-		<span class="material-symbols-outlined !text-md ml-2 text-gray-300">search</span>
+	<div class="m-2 flex flex-row items-center rounded-md bg-zinc-950 text-white">
+		<span class="material-symbols-outlined !text-md ml-2 text-zinc-300">search</span>
 		<input
 			class="flex-1"
 			bind:value={searchTerm}
@@ -41,10 +41,10 @@
 				onclick={() => (showFilters = !showFilters)}
 				aria-label="Filter"
 			>
-				<span class="material-symbols-outlined !text-md text-gray-300">tune</span>
+				<span class="material-symbols-outlined !text-md text-zinc-300">tune</span>
 			</button>
 			<button class="flex items-center" onclick={() => (searchTerm = '')} aria-label="X">
-				<span class="material-symbols-outlined !text-md text-red-800">close</span>
+				<span class="material-symbols-outlined !text-md text-zinc-300">close</span>
 			</button>
 		</div>
 	</div>
@@ -56,7 +56,7 @@
 			out:fade={{ duration: 100 }}
 			use:clickOutside
 			onoutclick={() => (showFilters = false)}
-			class="absolute left-0 top-14 flex w-full flex-col space-y-1 rounded-md bg-gray-900 p-2 text-white"
+			class="absolute left-0 top-14 flex w-full flex-col space-y-1 rounded-md bg-zinc-950 p-2 text-white"
 		>
 			<FilterProperty
 				bind:list={filters.tags}
@@ -91,14 +91,14 @@
 			<div class="flex flex-row justify-end space-x-2">
 				<button
 					onclick={() => resetFilters()}
-					class="flex flex-row items-center rounded-lg bg-red-800 px-2 py-1 text-white hover:bg-red-700"
+					class="flex flex-row items-center rounded-lg bg-red-950 px-2 py-1 text-white hover:bg-red-900"
 				>
 					Reset All
 					<span class="material-symbols-outlined !text-md ml-1"> delete </span>
 				</button>
 				<button
 					onclick={() => (showFilters = false)}
-					class="flex flex-row items-center rounded-lg bg-blue-800 px-2 py-1 text-white hover:bg-blue-700"
+					class="flex flex-row items-center rounded-lg bg-blue-950 px-2 py-1 text-white hover:bg-blue-900"
 				>
 					Apply Filters
 					<span class="material-symbols-outlined !text-md ml-1"> filter_list </span>
@@ -112,7 +112,7 @@
 	input {
 		outline: none;
 		border: none;
-		@apply bg-gray-900;
+		@apply bg-zinc-950;
 	}
 	input:focus {
 		box-shadow: none;
@@ -121,6 +121,6 @@
 	}
 	input::placeholder {
 		opacity: 0.5;
-		@apply text-gray-300;
+		@apply text-zinc-300;
 	}
 </style>
