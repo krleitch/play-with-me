@@ -6,7 +6,5 @@
 <div>
 	{#if filterState.showFilters}
 		FILTER
-	{:else}
-		HIDE FILTER
 	{/if}
 </div>

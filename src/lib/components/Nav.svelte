@@ -3,7 +3,7 @@
 	import { filterState } from '$lib';
 </script>
 
-<div class="flex flex-row items-center justify-between p-4">
+<div class="flex flex-row items-center justify-between px-8 py-4">
 	<!-- LEFT -->
 	<!-- Title -->
 	<span class="text-lg"> Play-With-Me </span>

@@ -1,12 +1,10 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
+	import { playlistState } from '$lib';
 
 	let initialVideoId = '';
 	const ytPlayerId = 'youtube-player';
-
-	// pass the player to let the collection viewer control it
-	let { player = $bindable() } = $props();
 
 	onMount(() => {
 		function load() {
@@ -22,6 +20,14 @@
 			load();
 		} else {
 			window.onYouTubeIframeAPIReady = load;
+		}
+	});
+
+	$effect(() => {
+		let player = document.getElementById(ytPlayerId);
+		console.log(playlistState.selectedVideo);
+		if (playlistState.selectedVideo && player) {
+			player.loadVideoById(playlistState.selectedVideo.youtubeId);
 		}
 	});
 </script>

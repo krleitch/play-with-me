@@ -2,4 +2,4 @@
 	import type { Playlist, Genre, Instrument, Tag, Tuning } from '$lib';
 </script>
 
-<div>TIMELINE</div>
+<div class="h-48">TIMELINE</div>
