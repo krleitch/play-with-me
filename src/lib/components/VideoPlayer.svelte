@@ -6,9 +6,12 @@
 	let initialVideoId = '';
 	const ytPlayerId = 'youtube-player';
 
+	// pass the player to let the collection viewer control it
+	let { youtubePlayer = $bindable() } = $props();
+
 	onMount(() => {
 		function load() {
-			player = new YT.Player(ytPlayerId, {
+			youtubePlayer = new YT.Player(ytPlayerId, {
 				height: '100%',
 				width: '100%',
 				videoId: initialVideoId,
@@ -22,18 +25,10 @@
 			window.onYouTubeIframeAPIReady = load;
 		}
 	});
-
-	$effect(() => {
-		let player = document.getElementById(ytPlayerId);
-		console.log(playlistState.selectedVideo);
-		if (playlistState.selectedVideo && player) {
-			player.loadVideoById(playlistState.selectedVideo.youtubeId);
-		}
-	});
 </script>
 
 <svelte:head>
 	<script src="https://www.youtube.com/iframe_api"></script>
 </svelte:head>
 
-<div id={ytPlayerId}></div>
+<div class="rounded-xl" id={ytPlayerId}></div>
