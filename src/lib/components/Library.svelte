@@ -37,17 +37,20 @@
 					: 'rounded-xl'}
 				onclick={() => {
 					playlistState.selectedPlaylist = playlist;
-					playlistState.selectedVideo = playlist.videos.length > 0 ? playlist.videos[0] : undefined;
+					playlistState.selectedVideo =
+						playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
 				}}
 			>
 				<div class="flex flex-row space-x-2">
-					{#if playlist.videos.length > 0 && playlistState.selectedPlaylist?.id !== playlist.id}
-						<img
-							transition:slide={{ axis: 'x', delay: 350 }}
-							class="w-32 rounded-xl"
-							src={'http://img.youtube.com/vi/' + playlist.videos[0].youtubeId + '/mqdefault.jpg'}
-							alt=""
-						/>
+					{#if playlist.videos?.length > 0 && playlistState.selectedPlaylist?.id !== playlist.id}
+						<div class="" transition:slide={{ axis: 'x', duration: 200 }}>
+							<img
+								transition:fade={{ duration: 200 }}
+								class="w-32 rounded-xl"
+								src={'http://img.youtube.com/vi/' + playlist.videos[0].youtubeId + '/mqdefault.jpg'}
+								alt=""
+							/>
+						</div>
 					{/if}
 
 					<div class="flex flex-col items-start space-x-1">
@@ -71,7 +74,7 @@
 
 			{#if playlistState.selectedPlaylist?.id == playlist.id}
 				<!-- Videos -->
-				<div transition:slide>
+				<div transition:slide={{ delay: 200, duration: 300 }}>
 					{#each playlist.videos as video}
 						<button
 							class="flex flex-row space-x-2 bg-zinc-800 p-2 last:rounded-br-xl last:rounded-bl-xl"

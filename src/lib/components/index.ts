@@ -5,3 +5,5 @@ export { default as FilterProperty } from './FilterProperty.svelte';
 export { default as Timeline } from './Timeline.svelte';
 export { default as VideoPlayer } from './VideoPlayer.svelte';
 export { default as Notes } from './Notes.svelte';
+export { default as Modal } from './Modal.svelte';
+export { default as CreatePlaylist } from './CreatePlaylist.svelte';

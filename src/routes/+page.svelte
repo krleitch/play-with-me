@@ -3,7 +3,15 @@
 	import { layoutState, playlistState, youtubeState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
-	import { Nav, Notes, Library, VideoPlayer, Timeline } from '$lib/components';
+	import {
+		CreatePlaylist,
+		Modal,
+		Nav,
+		Notes,
+		Library,
+		VideoPlayer,
+		Timeline
+	} from '$lib/components';
 
 	let { data }: { data: { playlists: Playlist[] } } = $props();
 
@@ -48,4 +56,12 @@
 			</div>
 		{/if}
 	</div>
+
+	<Modal
+		bind:showModal={layoutState.showCreatePlaylist}
+		closeable={false}
+		title={'Create Playlist'}
+	>
+		<CreatePlaylist />
+	</Modal>
 </div>

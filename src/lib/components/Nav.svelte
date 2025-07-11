@@ -17,7 +17,7 @@
 		<!-- Add Playlist -->
 		<button
 			class="bg-blue-800 hover:bg-blue-900"
-			onclick={() => (filterState.showFilters = !filterState.showFilters)}
+			onclick={() => (layoutState.showCreatePlaylist = true)}
 			aria-label="Add Playlist"
 		>
 			<span class="material-symbols-outlined !text-md">add_circle</span>

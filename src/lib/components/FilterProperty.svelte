@@ -15,6 +15,7 @@
 		} else {
 			list.splice(found, 1);
 		}
+		return false;
 	};
 
 	let getButtonClass = (value: string): string => {
@@ -32,7 +33,7 @@
 
 	<div class="flex flex-row flex-wrap rounded-br-lg rounded-bl-lg {color} p-1">
 		{#each values as value}
-			<button class={getButtonClass(value)} onclick={() => toggleFilter(value)}>
+			<button type="button" class={getButtonClass(value)} onclick={() => toggleFilter(value)}>
 				<span class="text-sm">{value}</span>
 			</button>
 		{/each}
