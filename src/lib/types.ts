@@ -18,7 +18,6 @@ type Playlist = {
   tunings: Tuning[];
   genres: Genre[];
   instruments: Instrument[];
-  tags: Tag[];
   videos: Video[];
   created: string;
   updated: string;

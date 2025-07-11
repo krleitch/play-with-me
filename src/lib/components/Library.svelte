@@ -14,7 +14,7 @@
 		playlists.filter((x) => {
 			let titles = x.title.includes(filterState.searchTerm);
 			let artists = x.artist.includes(filterState.searchTerm);
-			let tags = filterState.tags.every((tag) => x.tags.includes(tag));
+			let tags = filterState.tags.every((tag) => x.videos.some((video) => video.tag == tag));
 			let genres = filterState.genres.every((genre) => x.genres.includes(genre));
 			let instruments = filterState.instruments.every((instrument) =>
 				x.instruments.includes(instrument)
@@ -62,9 +62,9 @@
 						</span>
 						<span class="pl-1 text-xs font-light text-zinc-300">{playlist.artist}</span>
 						<div class="flex flex-row space-x-1 overflow-hidden">
-							{#each playlist.tags as tag}
+							{#each playlist?.videos as video}
 								<div class="rounded-lg bg-blue-950 px-2 text-sm">
-									{tag}
+									{video.tag}
 								</div>
 							{/each}
 						</div>

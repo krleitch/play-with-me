@@ -9,7 +9,6 @@ export async function POST({ request, locals }) {
     const tunings = formData.get('tunings') as string;
     const instruments = formData.get('instruments') as string;
     const genres = formData.get('genres') as string;
-    const tags = formData.get('tags') as string;
 
     const data = {
       title: formData.get('title'),
@@ -17,8 +16,7 @@ export async function POST({ request, locals }) {
       lastPlayed: new Date().toISOString(),
       tunings: tunings,
       instruments: instruments,
-      genres: genres,
-      tags: tags
+      genres: genres
     };
 
     const createPlaylistRecordModel = await locals.pb.collection('playlist').create(data);

@@ -3,6 +3,8 @@
 	import { layoutState, playlistState, youtubeState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
+	// TODO: MOVE PAYLISTS TO THE STATE
+
 	import {
 		CreatePlaylist,
 		Modal,
