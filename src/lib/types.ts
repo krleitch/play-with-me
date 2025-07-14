@@ -5,7 +5,7 @@ type Video = {
   title: string;
   artist: string;
   created: string;
-  tag: Tag;
+  tags: Tag[];
   updated: string;
   youtubeId: string;
 };

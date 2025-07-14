@@ -15,7 +15,7 @@
 </script>
 
 <dialog
-	class="rounded-xl bg-zinc-700 text-zinc-100"
+	class="rounded-xl bg-zinc-950 text-zinc-100"
 	bind:this={dialog}
 	onclose={() => (showModal = false)}
 	onclick={(e) => {
@@ -24,9 +24,9 @@
 >
 	<div class="flex flex-col">
 		<!-- header -->
-		<div class="flex flex-row justify-between bg-zinc-800 p-2">
+		<div class="flex flex-row items-center justify-between bg-zinc-900 p-2">
 			<span>{title}</span>
-			<button class="cursor-pointer" onclick={() => dialog.close()}>
+			<button class="flex cursor-pointer" onclick={() => dialog.close()}>
 				<span class="material-symbols-outlined !text-md ml-2 text-zinc-300">close</span>
 			</button>
 		</div>
@@ -49,7 +49,7 @@
 		top: 100px;
 	}
 	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.3);
+		background: rgba(0, 0, 0, 0.5);
 	}
 	dialog[open] {
 		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

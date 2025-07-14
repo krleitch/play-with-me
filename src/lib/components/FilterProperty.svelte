@@ -23,8 +23,8 @@
 	};
 </script>
 
-<div class="flex flex-row items-center">
-	<div class="flex flex-row items-center {color} px-1 pb-1">
+<div class="flex h-[32px] flex-row items-center">
+	<div class="flex h-[32px] flex-row flex-nowrap items-center overflow-hidden {color} px-1 pb-1">
 		<span class="material-symbols-outlined !text-md {color}">
 			{icon}
 		</span>
@@ -47,31 +47,31 @@
 		@apply mr-1 mb-1 flex cursor-pointer items-center justify-center rounded-md bg-zinc-800 px-2 text-white;
 	}
 	button:hover {
-		@apply bg-zinc-800;
+		@apply bg-zinc-700;
 	}
 
 	button.selected.red {
-		@apply bg-red-800;
+		@apply bg-red-900;
 	}
 	button.selected.blue {
-		@apply bg-blue-800;
+		@apply bg-blue-900;
 	}
 	button.selected.amber {
-		@apply bg-amber-800;
+		@apply bg-amber-900;
 	}
 	button.selected.purple {
-		@apply bg-purple-800;
+		@apply bg-purple-900;
 	}
 	.material-symbols-outlined.red {
-		@apply text-red-800;
+		@apply text-red-900;
 	}
 	.material-symbols-outlined.blue {
-		@apply text-blue-800;
+		@apply text-blue-900;
 	}
 	.material-symbols-outlined.amber {
-		@apply text-amber-800;
+		@apply text-amber-900;
 	}
 	.material-symbols-outlined.purple {
-		@apply text-purple-800;
+		@apply text-purple-900;
 	}
 </style>

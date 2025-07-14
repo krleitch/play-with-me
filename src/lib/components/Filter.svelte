@@ -7,7 +7,7 @@
 
 {#if filterState.showFilters}
 	<div transition:slide>
-		<div class="rounded-xl bg-zinc-950 p-2" transition:fade>
+		<div class="rounded-xl" transition:fade>
 			<FilterProperty
 				bind:list={filterState.tags}
 				title={'Tags'}

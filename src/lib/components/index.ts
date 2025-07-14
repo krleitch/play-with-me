@@ -7,3 +7,5 @@ export { default as VideoPlayer } from './VideoPlayer.svelte';
 export { default as Notes } from './Notes.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as CreatePlaylist } from './CreatePlaylist.svelte';
+export { default as PlaylistItem } from './PlaylistItem.svelte';
+export { default as VideoItem } from './VideoItem.svelte';

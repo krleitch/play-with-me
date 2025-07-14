@@ -22,7 +22,6 @@ export const load: PageServerLoad = async ({ locals }) => {
       tunings: record.tunings,
       genres: record.genres,
       instruments: record.instruments,
-      tags: record.tags,
       created: record.created,
       updated: record.updated,
       videos: record.expand?.video_via_playlist?.map((video) => {
@@ -31,7 +30,7 @@ export const load: PageServerLoad = async ({ locals }) => {
           title: video.title,
           artist: video.artist,
           created: video.created,
-          tag: video.tag,
+          tags: video.tags,
           updated: video.updated,
           youtubeId: video.youtubeId
         };

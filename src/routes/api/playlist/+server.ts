@@ -1,33 +1,53 @@
 import { json } from '@sveltejs/kit';
+import type { Playlist } from '$lib/types';
 import type { RequestHandler } from './$types';
 
-/** @type {import('./$types').RequestHandler} */
-export async function POST({ request, locals }) {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const formData: FormData = await request.formData();
-
-    const tunings = formData.get('tunings') as string;
-    const instruments = formData.get('instruments') as string;
-    const genres = formData.get('genres') as string;
 
     const data = {
       title: formData.get('title'),
       artist: formData.get('artist'),
       lastPlayed: new Date().toISOString(),
-      tunings: tunings,
-      instruments: instruments,
-      genres: genres
+      tunings: formData.get('tunings'),
+      instruments: formData.get('instruments'),
+      genres: formData.get('genres')
     };
 
-    const createPlaylistRecordModel = await locals.pb.collection('playlist').create(data);
+    const record: Playlist = await locals.pb.collection('playlist').create(data);
 
     return json({
-      data: { createPlaylistRecordModel }
+      id: record.id,
+      title: record.title,
+      artist: record.artist,
+      lastPlayed: record.lastPlayed,
+      tunings: record.tunings,
+      genres: record.genres,
+      instruments: record.instruments,
+      created: record.created,
+      updated: record.updated,
+      videos: []
     });
   } catch (err: any) {
-    console.log('err', err);
     return json({
       error: /** @type {Error} */ err.message
     });
   }
-}
+};
+
+export const DELETE: RequestHandler = async ({ request, locals }) => {
+  try {
+    const { playlistId } = await request.json();
+
+    const record: Playlist = await locals.pb.collection('playlist').delete(playlistId);
+
+    return json({
+      id: record.id
+    });
+  } catch (err: any) {
+    return json({
+      error: /** @type {Error} */ err.message
+    });
+  }
+};
