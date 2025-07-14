@@ -5,13 +5,13 @@
 	let nameValue = $state('');
 </script>
 
-<div class="flex h-48 flex-col rounded-xl bg-zinc-950 p-2">
+<div class="flex h-48 flex-col rounded-xl py-2">
 	<!-- NAV -->
-	<div class="flex w-full flex-row justify-between p-1">
+	<div class="flex w-full flex-row justify-between">
 		<!-- Left -->
 		<div class="flex flex-row space-x-2">
 			<!-- Flag name -->
-			<div class="flex flex-row items-center rounded-xl bg-zinc-900 text-white">
+			<div class="flex flex-row items-center rounded-xl bg-zinc-950 text-white">
 				<span class="material-symbols-outlined !text-md ml-2 text-zinc-300">flag</span>
 				<input
 					class="w-72 flex-1"
@@ -22,7 +22,7 @@
 				/>
 			</div>
 			<!-- Flag time -->
-			<div class="flex flex-row items-center rounded-xl bg-zinc-900 text-white">
+			<div class="flex flex-row items-center rounded-xl bg-zinc-950 text-white">
 				<span class="material-symbols-outlined !text-md ml-2 text-zinc-300">alarm</span>
 				<input
 					class="w-24 flex-1"
@@ -69,7 +69,7 @@
 	input {
 		outline: none;
 		border: none;
-		@apply bg-zinc-900;
+		@apply bg-zinc-950;
 		@apply rounded-xl;
 	}
 	input:focus {

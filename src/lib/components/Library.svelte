@@ -61,7 +61,8 @@
 		{/each}
 	</div>
 	<!-- VIDEOS -->
-	<div class="flex h-48 flex-col overflow-auto rounded-xl bg-zinc-950 p-2">
+	<span class="border border-zinc-800"></span>
+	<div class="flex h-48 flex-col overflow-auto py-2">
 		<!-- Videos -->
 		{#if playlistState.selectedPlaylist}
 			{#each playlistState.selectedPlaylist.videos as video}
