@@ -1,28 +1,13 @@
 <script lang="ts">
-	import type { Playlist } from '$lib';
+	import type { PageProps } from './$types';
 	import { layoutState, playlistState, youtubeState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
-	// TODO: MOVE PAYLISTS TO THE STATE
+	import { CreatePlaylist, Nav, Notes, Library, VideoPlayer, Timeline } from '$lib/components';
 
-	import {
-		CreatePlaylist,
-		Modal,
-		Nav,
-		Notes,
-		Library,
-		VideoPlayer,
-		Timeline
-	} from '$lib/components';
+	let { data }: PageProps = $props();
 
-	let { data }: { data: { playlists: Playlist[] } } = $props();
-
-	interface YoutubePlayer {
-		seekTo: (time: number) => void;
-		loadVideoById: (id: string) => void;
-	}
-
-	// let youtubePlayer: YoutubePlayer | undefined = $state();
+	playlistState.playlists = data.playlists;
 
 	$effect(() => {
 		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
@@ -31,10 +16,10 @@
 	});
 </script>
 
-<div class="font-roboto flex h-screen flex-col bg-zinc-900 text-zinc-100">
+<div class="font-roboto flex h-screen max-h-screen min-w-fit flex-col bg-zinc-900 text-zinc-100">
 	<Nav />
 
-	<div class="flex flex-1 flex-row px-8 pb-8">
+	<div class="body-container flex flex-1 flex-row px-8 pb-8">
 		{#if layoutState.showNotes}
 			<div transition:slide={{ axis: 'x' }}>
 				<div class="ml-4" transition:fade>
@@ -52,18 +37,21 @@
 
 		{#if layoutState.showLibrary}
 			<div transition:slide={{ axis: 'x' }}>
-				<div class="ml-4" transition:fade>
-					<Library playlists={data.playlists} />
+				<div class="ml-4 flex h-full max-h-full" transition:fade>
+					<Library />
 				</div>
 			</div>
 		{/if}
 	</div>
 
-	<Modal
-		bind:showModal={layoutState.showCreatePlaylist}
-		closeable={false}
-		title={'Create Playlist'}
-	>
-		<CreatePlaylist />
-	</Modal>
+	<!-- MODALS -->
+	<CreatePlaylist />
 </div>
+
+<style>
+	.body-container {
+		max-height: calc(100% - 72px);
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+</style>

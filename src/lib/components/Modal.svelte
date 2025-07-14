@@ -1,20 +1,25 @@
 <script>
-	let { showModal = $bindable(), children, closeable, title } = $props();
+	let { showModal = $bindable(), children, closeOnClickOutside, title } = $props();
 
 	let dialog = $state(); // HTMLDialogElement
 
 	$effect(() => {
-		if (showModal) dialog.showModal();
+		if (showModal) {
+			dialog.showModal();
+			document.body.classList.add('overflow-y-hidden');
+		} else {
+			dialog.close();
+			document.body.classList.remove('overflow-y-hidden');
+		}
 	});
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <dialog
 	class="rounded-xl bg-zinc-700 text-zinc-100"
 	bind:this={dialog}
 	onclose={() => (showModal = false)}
 	onclick={(e) => {
-		if (closeable && e.target === dialog) dialog.close();
+		if (closeOnClickOutside && e.target === dialog) dialog.close();
 	}}
 >
 	<div class="flex flex-col">
@@ -35,12 +40,12 @@
 
 <style>
 	dialog {
-		max-width: 1000px;
+		width: 500px;
 		border-radius: 0.2em;
 		border: none;
 		padding: 0;
 		position: fixed;
-		left: calc(50% - 500px);
+		left: calc(50% - 250px);
 		top: 100px;
 	}
 	dialog::backdrop {

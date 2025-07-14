@@ -1,21 +1,13 @@
 <script lang="ts">
-	import type { Playlist } from '$lib';
-	import { Genre, Instrument, Tag, Tuning } from '$lib';
-	import { FilterProperty } from '$lib/components';
 	import { slide, fade } from 'svelte/transition';
+	import { Genre, Instrument, Tag, Tuning } from '$lib';
 	import { filterState } from '$lib';
-
-	let resetFilters = () => {
-		filterState.tags = [];
-		filterState.genres = [];
-		filterState.tunings = [];
-		filterState.genres = [];
-	};
+	import { FilterProperty } from '$lib/components';
 </script>
 
 {#if filterState.showFilters}
 	<div transition:slide>
-		<div class="mb-4 rounded-xl bg-zinc-950 p-2" transition:fade>
+		<div class="rounded-xl bg-zinc-950 p-2" transition:fade>
 			<FilterProperty
 				bind:list={filterState.tags}
 				title={'Tags'}

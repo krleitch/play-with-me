@@ -1,66 +1,67 @@
 import type { Playlist, Video, Genre, Instrument, Tuning, Tag, Flag } from '$lib';
 
 interface FilterState {
-	searchTerm: string;
-	showFilters: boolean;
-	tags: Tag[];
-	genres: Genre[];
-	instruments: Instrument[];
-	tunings: Tuning[];
+  searchTerm: string;
+  showFilters: boolean;
+  tags: Tag[];
+  genres: Genre[];
+  instruments: Instrument[];
+  tunings: Tuning[];
 }
 
 interface PlaylistState {
-	selectedPlaylist: Playlist | undefined;
-	selectedVideo: Video | undefined;
+  playlists: Playlist[];
+  selectedPlaylist: Playlist | undefined;
+  selectedVideo: Video | undefined;
 }
 
 interface LayoutState {
-	showNotes: boolean;
-	showLibrary: boolean;
-	showCreatePlaylist: boolean;
+  showNotes: boolean;
+  showLibrary: boolean;
+  showCreatePlaylist: boolean;
 }
 
 interface YoutubeState {
-	youtubePlayer:
-		| {
-				seekTo: (time: number) => void;
-				loadVideoById: (id: string) => void;
-		  }
-		| undefined;
+  youtubePlayer:
+  | {
+    seekTo: (time: number) => void;
+    loadVideoById: (id: string) => void;
+  }
+  | undefined;
 }
 
 interface TimelineState {
-	flags: Flag[];
-	timelineLength: string;
-	selectedFlag: Flag | undefined;
+  flags: Flag[];
+  timelineLength: string;
+  selectedFlag: Flag | undefined;
 }
 
 export const timelineState: TimelineState = $state({
-	flags: [],
-	timelineLength: '00:00:00',
-	selectedFlag: undefined
+  flags: [],
+  timelineLength: '00:00:00',
+  selectedFlag: undefined
 });
 
 export const youtubeState: YoutubeState = $state({
-	youtubePlayer: undefined
+  youtubePlayer: undefined
 });
 
 export const filterState: FilterState = $state({
-	searchTerm: '',
-	showFilters: true,
-	tags: [],
-	genres: [],
-	instruments: [],
-	tunings: []
+  searchTerm: '',
+  showFilters: true,
+  tags: [],
+  genres: [],
+  instruments: [],
+  tunings: []
 });
 
 export const playlistState: PlaylistState = $state({
-	selectedPlaylist: undefined,
-	selectedVideo: undefined
+  selectedPlaylist: undefined,
+  selectedVideo: undefined
 });
 
 export const layoutState: LayoutState = $state({
-	showNotes: false,
-	showLibrary: true,
-	showCreatePlaylist: false
+  showNotes: false,
+  showLibrary: true,
+  showCreatePlaylist: false
 });

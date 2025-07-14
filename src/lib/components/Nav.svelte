@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Playlist, Genre, Instrument, Tag, Tuning } from '$lib';
 	import { filterState, layoutState } from '$lib';
 
 	function resetFilters() {
@@ -11,7 +10,7 @@
 	}
 </script>
 
-<div class="flex flex-row items-center justify-between px-8 py-4">
+<div class="flex h-[72px] flex-row items-center justify-between px-8 py-4">
 	<!-- LEFT -->
 	<div class="flex flex-row space-x-4">
 		<!-- Add Playlist -->
