@@ -2,7 +2,7 @@
 	import type { PageProps } from './$types';
 	import { json } from '@sveltejs/kit';
 	import type { Video } from '$lib/types';
-	import { layoutState, playlistState, youtubeState } from '$lib';
+	import { layoutState, playlistState, youtubeState, timelineState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
 	import {
@@ -22,6 +22,8 @@
 	$effect(() => {
 		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
 			youtubeState.youtubePlayer.loadVideoById(playlistState.selectedVideo.youtubeId);
+			timelineState.timelineLength = 0;
+			timelineState.currentTime = 0;
 		}
 	});
 </script>

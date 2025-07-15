@@ -28,19 +28,25 @@ interface YoutubeState {
   | {
     seekTo: (time: number) => void;
     loadVideoById: (id: string) => void;
+    getDuration: () => number;
+    getCurrentTime: () => number;
   }
   | undefined;
 }
 
 interface TimelineState {
   flags: Flag[];
-  timelineLength: string;
+  timelineLength: number;
+  currentTime: number;
+  prevCurrentTime: number;
   selectedFlag: Flag | undefined;
 }
 
 export const timelineState: TimelineState = $state({
   flags: [],
-  timelineLength: '00:00:00',
+  timelineLength: 0,
+  currentTime: 0,
+  prevCurrentTime: 0,
   selectedFlag: undefined
 });
 

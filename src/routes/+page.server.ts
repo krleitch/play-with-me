@@ -24,29 +24,33 @@ export const load: PageServerLoad = async ({ locals }) => {
       instruments: record.instruments,
       created: record.created,
       updated: record.updated,
-      videos: record.expand?.video_via_playlist?.map((video) => {
-        return {
-          id: video.id,
-          title: video.title,
-          artist: video.artist,
-          created: video.created,
-          tags: video.tags,
-          lastPlayed: video.lastPlayed,
-          updated: video.updated,
-          youtubeId: video.youtubeId,
-          flags: video.expand?.flag_via_video?.map((flag) => {
-            return {
-              id: flag.id,
-              name: flag.name,
-              time: flag.time,
-              seekMidi: flag.seekMidi,
-              sendMidi: flag.sendMidi,
-              created: flag.created,
-              updated: flag.updated
-            };
-          })
-        };
-      })
+      videos: record.expand?.video_via_playlist
+        ? record.expand?.video_via_playlist?.map((video) => {
+          return {
+            id: video.id,
+            title: video.title,
+            artist: video.artist,
+            created: video.created,
+            tags: video.tags,
+            lastPlayed: video.lastPlayed,
+            updated: video.updated,
+            youtubeId: video.youtubeId,
+            flags: video.expand?.flag_via_video
+              ? video.expand?.flag_via_video?.map((flag) => {
+                return {
+                  id: flag.id,
+                  name: flag.name,
+                  time: flag.time,
+                  seekMidi: flag.seekMidi,
+                  sendMidi: flag.sendMidi,
+                  created: flag.created,
+                  updated: flag.updated
+                };
+              })
+              : []
+          };
+        })
+        : []
     };
   });
 
