@@ -12,7 +12,8 @@
 		Notes,
 		Library,
 		VideoPlayer,
-		Timeline
+		Timeline,
+		MidiAssign
 	} from '$lib/components';
 
 	let { data }: PageProps = $props();
@@ -60,6 +61,7 @@
 	<!-- MODALS -->
 	<CreatePlaylist />
 	<EditPlaylist />
+	<MidiAssign />
 </div>
 
 <style>

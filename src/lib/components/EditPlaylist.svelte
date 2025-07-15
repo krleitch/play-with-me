@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Video, Playlist } from '$lib/types';
+	import type { Video, Playlist, Flag } from '$lib/types';
 	import { Genre, Instrument, Tag, Tuning } from '$lib';
 	import { Modal, FilterProperty } from '$lib/components';
 	import { playlistState, layoutState } from '$lib';
@@ -12,6 +12,7 @@
 		artist: string;
 		tags: Tag[];
 		youtubeUrl: string;
+		flags: Flag[];
 	};
 
 	let genres: Genre[] = $state([]);
@@ -35,6 +36,7 @@
 					title: video.title,
 					artist: video.artist,
 					tags: video.tags,
+					flags: video.flags,
 					youtubeUrl: 'https://www.youtube.com/watch?v=' + video.youtubeId
 				};
 			});
@@ -55,7 +57,8 @@
 			title: '',
 			artist: '',
 			youtubeUrl: '',
-			tags: []
+			tags: [],
+			flags: []
 		});
 	}
 
@@ -128,6 +131,7 @@
 				});
 
 				const updatedVideo: Video = await videoResponse.json();
+				updatedVideo.flags = video.flags;
 
 				updatedVideos.push(updatedVideo);
 			}

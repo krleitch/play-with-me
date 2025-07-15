@@ -9,7 +9,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const data = {
       name: formData.get('name'),
       time: formData.get('time'),
-      video: formData.get('videoId')
+      video: formData.get('videoId'),
+      seekCC: -1,
+      sendCC: -1,
+      sendCCValue: -1,
+      sendPC: -1,
+      sendPCValue: -1
     };
 
     const record: Flag = await locals.pb.collection('flag').create(data);
@@ -18,8 +23,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       id: record.id,
       name: record.name,
       time: record.time,
-      seekMidi: record.seekMidi,
-      sendMidi: record.sendMidi,
+      seekCC: record.seekCC,
+      sendCC: record.sendCC,
+      sendCCValue: record.sendCCValue,
+      sendPC: record.sendPC,
+      sendPCValue: record.sendPCValue,
       created: record.created,
       updated: record.updated
     });
@@ -38,6 +46,42 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
     return json({
       id: record.id
+    });
+  } catch (err: any) {
+    return json({
+      error: /** @type {Error} */ err.message
+    });
+  }
+};
+
+export const PATCH: RequestHandler = async ({ request, locals }) => {
+  try {
+    const { flagId, name, time, seekCC, sendCC, sendCCValue, sendPC, sendPCValue } =
+      await request.json();
+
+    const data = {
+      name: name,
+      time: time,
+      seekCC: seekCC,
+      sendCC: sendCC,
+      sendCCValue: sendCCValue,
+      sendPC: sendPC,
+      sendPCValue: sendPCValue
+    };
+
+    const record: Flag = await locals.pb.collection('flag').update(flagId, data);
+
+    return json({
+      id: record.id,
+      name: record.name,
+      time: record.time,
+      seekCC: record.seekCC,
+      sendCC: record.sendCC,
+      sendCCValue: record.sendCCValue,
+      sendPC: record.sendPC,
+      sendPCValue: record.sendPCValue,
+      created: record.created,
+      updated: record.updated
     });
   } catch (err: any) {
     return json({

@@ -10,3 +10,4 @@ export { default as CreatePlaylist } from './CreatePlaylist.svelte';
 export { default as PlaylistItem } from './PlaylistItem.svelte';
 export { default as VideoItem } from './VideoItem.svelte';
 export { default as EditPlaylist } from './EditPlaylist.svelte';
+export { default as MidiAssign } from './MidiAssign.svelte';

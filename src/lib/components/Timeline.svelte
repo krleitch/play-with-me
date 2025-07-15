@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Playlist, Genre, Instrument, Tag, Flag } from '$lib';
-	import { playlistState, youtubeState, timelineState } from '$lib';
+	import { playlistState, youtubeState, timelineState, layoutState } from '$lib';
 
 	type FlagWithPosition = Flag & { position: number };
 
@@ -14,8 +14,11 @@
 				name: flag.name,
 				time: flag.time,
 				position: (flag.time / timelineState?.timelineLength) * 100,
-				seekMidi: flag.seekMidi,
-				sendMidi: flag.sendMidi,
+				seekCC: flag.seekCC,
+				sendCC: flag.sendCC,
+				sendCCValue: flag.sendCCValue,
+				sendPC: flag.sendPC,
+				sendPCValue: flag.sendPCValue,
 				created: flag.created,
 				updated: flag.updated
 			};
@@ -155,6 +158,7 @@
 						type="text"
 						name="name"
 						required
+						maxlength="15"
 						placeholder="Flag Name..."
 					/>
 					<button
@@ -165,15 +169,20 @@
 					</button>
 				</div>
 			</form>
-			<!-- Flag Assign -->
+			<!--  MIDI Assign -->
 			<button
 				class="flex cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700"
 				type="button"
-				onclick={() => null}
+				onclick={() => {
+					layoutState.showMidiAssign = true;
+					if (youtubeState.youtubePlayer) {
+						youtubeState.youtubePlayer.pauseVideo();
+					}
+				}}
 				aria-label="Add Playlist"
 			>
 				<span class="material-symbols-outlined">flag_check</span>
-				<span> Flag Assign </span>
+				<span>MIDI Assign</span>
 			</button>
 		</div>
 	</div>
@@ -185,14 +194,14 @@
 				{#each flags as flag}
 					{#if flag.position <= 100}
 						<div class="absolute z-100 h-full" style="left: {flag.position}%">
-							<div class="h-full border-l-2 border-rose-800">
+							<div class="h-full border-l-2 border-sky-800">
 								<button
 									onclick={() => {
 										playlistState.selectedFlag = flag;
 										seek(flag.time);
 									}}
 									type="button"
-									class="cursor-pointer rounded-tr-md rounded-br-md bg-rose-950 p-2 hover:bg-rose-900"
+									class="cursor-pointer rounded-tr-md rounded-br-md bg-sky-950 p-2 hover:bg-sky-900"
 								>
 									<span> {flag.name} </span>
 								</button>
@@ -209,7 +218,7 @@
 		<div class="relative mt-auto w-full">
 			{#if percentComplete <= 100}
 				<div
-					class="z-10 h-[15px] bg-gradient-to-r from-sky-800 to-sky-950"
+					class="z-10 h-[15px] bg-gradient-to-r from-rose-800 to-rose-950"
 					style="width: {percentComplete}%"
 				></div>
 			{/if}

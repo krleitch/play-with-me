@@ -29,8 +29,11 @@ type Flag = {
   id: string;
   name: string;
   time: number; // seconds since start
-  seekMidi: string;
-  sendMidi: string;
+  seekCC: number;
+  sendCC: number;
+  sendCCValue: number;
+  sendPC: number;
+  sendPCValue: number;
   created: string;
   updated: string;
 };

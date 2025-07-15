@@ -22,6 +22,7 @@ interface LayoutState {
   showLibrary: boolean;
   showCreatePlaylist: boolean;
   showEditPlaylist: boolean;
+  showMidiAssign: boolean;
 }
 
 interface YoutubeState {
@@ -32,6 +33,7 @@ interface YoutubeState {
     getDuration: () => number;
     getCurrentTime: () => number;
     getPlayerState: () => number;
+    pauseVideo: () => void;
   }
   | undefined;
 }
@@ -43,6 +45,16 @@ interface TimelineState {
   prevCurrentTime: number;
   selectedFlag: Flag | undefined;
 }
+
+interface MidiState {
+  selectedMIDIInput: MIDIInput | undefined;
+  selectedMIDIOutput: MIDIOutput | undefined;
+}
+
+export const MIDIState: MidiState = $state({
+  selectedMIDIInput: undefined,
+  selectedMIDIOutput: undefined
+});
 
 export const timelineState: TimelineState = $state({
   flags: [],
@@ -77,5 +89,6 @@ export const layoutState: LayoutState = $state({
   showNotes: false,
   showLibrary: true,
   showCreatePlaylist: false,
-  showEditPlaylist: false
+  showEditPlaylist: false,
+  showMidiAssign: false
 });
