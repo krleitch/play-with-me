@@ -11,15 +11,19 @@
 	let showDropdown = $state(false);
 
 	async function deletePlaylist() {
-		const response = await fetch('/api/playlist', {
-			method: 'DELETE',
-			body: JSON.stringify({ playlistId: playlist.id })
-		});
+		if (window.confirm('Are you sure you would like to delete this playlist?')) {
+			const response = await fetch('/api/playlist', {
+				method: 'DELETE',
+				body: JSON.stringify({ playlistId: playlist.id })
+			});
 
-		const deleteResponse = await response.json();
+			const deleteResponse = await response.json();
 
-		playlistState.playlists = playlistState.playlists.filter((p) => p.id !== playlist.id);
-		showDropdown = false;
+			playlistState.playlists = playlistState.playlists.filter((p) => p.id !== playlist.id);
+			showDropdown = false;
+		} else {
+			showDropdown = false;
+		}
 	}
 
 	function editPlaylist() {

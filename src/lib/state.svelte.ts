@@ -3,6 +3,7 @@ import type { Playlist, Video, Genre, Instrument, Tuning, Tag, Flag } from '$lib
 interface FilterState {
   searchTerm: string;
   showFilters: boolean;
+  sortType: 'created' | 'updated';
   tags: Tag[];
   genres: Genre[];
   instruments: Instrument[];
@@ -50,6 +51,7 @@ export const youtubeState: YoutubeState = $state({
 
 export const filterState: FilterState = $state({
   searchTerm: '',
+  sortType: 'created',
   showFilters: true,
   tags: [],
   genres: [],
