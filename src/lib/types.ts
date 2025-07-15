@@ -7,6 +7,7 @@ type Video = {
   created: string;
   tags: Tag[];
   updated: string;
+  lastPlayed: string;
   youtubeId: string;
   flags: Flag[];
 };

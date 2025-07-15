@@ -8,14 +8,6 @@
 		filterState.instruments = [];
 		filterState.searchTerm = '';
 	}
-
-	function toggleSort() {
-		if (filterState.sortType == 'created') {
-			filterState.sortType = 'updated';
-		} else {
-			filterState.sortType = 'created';
-		}
-	}
 </script>
 
 <div class="flex flex-row items-center justify-between px-28 py-4">
@@ -77,11 +69,6 @@
 		>
 			<span class="material-symbols-outlined">tune</span>
 			<span> Filters </span>
-		</button>
-
-		<button type="button" onclick={toggleSort} aria-label="Filters">
-			<span class="material-symbols-outlined">sort</span>
-			<span> Sort </span>
 		</button>
 	</div>
 </div>

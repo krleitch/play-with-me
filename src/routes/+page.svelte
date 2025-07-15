@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
+	import { json } from '@sveltejs/kit';
+	import type { Video } from '$lib/types';
 	import { layoutState, playlistState, youtubeState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
@@ -20,11 +22,6 @@
 	$effect(() => {
 		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
 			youtubeState.youtubePlayer.loadVideoById(playlistState.selectedVideo.youtubeId);
-			const response = fetch('/api/video/lastPlayed', {
-				method: 'PATCH',
-				body: JSON.stringify({ id: playlistState.selectedVideo.id })
-			});
-			// TODO: UPDATE the playlist
 		}
 	});
 </script>
