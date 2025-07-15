@@ -4,7 +4,7 @@
 
 	type FlagWithPosition = Flag & { position: number };
 
-	let selectedFlag: FlagWithPosition | undefined = $state();
+	// let selectedFlag: FlagWithPosition | undefined = $state();
 	let newFlagName: string = $state('');
 
 	let flags: FlagWithPosition[] | undefined = $derived(
@@ -81,42 +81,42 @@
 	async function deleteFlag() {
 		if (
 			window.confirm('Are you sure you would like to delete this flag?') &&
-			selectedFlag &&
+			playlistState.selectedFlag &&
 			playlistState.selectedVideo
 		) {
 			const response = await fetch('/api/flag', {
 				method: 'DELETE',
-				body: JSON.stringify({ flagId: selectedFlag.id })
+				body: JSON.stringify({ flagId: playlistState.selectedFlag.id })
 			});
 
 			const deleteResponse = await response.json();
 
 			playlistState.selectedVideo.flags = playlistState.selectedVideo.flags.filter(
-				(f) => f.id !== selectedFlag.id
+				(f) => f.id !== playlistState.selectedFlag.id
 			);
-			selectedFlag = undefined;
+			playlistState.selectedFlag = undefined;
 		} else {
 		}
 	}
 </script>
 
-<div class="flex h-48 flex-col rounded-xl px-[10px] pt-2">
+<div class="flex h-36 flex-col rounded-xl px-[10px] pt-2">
 	<!-- NAV -->
 	<div class="flex w-full flex-row justify-between">
 		<!-- Left -->
 		<div class="flex flex-row space-x-2">
-			{#if selectedFlag}
+			{#if playlistState.selectedFlag}
 				<!-- Flag name -->
 				<div
 					class="flex min-w-64 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
 				>
 					<div class="flex flex-row items-center space-x-1 px-2">
 						<span class="material-symbols-outlined">flag</span>
-						<span>{selectedFlag.name}</span>
+						<span>{playlistState.selectedFlag.name}</span>
 					</div>
 					<!-- Delete -->
 					<button
-						class="!rounded-tl-none !rounded-bl-none !px-2"
+						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 						type="button"
 						onclick={deleteFlag}
 						aria-label="Add Playlist"
@@ -128,14 +128,15 @@
 				<div class="flex flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950">
 					<div class="flex flex-row items-center space-x-1 px-2">
 						<span class="material-symbols-outlined">alarm</span>
-						<span>{secondsToStringTime(selectedFlag.time)}</span>
+						<span>{secondsToStringTime(playlistState.selectedFlag.time)}</span>
 					</div>
 					<!-- Seek -->
 					<button
 						type="button"
-						onclick={() => (selectedFlag ? seek(selectedFlag.time) : null)}
+						onclick={() =>
+							playlistState.selectedFlag ? seek(playlistState.selectedFlag.time) : null}
 						aria-label="Add Playlist"
-						class="!rounded-tl-none !rounded-bl-none !px-2"
+						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 					>
 						<span class="material-symbols-outlined">video_search</span>
 					</button>
@@ -156,13 +157,21 @@
 						required
 						placeholder="Flag Name..."
 					/>
-					<button type="submit" class="!rounded-tl-none !rounded-bl-none !px-2">
+					<button
+						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
+						type="submit"
+					>
 						<span class="material-symbols-outlined">add_circle</span>
 					</button>
 				</div>
 			</form>
 			<!-- Flag Assign -->
-			<button type="button" onclick={() => null} aria-label="Add Playlist">
+			<button
+				class="flex cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700"
+				type="button"
+				onclick={() => null}
+				aria-label="Add Playlist"
+			>
 				<span class="material-symbols-outlined">flag_check</span>
 				<span> Flag Assign </span>
 			</button>
@@ -175,12 +184,15 @@
 			{#if flags}
 				{#each flags as flag}
 					{#if flag.position <= 100}
-						<div class="absolute h-full" style="left: {flag.position}%">
-							<div class="z-100 h-full border-l-2 border-blue-400">
+						<div class="absolute z-100 h-full" style="left: {flag.position}%">
+							<div class="h-full border-l-2 border-rose-800">
 								<button
-									onclick={() => (selectedFlag = flag)}
+									onclick={() => {
+										playlistState.selectedFlag = flag;
+										seek(flag.time);
+									}}
 									type="button"
-									class="!rounded-none !bg-blue-400 p-2"
+									class="cursor-pointer rounded-tr-md rounded-br-md bg-rose-950 p-2 hover:bg-rose-900"
 								>
 									<span> {flag.name} </span>
 								</button>
@@ -194,10 +206,12 @@
 		<!-- <span> out of </span> -->
 		<!-- {timelineState.timelineLength} -->
 
-		<div id="myProgress">
+		<div class="relative mt-auto w-full">
 			{#if percentComplete <= 100}
-				<!-- <span>{percentComplete}%</span> -->
-				<div id="myBar" style="width: {percentComplete}%"></div>
+				<div
+					class="z-10 h-[15px] bg-gradient-to-r from-sky-800 to-sky-950"
+					style="width: {percentComplete}%"
+				></div>
 			{/if}
 		</div>
 	</div>
@@ -205,20 +219,6 @@
 
 <style lang="postcss">
 	@reference "../../app.css";
-
-	#myProgress {
-		width: 100%;
-		height: 30px;
-		position: relative;
-		margin-top: auto;
-	}
-
-	#myBar {
-		height: 30px;
-		background-color: hsl(102, 27%, 60%);
-		border: 1px solid #333;
-		z-index: 10;
-	}
 
 	input {
 		outline: none;
@@ -233,11 +233,6 @@
 	input::placeholder {
 		opacity: 0.5;
 		@apply text-zinc-300;
-	}
-
-	button {
-		@apply flex cursor-pointer flex-row items-center space-x-1;
-		@apply rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700;
 	}
 
 	.material-symbols-outlined {

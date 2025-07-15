@@ -14,6 +14,7 @@ interface PlaylistState {
   selectedPlaylist: Playlist | undefined;
   editPlaylist: Playlist | undefined;
   selectedVideo: Video | undefined;
+  selectedFlag: Flag | undefined;
 }
 
 interface LayoutState {
@@ -30,6 +31,7 @@ interface YoutubeState {
     loadVideoById: (id: string) => void;
     getDuration: () => number;
     getCurrentTime: () => number;
+    getPlayerState: () => number;
   }
   | undefined;
 }
@@ -67,7 +69,8 @@ export const playlistState: PlaylistState = $state({
   playlists: [],
   selectedPlaylist: undefined,
   selectedVideo: undefined,
-  editPlaylist: undefined
+  editPlaylist: undefined,
+  selectedFlag: undefined
 });
 
 export const layoutState: LayoutState = $state({
