@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { Playlist, Genre, Instrument, Tag, Tuning } from '$lib';
+	import type { Playlist, Genre, Instrument, Tag, Flag } from '$lib';
+	import { playlistState } from '$lib';
 
 	let timeValue = $state('');
 	let nameValue = $state('');
@@ -48,7 +49,13 @@
 	</div>
 
 	<!-- Timeline -->
-	<div></div>
+	<div>
+		{#if playlistState.selectedVideo}
+			{#each playlistState.selectedVideo.flags as flag}
+				{flag.name}
+			{/each}
+		{/if}
+	</div>
 </div>
 
 <style lang="postcss">

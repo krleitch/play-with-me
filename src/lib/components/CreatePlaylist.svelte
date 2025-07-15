@@ -60,7 +60,6 @@
 		});
 
 		const createdPlaylist: Playlist = await playlistResponse.json();
-		createdPlaylist.videos = [];
 
 		// Add the videos
 		for (const video of videos) {

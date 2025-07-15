@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { playlistState } from '$lib';
+	import { playlistState, layoutState } from '$lib';
 	import { clickOutside } from '$lib';
 	import type { Playlist } from '$lib/types';
 
@@ -16,9 +16,15 @@
 			body: JSON.stringify({ playlistId: playlist.id })
 		});
 
-		const { data } = await response.json();
+		const deleteResponse = await response.json();
 
 		playlistState.playlists = playlistState.playlists.filter((p) => p.id !== playlist.id);
+		showDropdown = false;
+	}
+
+	function editPlaylist() {
+		playlistState.editPlaylist = playlist;
+		layoutState.showEditPlaylist = true;
 		showDropdown = false;
 	}
 </script>
@@ -67,6 +73,7 @@
 					<button
 						class="flex flex-row items-center space-x-2 rounded-tl-xl rounded-tr-xl bg-zinc-800 p-2 hover:bg-zinc-700"
 						type="button"
+						onclick={editPlaylist}
 					>
 						<span class="material-symbols-outlined">edit</span>
 						<span>Edit Playlist</span>

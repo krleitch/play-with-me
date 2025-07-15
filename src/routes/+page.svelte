@@ -3,7 +3,15 @@
 	import { layoutState, playlistState, youtubeState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 
-	import { CreatePlaylist, Nav, Notes, Library, VideoPlayer, Timeline } from '$lib/components';
+	import {
+		CreatePlaylist,
+		EditPlaylist,
+		Nav,
+		Notes,
+		Library,
+		VideoPlayer,
+		Timeline
+	} from '$lib/components';
 
 	let { data }: PageProps = $props();
 
@@ -46,6 +54,7 @@
 
 	<!-- MODALS -->
 	<CreatePlaylist />
+	<EditPlaylist />
 </div>
 
 <style>

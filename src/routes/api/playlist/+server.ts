@@ -51,3 +51,39 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     });
   }
 };
+
+export const PATCH: RequestHandler = async ({ request, locals }) => {
+  try {
+    const formData: FormData = await request.formData();
+
+    const playlistId = formData.get('playlistId');
+
+    const data = {
+      title: formData.get('title'),
+      artist: formData.get('artist'),
+      lastPlayed: new Date().toISOString(),
+      tunings: formData.get('tunings'),
+      instruments: formData.get('instruments'),
+      genres: formData.get('genres')
+    };
+
+    const record: Playlist = await locals.pb.collection('playlist').update(playlistId, data);
+
+    return json({
+      id: record.id,
+      title: record.title,
+      artist: record.artist,
+      lastPlayed: record.lastPlayed,
+      tunings: record.tunings,
+      genres: record.genres,
+      instruments: record.instruments,
+      created: record.created,
+      updated: record.updated,
+      videos: []
+    });
+  } catch (err: any) {
+    return json({
+      error: /** @type {Error} */ err.message
+    });
+  }
+};

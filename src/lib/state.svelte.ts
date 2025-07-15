@@ -12,6 +12,7 @@ interface FilterState {
 interface PlaylistState {
   playlists: Playlist[];
   selectedPlaylist: Playlist | undefined;
+  editPlaylist: Playlist | undefined;
   selectedVideo: Video | undefined;
 }
 
@@ -19,6 +20,7 @@ interface LayoutState {
   showNotes: boolean;
   showLibrary: boolean;
   showCreatePlaylist: boolean;
+  showEditPlaylist: boolean;
 }
 
 interface YoutubeState {
@@ -56,12 +58,15 @@ export const filterState: FilterState = $state({
 });
 
 export const playlistState: PlaylistState = $state({
+  playlists: [],
   selectedPlaylist: undefined,
-  selectedVideo: undefined
+  selectedVideo: undefined,
+  editPlaylist: undefined
 });
 
 export const layoutState: LayoutState = $state({
   showNotes: false,
   showLibrary: true,
-  showCreatePlaylist: false
+  showCreatePlaylist: false,
+  showEditPlaylist: false
 });

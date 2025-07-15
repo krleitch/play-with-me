@@ -8,6 +8,7 @@ type Video = {
   tags: Tag[];
   updated: string;
   youtubeId: string;
+  flags: Flag[];
 };
 
 type Playlist = {
@@ -26,7 +27,7 @@ type Playlist = {
 type Flag = {
   id: string;
   name: string;
-  time: string;
+  time: number; // seconds since start
   seekMidi: string;
   sendMidi: string;
   created: string;
