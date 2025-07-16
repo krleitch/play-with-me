@@ -2,6 +2,8 @@
 
 Organize your backing tracks with midi automation
 
+![alt text](./src/img/PlayWithMeDemo.PNG)
+
 ## Env
 
 Create a .env file for your pocketbase secrets
