@@ -4,8 +4,8 @@
 
 	let filteredPlaylists = $derived(
 		playlistState.playlists.filter((x) => {
-			let titles = x.title.includes(filterState.searchTerm);
-			let artists = x.artist.includes(filterState.searchTerm);
+			let titles = x.title.toLowerCase().includes(filterState.searchTerm.toLowerCase());
+			let artists = x.artist.toLowerCase().includes(filterState.searchTerm.toLowerCase());
 			let tags = filterState.tags.every((tag) =>
 				x.videos?.some((video) => video.tags.includes(tag))
 			);

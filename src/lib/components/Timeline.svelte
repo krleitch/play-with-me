@@ -37,7 +37,11 @@
 						timelineState.prevCurrentTime <= flag.time
 					) {
 						// WE HIT A FLAG, send PC then CC if exist
-						if (MIDIState.selectedMIDIOutput && playlistState.selectedVideo) {
+						if (
+							MIDIState.selectedMIDIOutput &&
+							playlistState.selectedVideo &&
+							!MIDIState.disableMIDI
+						) {
 							if (flag.sendPC >= 0) {
 								const pcMessage = [0xc0, flag.sendPC];
 								MIDIState.selectedMIDIOutput.send(pcMessage);
@@ -63,7 +67,12 @@
 					let value = message.data[2];
 
 					// CC MSG
-					if (command == 176 && playlistState.selectedVideo && youtubeState.youtubePlayer) {
+					if (
+						command == 176 &&
+						playlistState.selectedVideo &&
+						youtubeState.youtubePlayer &&
+						!MIDIState.disableMIDI
+					) {
 						// Search Flags first
 						let flagFound = false;
 						playlistState.selectedVideo.flags.forEach((flag) => {
@@ -304,6 +313,7 @@
 						bind:value={newFlagName}
 						type="text"
 						name="name"
+						autocomplete="off"
 						required
 						maxlength="15"
 						placeholder="Flag Name..."

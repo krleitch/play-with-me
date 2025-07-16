@@ -27,7 +27,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       instruments: record.instruments,
       created: record.created,
       updated: record.updated,
-      videos: []
+      videos: [],
+      notes: []
     });
   } catch (err: any) {
     return json({
@@ -79,7 +80,8 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       instruments: record.instruments,
       created: record.created,
       updated: record.updated,
-      videos: []
+      videos: [],
+      notes: record.notes
     });
   } catch (err: any) {
     return json({

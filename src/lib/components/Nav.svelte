@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { filterState, layoutState } from '$lib';
+	import { MIDIState, filterState, layoutState, playlistState } from '$lib';
+
+	let sortType: 'created' | 'recent' = $state('created');
 
 	function resetFilters() {
 		filterState.tags = [];
@@ -7,6 +9,38 @@
 		filterState.tunings = [];
 		filterState.instruments = [];
 		filterState.searchTerm = '';
+	}
+
+	function toggleSort() {
+		if (playlistState.playlists) {
+			if (sortType == 'created') {
+				sortType = 'recent';
+				playlistState.playlists.sort((a, b) => {
+					let aVal = a.lastPlayed;
+					let bVal = b.lastPlayed;
+					if (aVal < bVal) {
+						return 1;
+					} else if (aVal > bVal) {
+						return -1;
+					} else {
+						return 0;
+					}
+				});
+			} else {
+				sortType = 'created';
+				playlistState.playlists.sort((a, b) => {
+					let aVal = a.created;
+					let bVal = b.created;
+					if (aVal < bVal) {
+						return 1;
+					} else if (aVal > bVal) {
+						return -1;
+					} else {
+						return 0;
+					}
+				});
+			}
+		}
 	}
 </script>
 
@@ -46,15 +80,35 @@
 		<button
 			type="button"
 			onclick={() => (layoutState.showGlobalMidi = !layoutState.showGlobalMidi)}
-			aria-label="Notes"
+			aria-label="Global MIDI"
 		>
 			<span class="material-symbols-outlined">globe</span>
 			<span> Global MIDI </span>
+		</button>
+		<!-- Disable MIDI -->
+		<button
+			type="button"
+			class={MIDIState.disableMIDI ? '!bg-rose-900' : ''}
+			onclick={() => (MIDIState.disableMIDI = !MIDIState.disableMIDI)}
+			aria-label="Disable MIDI"
+		>
+			<span class="material-symbols-outlined">piano_off</span>
+			<span> Disable MIDI </span>
 		</button>
 	</div>
 
 	<!-- RIGHT -->
 	<div class="flex flex-row items-center space-x-4">
+		<!-- Sort -->
+		<button type="button" onclick={toggleSort} aria-label="Sort">
+			<span class="material-symbols-outlined">sort</span>
+			{#if sortType == 'created'}
+				<span> Sort by recent </span>
+			{:else if sortType == 'recent'}
+				<span> Sort by created </span>
+			{/if}
+		</button>
+
 		<!-- Input -->
 		<div class="flex flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950">
 			<span class="material-symbols-outlined ml-2">search</span>

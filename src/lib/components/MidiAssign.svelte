@@ -123,33 +123,39 @@
 		</div>
 
 		<form onsubmit={onSubmit}>
-			<div class="flex max-h-[415px] flex-col space-y-1 overflow-auto">
+			<div class="flex max-h-[435px] flex-col space-y-1 overflow-auto">
 				{#if flags.length >= 1}
 					{#each flags as flag, index}
-						<div class="mb-4 flex flex-col">
+						<div class="mb-4 flex flex-col last:mb-0">
 							<!-- Name and time -->
 							<div class="flex flex-row items-center space-x-2">
-								<input
-									bind:value={flag.name}
-									autocomplete="off"
-									type="text"
-									required
-									placeholder="Flag Name..."
-									class="w-1/2"
-								/>
-								<input
-									bind:value={flag.time}
-									autocomplete="off"
-									type="number"
-									step="any"
-									required
-									placeholder="Time..."
-									class="w-1/2"
-								/>
+								<div class="flex flex-col">
+									<label for="flagName"> Flag Name </label>
+									<input
+										id="flagName"
+										bind:value={flag.name}
+										autocomplete="off"
+										type="text"
+										required
+										placeholder="Flag Name..."
+									/>
+								</div>
+								<div class="flex flex-col">
+									<label for="flagTime"> Flag Time </label>
+									<input
+										bind:value={flag.time}
+										autocomplete="off"
+										id="flagTime"
+										type="number"
+										step="any"
+										required
+										placeholder="Time..."
+									/>
+								</div>
 							</div>
 							<!-- CC and PC and SEEK -->
 							<div class="mt-1 flex flex-row items-center space-x-2">
-								<div class="flex w-[80px] flex-col">
+								<div class="flex flex-col">
 									<label for="seekCC">Seek CC#</label>
 									<input
 										id="seekCC"
@@ -160,7 +166,7 @@
 										placeholder="Seek CC"
 									/>
 								</div>
-								<div class="flex w-[80px] flex-col">
+								<div class="flex flex-col">
 									<label for="sendCC">Send CC#</label>
 									<input
 										id="sendCC"
@@ -171,7 +177,7 @@
 										placeholder="Send CC"
 									/>
 								</div>
-								<div class="flex w-[80px] flex-col">
+								<div class="flex flex-col">
 									<label for="sendCCValue">CC Value</label>
 									<input
 										id="sendCCValue"
@@ -182,7 +188,7 @@
 										placeholder="CC Value"
 									/>
 								</div>
-								<div class="flex w-[80px] flex-col">
+								<div class="flex flex-col">
 									<label for="sendPC">Send PC#</label>
 									<input
 										id="sendPC"
@@ -201,7 +207,7 @@
 				{/if}
 			</div>
 			<!-- Buttons -->
-			<div class="mt-4 flex flex-row space-x-2">
+			<div class="mt-2 flex flex-row space-x-2">
 				<button class="ml-auto" type="submit">
 					<span class="material-symbols-outlined">save</span>
 					<span>Save Flags</span>
@@ -217,6 +223,8 @@
 	input {
 		outline: none;
 		border: none;
+		min-width: 0;
+		width: 100%;
 		@apply rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100;
 	}
 	input:focus {
@@ -234,7 +242,8 @@
 
 	select {
 		outline: none;
-		@apply rounded-xl border-zinc-800 bg-zinc-950 text-zinc-100;
+		@apply rounded-xl border-1 border-zinc-800 bg-zinc-950 text-zinc-100;
+		@apply focus:ring-0;
 	}
 
 	button {

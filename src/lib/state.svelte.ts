@@ -55,11 +55,13 @@ interface TimelineState {
 interface MidiState {
   selectedMIDIInput: MIDIInput | undefined;
   selectedMIDIOutput: MIDIOutput | undefined;
+  disableMIDI: boolean;
 }
 
 export const MIDIState: MidiState = $state({
   selectedMIDIInput: undefined,
-  selectedMIDIOutput: undefined
+  selectedMIDIOutput: undefined,
+  disableMIDI: false
 });
 
 export const timelineState: TimelineState = $state({

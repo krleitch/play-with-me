@@ -41,6 +41,11 @@
 			onclick={() => {
 				playlistState.selectedPlaylist = playlist;
 				playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
+				const flagResponse = fetch('/api/playlist/lastPlayed', {
+					method: 'PATCH',
+					body: JSON.stringify({ playlistId: playlist.id })
+				});
+				playlist.lastPlayed = new Date().toISOString();
 			}}
 		>
 			{#if playlist.videos?.length > 0}
