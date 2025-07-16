@@ -1,5 +1,13 @@
 import { Genre, Instrument, Tag, Tuning } from '$lib';
 
+type Note = {
+  id: string;
+  title: string;
+  message: string; // RICH TEXT
+  created: string;
+  updated: string;
+};
+
 type Video = {
   id: string;
   title: string;
@@ -21,6 +29,7 @@ type Playlist = {
   genres: Genre[];
   instruments: Instrument[];
   videos: Video[];
+  notes: Note[];
   created: string;
   updated: string;
 };
@@ -37,4 +46,4 @@ type Flag = {
   updated: string;
 };
 
-export type { Video, Playlist, Flag };
+export type { Video, Playlist, Flag, Note };

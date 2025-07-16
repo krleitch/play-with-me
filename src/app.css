@@ -7,3 +7,7 @@
 @theme {
 	--font-roboto: 'Roboto', sans-serif;
 }
+
+body {
+	overflow-y: hidden;
+}

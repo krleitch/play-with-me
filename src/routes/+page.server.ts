@@ -1,16 +1,18 @@
 import type { PageServerLoad } from './$types';
-import type { Playlist, Video, Flag } from '$lib/types';
+import type { Playlist, Video, Flag, Note } from '$lib/types';
 
 type pbPlaylistRecord = Playlist & {
   expand: {
     video_via_playlist: (Video & { expand: { flag_via_video: Flag[] } })[];
+    note_via_playlist: Note[];
   };
 };
 
 export const load: PageServerLoad = async ({ locals }) => {
   const records = await locals.pb.collection('playlist').getFullList({
     sort: '-created',
-    expand: 'video_via_playlist.playlist, video_via_playlist.flag_via_video.video'
+    expand:
+      'video_via_playlist.playlist, video_via_playlist.flag_via_video.video, note_via_playlist.playlist'
   });
 
   const playlists: Playlist[] = records.map((record: pbPlaylistRecord) => {
@@ -50,6 +52,17 @@ export const load: PageServerLoad = async ({ locals }) => {
                 };
               })
               : []
+          };
+        })
+        : [],
+      notes: record.expand?.note_via_playlist
+        ? record.expand?.note_via_playlist?.map((note) => {
+          return {
+            id: note.id,
+            message: note.message,
+            title: note.title,
+            created: note.created,
+            updated: note.updated
           };
         })
         : []

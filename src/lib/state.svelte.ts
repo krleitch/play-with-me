@@ -23,6 +23,7 @@ interface LayoutState {
   showCreatePlaylist: boolean;
   showEditPlaylist: boolean;
   showMidiAssign: boolean;
+  showGlobalMidi: boolean;
 }
 
 interface YoutubeState {
@@ -34,6 +35,11 @@ interface YoutubeState {
     getCurrentTime: () => number;
     getPlayerState: () => number;
     pauseVideo: () => void;
+    playVideo: () => void;
+    setVolume: (volume: number) => void;
+    getVolume: () => void;
+    setPlaybackRate: (rate: number) => void;
+    getPlaybackRate: () => void;
   }
   | undefined;
 }
@@ -90,5 +96,6 @@ export const layoutState: LayoutState = $state({
   showLibrary: true,
   showCreatePlaylist: false,
   showEditPlaylist: false,
-  showMidiAssign: false
+  showMidiAssign: false,
+  showGlobalMidi: false
 });

@@ -42,6 +42,15 @@
 			<span class="material-symbols-outlined">edit</span>
 			<span> Notes </span>
 		</button>
+		<!-- Global MIDI -->
+		<button
+			type="button"
+			onclick={() => (layoutState.showGlobalMidi = !layoutState.showGlobalMidi)}
+			aria-label="Notes"
+		>
+			<span class="material-symbols-outlined">globe</span>
+			<span> Global MIDI </span>
+		</button>
 	</div>
 
 	<!-- RIGHT -->

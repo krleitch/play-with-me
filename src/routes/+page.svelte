@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import { json } from '@sveltejs/kit';
-	import type { Video } from '$lib/types';
 	import { layoutState, playlistState, youtubeState, timelineState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
+	import { localStore } from '$lib';
 
 	import {
 		CreatePlaylist,
@@ -13,8 +12,26 @@
 		Library,
 		VideoPlayer,
 		Timeline,
-		MidiAssign
+		MidiAssign,
+		GlobalMidi
 	} from '$lib/components';
+
+	const globalMIDI = localStore('globalMIDI', {
+		left: -1,
+		leftStep: 5,
+		right: -1,
+		rightStep: 5,
+		startStop: -1,
+		slow: -1,
+		fast: -1,
+		volumeUp: -1,
+		volumeUpStep: 10,
+		volumeDown: -1,
+		volumeDownStep: 10,
+		prevFlag: -1,
+		nextFlag: -1,
+		restart: -1
+	});
 
 	let { data }: PageProps = $props();
 
@@ -36,7 +53,7 @@
 	<div class="body-container flex flex-1 flex-row px-28 pb-4">
 		{#if layoutState.showNotes}
 			<div transition:slide={{ axis: 'x' }}>
-				<div class="mr-4" transition:fade>
+				<div class="mr-4 flex h-full max-h-full" transition:fade>
 					<Notes />
 				</div>
 			</div>
@@ -46,7 +63,7 @@
 			<div class="flex-1">
 				<VideoPlayer bind:youtubePlayer={youtubeState.youtubePlayer} />
 			</div>
-			<Timeline />
+			<Timeline {globalMIDI} />
 		</div>
 
 		{#if layoutState.showLibrary}
@@ -62,6 +79,7 @@
 	<CreatePlaylist />
 	<EditPlaylist />
 	<MidiAssign />
+	<GlobalMidi {globalMIDI} />
 </div>
 
 <style>

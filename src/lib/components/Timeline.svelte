@@ -4,7 +4,8 @@
 
 	type FlagWithPosition = Flag & { position: number };
 
-	// let selectedFlag: FlagWithPosition | undefined = $state();
+	let { globalMIDI } = $props();
+
 	let newFlagName: string = $state('');
 
 	let flags: FlagWithPosition[] | undefined = $derived(
@@ -26,6 +27,7 @@
 
 	let percentComplete = $derived((timelineState.currentTime / timelineState.timelineLength) * 100);
 
+	// CHECK FLAGS
 	$effect(() => {
 		if (flags) {
 			flags.forEach((flag) => {
@@ -61,12 +63,124 @@
 					let value = message.data[2];
 
 					// CC MSG
-					if (command == 176 && playlistState.selectedVideo) {
+					if (command == 176 && playlistState.selectedVideo && youtubeState.youtubePlayer) {
+						// Search Flags first
+						let flagFound = false;
 						playlistState.selectedVideo.flags.forEach((flag) => {
 							if (flag.seekCC == number && youtubeState.youtubePlayer) {
 								youtubeState.youtubePlayer.seekTo(flag.time);
+								flagFound = true;
 							}
 						});
+
+						// CHECK GLOBAL MIDI
+						if (!flagFound) {
+							switch (number) {
+								case globalMIDI.value.prevFlag:
+									let currentTimePrev;
+									// check if ended
+									if (youtubeState.youtubePlayer.getPlayerState() == 0) {
+										currentTimePrev = youtubeState.youtubePlayer.getDuration();
+									} else {
+										currentTimePrev = youtubeState.youtubePlayer.getCurrentTime();
+									}
+
+									const prevFlags = flags
+										?.filter((flag) => flag.time < currentTimePrev - 1) // give 1 second grace
+										.sort((a, b) => {
+											if (a.time < b.time) {
+												return -1;
+											} else if (a.time > b.time) {
+												return 1;
+											} else {
+												return 0;
+											}
+										});
+									if (prevFlags && prevFlags.length > 0) {
+										const lastFlag = prevFlags.at(-1);
+										if (lastFlag) {
+											youtubeState.youtubePlayer.seekTo(lastFlag.time);
+										}
+									} else {
+										youtubeState.youtubePlayer.seekTo(0);
+									}
+									break;
+								case globalMIDI.value.nextFlag:
+									const currentTimeNext = youtubeState.youtubePlayer.getCurrentTime();
+									const nextFlags = flags
+										?.filter((flag) => flag.time > currentTimeNext)
+										.sort((a, b) => {
+											if (a.time < b.time) {
+												return -1;
+											} else if (a.time > b.time) {
+												return 1;
+											} else {
+												return 0;
+											}
+										});
+									if (nextFlags && nextFlags.length > 0) {
+										const firstFlag = nextFlags.at(0);
+										if (firstFlag) {
+											youtubeState.youtubePlayer.seekTo(firstFlag.time);
+										}
+									} else {
+										const durationNext = youtubeState.youtubePlayer.getDuration();
+										youtubeState.youtubePlayer.seekTo(durationNext - 0.2);
+									}
+									break;
+								case globalMIDI.value.startStop:
+									const state = youtubeState.youtubePlayer.getPlayerState();
+									if (state == 1) {
+										youtubeState.youtubePlayer.pauseVideo();
+									} else {
+										youtubeState.youtubePlayer.playVideo();
+									}
+									break;
+								case globalMIDI.value.left:
+									const currentTimeLeft = youtubeState.youtubePlayer.getCurrentTime();
+									const newTimeLeft = Math.max(0, currentTimeLeft - globalMIDI.value.leftStep);
+									youtubeState.youtubePlayer.seekTo(newTimeLeft);
+									break;
+								case globalMIDI.value.right:
+									const currentTimeRight = youtubeState.youtubePlayer.getCurrentTime();
+									const durationRight = youtubeState.youtubePlayer.getDuration();
+									const newTimeRight = Math.min(
+										durationRight,
+										currentTimeRight + globalMIDI.value.rightStep
+									);
+									youtubeState.youtubePlayer.seekTo(newTimeRight);
+									break;
+								case globalMIDI.value.volumeDown:
+									const currentVolumeDown = youtubeState.youtubePlayer.getVolume();
+									const newVolumeDown = Math.max(
+										0,
+										currentVolumeDown - globalMIDI.value.volumeDownStep
+									);
+									youtubeState.youtubePlayer.setVolume(newVolumeDown);
+									break;
+								case globalMIDI.value.volumeUp:
+									const currentVolumeUp = youtubeState.youtubePlayer.getVolume();
+									const newVolumeUp = Math.min(
+										100,
+										currentVolumeUp + globalMIDI.value.volumeUpStep
+									);
+									youtubeState.youtubePlayer.setVolume(newVolumeUp);
+									break;
+								case globalMIDI.value.slow:
+									const currentPlaybackSlow = youtubeState.youtubePlayer.getPlaybackRate();
+									const newPlaybackSlow = Math.max(0, currentPlaybackSlow - 0.25);
+									youtubeState.youtubePlayer.setPlaybackRate(newPlaybackSlow);
+									break;
+								case globalMIDI.value.fast:
+									const currentPlaybackFast = youtubeState.youtubePlayer.getPlaybackRate();
+									const newPlaybackFast = Math.min(2, currentPlaybackFast + 0.25);
+									youtubeState.youtubePlayer.setPlaybackRate(newPlaybackFast);
+									break;
+								case globalMIDI.value.restart:
+									youtubeState.youtubePlayer.seekTo(0);
+									break;
+							}
+						}
 					}
 				}
 			};
@@ -138,13 +252,13 @@
 	<!-- NAV -->
 	<div class="flex w-full flex-row justify-between">
 		<!-- Left -->
-		<div class="flex flex-row space-x-2">
+		<div class="mr-2 flex flex-1 flex-row space-x-2">
 			{#if playlistState.selectedFlag}
 				<!-- Flag name -->
 				<div
-					class="flex min-w-64 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
+					class="flex max-h-[40px] max-w-64 flex-1 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
 				>
-					<div class="flex flex-row items-center space-x-1 px-2">
+					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">flag</span>
 						<span>{playlistState.selectedFlag.name}</span>
 					</div>
@@ -159,8 +273,10 @@
 					</button>
 				</div>
 				<!-- Flag time -->
-				<div class="flex flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950">
-					<div class="flex flex-row items-center space-x-1 px-2">
+				<div
+					class="flex max-h-[40px] flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950"
+				>
+					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">alarm</span>
 						<span>{secondsToStringTime(playlistState.selectedFlag.time)}</span>
 					</div>
@@ -202,7 +318,7 @@
 			</form>
 			<!--  MIDI Assign -->
 			<button
-				class="flex cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700"
+				class="flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 text-nowrap hover:bg-zinc-700"
 				type="button"
 				onclick={() => {
 					layoutState.showMidiAssign = true;
@@ -212,7 +328,7 @@
 				}}
 				aria-label="Add Playlist"
 			>
-				<span class="material-symbols-outlined">flag_check</span>
+				<span class="material-symbols-outlined">piano</span>
 				<span>MIDI Assign</span>
 			</button>
 		</div>
@@ -242,9 +358,6 @@
 				{/each}
 			{/if}
 		{/if}
-		<!-- {timelineState.currentTime} -->
-		<!-- <span> out of </span> -->
-		<!-- {timelineState.timelineLength} -->
 
 		<div class="relative mt-auto w-full">
 			{#if percentComplete <= 100}

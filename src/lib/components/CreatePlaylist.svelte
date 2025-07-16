@@ -13,7 +13,8 @@
 			title: '',
 			artist: '',
 			youtubeUrl: '',
-			tags: []
+			tags: [],
+			flags: []
 		}
 	]);
 
@@ -22,7 +23,8 @@
 			title: '',
 			artist: '',
 			youtubeUrl: '',
-			tags: []
+			tags: [],
+			flags: []
 		});
 	}
 
@@ -81,11 +83,13 @@
 
 				const createdVideo: Video = await videoResponse.json();
 
+				createdVideo.flags = [];
 				createdPlaylist.videos.push(createdVideo);
 			}
 		}
 
 		// Update state
+		createdPlaylist.notes = [];
 		playlistState.playlists.unshift(createdPlaylist);
 
 		// RESET
@@ -99,7 +103,8 @@
 				title: '',
 				artist: '',
 				youtubeUrl: '',
-				tags: []
+				tags: [],
+				flags: []
 			}
 		];
 	}
