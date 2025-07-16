@@ -13,9 +13,19 @@
 
 	$effect(() => {
 		if (playlistState.selectedVideo) {
-			flags = playlistState.selectedVideo.flags.map((flag) => {
-				return { ...flag };
-			});
+			flags = playlistState.selectedVideo.flags
+				.map((flag) => {
+					return { ...flag };
+				})
+				.sort((a, b) => {
+					if (a.time < b.time) {
+						return -1;
+					} else if (a.time > b.time) {
+						return 1;
+					} else {
+						return 0;
+					}
+				});
 		}
 	});
 
@@ -62,8 +72,7 @@
 				seekCC: flag.seekCC,
 				sendCC: flag.sendCC,
 				sendCCValue: flag.sendCCValue,
-				sendPC: flag.sendPC,
-				sendPCValue: flag.sendPCValue
+				sendPC: flag.sendPC
 			});
 
 			const flagResponse = await fetch('/api/flag', {
@@ -91,7 +100,7 @@
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-1 flex-col">
 				<label for="midi-input">MIDI Input Device</label>
-				<select name="input" id="midi-input">
+				<select bind:value={MIDIState.selectedMIDIInput} name="input" id="midi-input">
 					{#each MIDIInputs as input}
 						<option value={input}>{input.name}</option>
 					{/each}
@@ -100,7 +109,7 @@
 
 			<div class="flex flex-1 flex-col">
 				<label for="midi-output">MIDI Output Device</label>
-				<select name="output" id="midi-output">
+				<select bind:value={MIDIState.selectedMIDIOutput} name="output" id="midi-output">
 					{#each MIDIOutputs as output}
 						<option value={output}>{output.name}</option>
 					{/each}
@@ -182,17 +191,6 @@
 										type="number"
 										required
 										placeholder="Send PC"
-									/>
-								</div>
-								<div class="flex w-[80px] flex-col">
-									<label for="sendPCValue">PC Value</label>
-									<input
-										id="sendPCValue"
-										bind:value={flag.sendPCValue}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="PC Value"
 									/>
 								</div>
 							</div>

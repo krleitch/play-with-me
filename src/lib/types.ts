@@ -33,7 +33,6 @@ type Flag = {
   sendCC: number;
   sendCCValue: number;
   sendPC: number;
-  sendPCValue: number;
   created: string;
   updated: string;
 };

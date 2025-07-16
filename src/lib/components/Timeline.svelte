@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Playlist, Genre, Instrument, Tag, Flag } from '$lib';
-	import { playlistState, youtubeState, timelineState, layoutState } from '$lib';
+	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
 
 	type FlagWithPosition = Flag & { position: number };
 
@@ -18,7 +18,6 @@
 				sendCC: flag.sendCC,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC,
-				sendPCValue: flag.sendPCValue,
 				created: flag.created,
 				updated: flag.updated
 			};
@@ -35,10 +34,42 @@
 						timelineState.currentTime >= flag.time &&
 						timelineState.prevCurrentTime <= flag.time
 					) {
-						console.log(flag.name + ' PASSED ');
+						// WE HIT A FLAG, send PC then CC if exist
+						if (MIDIState.selectedMIDIOutput && playlistState.selectedVideo) {
+							if (flag.sendPC >= 0) {
+								const pcMessage = [0xc0, flag.sendPC];
+								MIDIState.selectedMIDIOutput.send(pcMessage);
+							}
+							if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+								const ccMessage = [0xb0, flag.sendCC, flag.sendCCValue];
+								MIDIState.selectedMIDIOutput.send(ccMessage);
+							}
+						}
 					}
 				}
 			});
+		}
+	});
+
+	// MIDI INPUT
+	$effect(() => {
+		if (MIDIState.selectedMIDIInput) {
+			MIDIState.selectedMIDIInput.onmidimessage = (message) => {
+				if (message?.data && message.data.length > 0) {
+					let command = message.data[0];
+					let number = message.data[1];
+					let value = message.data[2];
+
+					// CC MSG
+					if (command == 176 && playlistState.selectedVideo) {
+						playlistState.selectedVideo.flags.forEach((flag) => {
+							if (flag.seekCC == number && youtubeState.youtubePlayer) {
+								youtubeState.youtubePlayer.seekTo(flag.time);
+							}
+						});
+					}
+				}
+			};
 		}
 	});
 
@@ -198,7 +229,7 @@
 								<button
 									onclick={() => {
 										playlistState.selectedFlag = flag;
-										seek(flag.time);
+										// seek(flag.time);
 									}}
 									type="button"
 									class="cursor-pointer rounded-tr-md rounded-br-md bg-sky-950 p-2 hover:bg-sky-900"

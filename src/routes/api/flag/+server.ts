@@ -13,8 +13,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       seekCC: -1,
       sendCC: -1,
       sendCCValue: -1,
-      sendPC: -1,
-      sendPCValue: -1
+      sendPC: -1
     };
 
     const record: Flag = await locals.pb.collection('flag').create(data);
@@ -27,7 +26,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       sendCC: record.sendCC,
       sendCCValue: record.sendCCValue,
       sendPC: record.sendPC,
-      sendPCValue: record.sendPCValue,
       created: record.created,
       updated: record.updated
     });
@@ -56,8 +54,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { flagId, name, time, seekCC, sendCC, sendCCValue, sendPC, sendPCValue } =
-      await request.json();
+    const { flagId, name, time, seekCC, sendCC, sendCCValue, sendPC } = await request.json();
 
     const data = {
       name: name,
@@ -65,8 +62,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       seekCC: seekCC,
       sendCC: sendCC,
       sendCCValue: sendCCValue,
-      sendPC: sendPC,
-      sendPCValue: sendPCValue
+      sendPC: sendPC
     };
 
     const record: Flag = await locals.pb.collection('flag').update(flagId, data);
@@ -79,7 +75,6 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       sendCC: record.sendCC,
       sendCCValue: record.sendCCValue,
       sendPC: record.sendPC,
-      sendPCValue: record.sendPCValue,
       created: record.created,
       updated: record.updated
     });
