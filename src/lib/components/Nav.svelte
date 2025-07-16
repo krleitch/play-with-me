@@ -16,8 +16,8 @@
 			if (sortType == 'created') {
 				sortType = 'recent';
 				playlistState.playlists.sort((a, b) => {
-					let aVal = a.lastPlayed;
-					let bVal = b.lastPlayed;
+					let aVal = new Date(a.lastPlayed).getTime();
+					let bVal = new Date(b.lastPlayed).getTime();
 					if (aVal < bVal) {
 						return 1;
 					} else if (aVal > bVal) {
@@ -29,8 +29,8 @@
 			} else {
 				sortType = 'created';
 				playlistState.playlists.sort((a, b) => {
-					let aVal = a.created;
-					let bVal = b.created;
+					let aVal = new Date(a.created).getTime();
+					let bVal = new Date(b.created).getTime();
 					if (aVal < bVal) {
 						return 1;
 					} else if (aVal > bVal) {
