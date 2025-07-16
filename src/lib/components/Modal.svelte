@@ -22,7 +22,7 @@
 		if (closeOnClickOutside && e.target === dialog) dialog.close();
 	}}
 >
-	<div class="flex flex-col">
+	<div class="flex flex-col rounded-xl">
 		<!-- header -->
 		<div
 			class=" flex flex-row items-center justify-between rounded-tl-xl rounded-tr-xl bg-zinc-800 px-4 py-2"
