@@ -210,9 +210,11 @@
 	});
 
 	function getFlagPoleClass(flag: Flag): string {
-		if (flag.sendPC >= 0) {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-pole-teal-amber';
+		} else if (flag.sendPC >= 0) {
 			return 'flag-pole-teal';
-		} else if (flag.sendCC >= 0) {
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-pole-amber';
 		} else if (flag.seekCC >= 0) {
 			return 'flag-pole-violet';
@@ -222,9 +224,11 @@
 	}
 
 	function getFlagButtonClass(flag: Flag): string {
-		if (flag.sendPC >= 0) {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-button-teal-amber';
+		} else if (flag.sendPC >= 0) {
 			return 'flag-button-teal';
-		} else if (flag.sendCC >= 0) {
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-button-amber';
 		} else if (flag.seekCC >= 0) {
 			return 'flag-button-violet';
@@ -234,9 +238,11 @@
 	}
 
 	function getFlagDescClass(flag: Flag): string {
-		if (flag.sendPC >= 0) {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-desc-teal-amber';
+		} else if (flag.sendPC >= 0) {
 			return 'flag-desc-teal';
-		} else if (flag.sendCC >= 0) {
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-desc-amber';
 		} else if (flag.seekCC >= 0) {
 			return 'flag-desc-violet';
@@ -248,9 +254,11 @@
 	function getFlagDesc(flag: Flag): string {
 		if (flag.name.length < 4) {
 			return '';
+		} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return `PC ${flag.sendPC} CC ${flag.sendCC} ${flag.sendCCValue}`;
 		} else if (flag.sendPC >= 0) {
 			return `PC ${flag.sendPC}`;
-		} else if (flag.sendCC >= 0) {
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return `CC ${flag.sendCC} ${flag.sendCCValue}`;
 		} else if (flag.seekCC >= 0) {
 			return `Seek ${flag.seekCC}`;
@@ -505,6 +513,18 @@
 	}
 	.flag-desc-amber {
 		@apply ml-1 text-xs text-amber-700;
+	}
+
+	.flag-pole-teal-amber {
+		@apply h-full border-l-2 border-teal-800;
+	}
+	.flag-button-teal-amber {
+		@apply cursor-pointer rounded-tr-md rounded-br-md;
+		@apply bg-gradient-to-r from-teal-900 to-amber-950 p-2 hover:from-teal-800;
+	}
+	.flag-desc-teal-amber {
+		@apply ml-1 text-xs;
+		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent;
 	}
 
 	input {
