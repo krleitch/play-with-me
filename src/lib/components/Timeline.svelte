@@ -378,7 +378,7 @@
 				</div>
 				<!-- Flag time -->
 				<div
-					class="flex max-h-[40px] flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950"
+					class="flex max-h-[40px] min-w-32 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
 				>
 					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">alarm</span>
@@ -469,7 +469,7 @@
 			{/if}
 		{/if}
 
-		<div class="relative mt-auto w-full border-x-1 border-x-rose-950">
+		<div class="relative mt-auto w-full border-r-2 border-r-rose-950">
 			{#if percentComplete <= 100}
 				<div
 					class="z-10 h-[15px] bg-gradient-to-r from-rose-800 to-rose-950"

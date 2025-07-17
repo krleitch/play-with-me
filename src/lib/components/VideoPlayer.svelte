@@ -61,7 +61,8 @@
 			// });
 			// playlist.lastPlayed = new Date().toISOString();
 		}
-		youtubeState.youtubePlayer.options.playerVars.autoplay = 1;
+		// youtubeState.youtubePlayer.pauseVideo();
+		// youtubeState.youtubePlayer.options.playerVars.autoplay = 1;
 	}
 
 	// pass the player to let the collection viewer control it
@@ -94,3 +95,12 @@
 </svelte:head>
 
 <div class="rounded-xl" id={ytPlayerId}></div>
+
+<style lang="postcss">
+	#youtube-player {
+		outline: none;
+	}
+	#youtube-player:focus-visible {
+		outline: none;
+	}
+</style>
