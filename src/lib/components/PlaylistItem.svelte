@@ -49,7 +49,7 @@
 			type="button"
 			class="flex w-full flex-row space-x-2"
 			onclick={() => {
-				if (!youtubeState.youtubePlayer) {
+				if (youtubeState.youtubePlayer == undefined) {
 					// if you didnt autoplay the first video, you could wait for the video player here
 				} else {
 					selectPlaylist();

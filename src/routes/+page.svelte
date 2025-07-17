@@ -40,7 +40,9 @@
 
 	$effect(() => {
 		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
-			youtubeState.youtubePlayer.loadVideoById(playlistState.selectedVideo.youtubeId);
+			if (youtubeState.youtubePlayer.loadVideoById) {
+				youtubeState.youtubePlayer.loadVideoById(playlistState.selectedVideo.youtubeId);
+			}
 			timelineState.timelineLength = 0;
 			timelineState.currentTime = 0;
 			playlistState.selectedFlag = undefined;

@@ -3,7 +3,40 @@
 	import { onMount } from 'svelte';
 	import { playlistState, timelineState, youtubeState } from '$lib';
 
-	let initialVideoId = '';
+	let initialVideoId = $state('');
+
+	let initialPlaylist = undefined;
+	playlistState.playlists.forEach((p) => {
+		if (initialPlaylist) {
+			let aVal = new Date(initialPlaylist.lastPlayed).getTime();
+			let bVal = new Date(p.lastPlayed).getTime();
+			if (aVal < bVal) {
+				initialPlaylist = p;
+			} else if (aVal > bVal) {
+				// keep
+			} else {
+				// keep
+			}
+		} else {
+			initialPlaylist = p;
+		}
+	});
+	// ENABLE if you want to get the last created playlist
+	// const playlist = playlistState.playlists.at(0);
+
+	if (initialPlaylist) {
+		playlistState.selectedPlaylist = initialPlaylist;
+		playlistState.selectedVideo =
+			initialPlaylist.videos?.length > 0 ? initialPlaylist.videos[0] : undefined;
+		initialVideoId = playlistState.selectedVideo ? playlistState.selectedVideo.youtubeId : '';
+		// ENABLE if you want it to update the lastPlayed of the playlist when it auto selects
+		// const flagResponse = fetch('/api/playlist/lastPlayed', {
+		// 	method: 'PATCH',
+		// 	body: JSON.stringify({ playlistId: playlist.id })
+		// });
+		// playlist.lastPlayed = new Date().toISOString();
+	}
+
 	const ytPlayerId = 'youtube-player';
 
 	let stopwatch;
@@ -31,38 +64,7 @@
 	}
 
 	function onPlayerReady(event) {
-		// get the last played playlist
-		let playlist = undefined;
-		playlistState.playlists.forEach((p) => {
-			if (playlist) {
-				let aVal = new Date(playlist.lastPlayed).getTime();
-				let bVal = new Date(p.lastPlayed).getTime();
-				if (aVal < bVal) {
-					playlist = p;
-				} else if (aVal > bVal) {
-					// keep
-				} else {
-					// keep
-				}
-			} else {
-				playlist = p;
-			}
-		});
-		// ENABLE if you want to get the last created playlist
-		// const playlist = playlistState.playlists.at(0);
-
-		if (playlist) {
-			playlistState.selectedPlaylist = playlist;
-			playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
-			// ENABLE if you want it to update the lastPlayed of the playlist when it auto selects
-			// const flagResponse = fetch('/api/playlist/lastPlayed', {
-			// 	method: 'PATCH',
-			// 	body: JSON.stringify({ playlistId: playlist.id })
-			// });
-			// playlist.lastPlayed = new Date().toISOString();
-		}
-		// youtubeState.youtubePlayer.pauseVideo();
-		// youtubeState.youtubePlayer.options.playerVars.autoplay = 1;
+		timelineState.timelineLength = youtubeState.youtubePlayer.getDuration();
 	}
 
 	// pass the player to let the collection viewer control it
@@ -73,7 +75,7 @@
 			youtubePlayer = new YT.Player(ytPlayerId, {
 				height: '100%',
 				width: '100%',
-				// videoId: initialVideoId,
+				videoId: initialVideoId,
 				playerVars: { autoplay: 0 },
 				events: {
 					onStateChange: onPlayerStateChange,
