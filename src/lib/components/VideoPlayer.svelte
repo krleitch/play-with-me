@@ -30,6 +30,21 @@
 		}
 	}
 
+	function onPlayerReady(event) {
+		const playlist = playlistState.playlists.at(0);
+
+		if (playlist) {
+			playlistState.selectedPlaylist = playlist;
+			playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
+			const flagResponse = fetch('/api/playlist/lastPlayed', {
+				method: 'PATCH',
+				body: JSON.stringify({ playlistId: playlist.id })
+			});
+			playlist.lastPlayed = new Date().toISOString();
+		}
+		youtubeState.youtubePlayer.options.playerVars.autoplay = 1;
+	}
+
 	// pass the player to let the collection viewer control it
 	let { youtubePlayer = $bindable() } = $props();
 
@@ -38,10 +53,11 @@
 			youtubePlayer = new YT.Player(ytPlayerId, {
 				height: '100%',
 				width: '100%',
-				videoId: initialVideoId,
-				playerVars: { autoplay: 1 },
+				// videoId: initialVideoId,
+				playerVars: { autoplay: 0 },
 				events: {
-					onStateChange: onPlayerStateChange
+					onStateChange: onPlayerStateChange,
+					onReady: onPlayerReady
 				}
 			});
 		}
