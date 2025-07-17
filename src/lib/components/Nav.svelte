@@ -42,6 +42,13 @@
 			}
 		}
 	}
+
+	function openTuner() {
+		if (MIDIState.selectedMIDIOutput) {
+			const ccMessage = [0xb0, 0x44, 0x00];
+			MIDIState.selectedMIDIOutput.send(ccMessage);
+		}
+	}
 </script>
 
 <div class="flex flex-row items-center justify-between px-28 py-4">
@@ -95,6 +102,12 @@
 			<span class="material-symbols-outlined">piano_off</span>
 			<span> Disable MIDI </span>
 		</button>
+		{#if MIDIState.selectedMIDIOutput && MIDIState.selectedMIDIOutput.name == 'Line 6 HX Stomp'}
+			<button type="button" onclick={openTuner} aria-label="HxStomp Tuner">
+				<span class="material-symbols-outlined">genetics</span>
+				<span> HxStomp Tuner </span>
+			</button>
+		{/if}
 	</div>
 
 	<!-- RIGHT -->
