@@ -263,19 +263,31 @@
 		} else if (flag.seekCC >= 0) {
 			return `Seek ${flag.seekCC}`;
 		} else {
-			return secondsToStringTime(flag.time, false);
+			return secondsToStringTime(flag.time);
 		}
 	}
 
-	function secondsToStringTime(seconds: number, includeHour: boolean) {
-		let date = new Date(0);
-		date.setSeconds(seconds); // specify value for SECONDS here
+	function secondsToStringTime(totalSeconds: number) {
+		totalSeconds = Math.floor(totalSeconds);
+		const hours = Math.floor(totalSeconds / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = totalSeconds % 60;
 
-		if (includeHour) {
-			return date.toISOString().substring(11, 19);
+		let timeString = '';
+
+		if (hours > 0) {
+			timeString += `${hours}:`;
+			// Add leading zero for minutes if hours are present and minutes are single digit
+			timeString += minutes < 10 ? `0${minutes}:` : `${minutes}:`;
 		} else {
-			return date.toISOString().substring(14, 19);
+			// No leading zero for minutes if hours are not present
+			timeString += `${minutes}:`;
 		}
+
+		// Add leading zero for seconds if they are single digit
+		timeString += seconds < 10 ? `0${seconds}` : `${seconds}`;
+
+		return timeString;
 	}
 
 	function seek(flag: Flag) {
@@ -375,7 +387,7 @@
 							type="button"
 							onclick={() => seekRealTime(playlistState.selectedFlag.time)}
 						>
-							<span>{secondsToStringTime(playlistState.selectedFlag.time, true)}</span>
+							<span>{secondsToStringTime(playlistState.selectedFlag.time)}</span>
 						</button>
 					</div>
 					<!-- Seek -->

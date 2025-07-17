@@ -167,7 +167,7 @@
 						<span class="material-symbols-outlined">text_decrease</span>
 					</button>
 					<button
-						class="flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
+						class="mr-4 flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
 						onclick={increase}
 					>
 						<span class="material-symbols-outlined">text_increase</span>
