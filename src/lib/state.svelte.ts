@@ -37,9 +37,9 @@ interface YoutubeState {
     pauseVideo: () => void;
     playVideo: () => void;
     setVolume: (volume: number) => void;
-    getVolume: () => void;
+    getVolume: () => number;
     setPlaybackRate: (rate: number) => void;
-    getPlaybackRate: () => void;
+    getPlaybackRate: () => number;
   }
   | undefined;
 }
@@ -55,12 +55,16 @@ interface TimelineState {
 interface MidiState {
   selectedMIDIInput: MIDIInput | undefined;
   selectedMIDIOutput: MIDIOutput | undefined;
+  lastCCMessage: number | undefined;
+  lastCCMessageValue: number | undefined;
   disableMIDI: boolean;
 }
 
 export const MIDIState: MidiState = $state({
   selectedMIDIInput: undefined,
   selectedMIDIOutput: undefined,
+  lastCCMessage: undefined,
+  lastCCMessageValue: undefined,
   disableMIDI: false
 });
 

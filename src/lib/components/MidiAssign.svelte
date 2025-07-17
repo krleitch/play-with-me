@@ -70,6 +70,7 @@
 				name: flag.name,
 				time: flag.time,
 				seekCC: flag.seekCC,
+				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC
@@ -88,6 +89,16 @@
 		playlistState.selectedFlag = undefined;
 
 		layoutState.showMidiAssign = false;
+	}
+
+	function reset() {
+		flags.forEach((flag) => {
+			flag.seekCC = -1;
+			flag.sendCC = -1;
+			flag.sendPC = -1;
+			flag.sendCCValue = -1;
+			flag.seekSecondsBefore = 3;
+		});
 	}
 </script>
 
@@ -129,7 +140,7 @@
 						<div class="mb-4 flex flex-col last:mb-0">
 							<!-- Name and time -->
 							<div class="flex flex-row items-center space-x-2">
-								<div class="flex flex-col">
+								<div class="flex flex-1 flex-col">
 									<label for="flagName"> Flag Name </label>
 									<input
 										id="flagName"
@@ -140,7 +151,7 @@
 										placeholder="Flag Name..."
 									/>
 								</div>
-								<div class="flex flex-col">
+								<div class="flex flex-1 flex-col">
 									<label for="flagTime"> Flag Time </label>
 									<input
 										bind:value={flag.time}
@@ -156,14 +167,14 @@
 							<!-- CC and PC and SEEK -->
 							<div class="mt-1 flex flex-row items-center space-x-2">
 								<div class="flex flex-col">
-									<label for="seekCC">Seek CC#</label>
+									<label for="sendPC">Send PC#</label>
 									<input
-										id="seekCC"
-										bind:value={flag.seekCC}
+										id="sendPC"
+										bind:value={flag.sendPC}
 										autocomplete="off"
 										type="number"
 										required
-										placeholder="Seek CC"
+										placeholder="Send PC"
 									/>
 								</div>
 								<div class="flex flex-col">
@@ -189,14 +200,25 @@
 									/>
 								</div>
 								<div class="flex flex-col">
-									<label for="sendPC">Send PC#</label>
+									<label for="seekCC">Seek CC#</label>
 									<input
-										id="sendPC"
-										bind:value={flag.sendPC}
+										id="seekCC"
+										bind:value={flag.seekCC}
 										autocomplete="off"
 										type="number"
 										required
-										placeholder="Send PC"
+										placeholder="Seek CC"
+									/>
+								</div>
+								<div class="flex flex-col">
+									<label for="seekSecondsBefore">Seconds</label>
+									<input
+										id="seekSecondsBefore"
+										bind:value={flag.seekSecondsBefore}
+										autocomplete="off"
+										type="number"
+										required
+										placeholder="Seconds"
 									/>
 								</div>
 							</div>
@@ -207,8 +229,18 @@
 				{/if}
 			</div>
 			<!-- Buttons -->
-			<div class="mt-2 flex flex-row space-x-2">
-				<button class="ml-auto" type="submit">
+			<div class="mt-2 flex flex-row items-center space-x-2">
+				{#if MIDIState.lastCCMessage}
+					<div class="ml-1 text-sm text-zinc-700">
+						Last CC Message: {MIDIState.lastCCMessage}
+						{MIDIState.lastCCMessageValue}
+					</div>
+				{/if}
+				<button class="ml-auto" type="button" onclick={reset}>
+					<span class="material-symbols-outlined">restart_alt</span>
+					<span>Reset</span>
+				</button>
+				<button class="" type="submit">
 					<span class="material-symbols-outlined">save</span>
 					<span>Save Flags</span>
 				</button>

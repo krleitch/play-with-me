@@ -11,6 +11,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       time: formData.get('time'),
       video: formData.get('videoId'),
       seekCC: -1,
+      seekSecondsBefore: 3,
       sendCC: -1,
       sendCCValue: -1,
       sendPC: -1
@@ -23,6 +24,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       name: record.name,
       time: record.time,
       seekCC: record.seekCC,
+      seekSecondsBefore: record.seekSecondsBefore,
       sendCC: record.sendCC,
       sendCCValue: record.sendCCValue,
       sendPC: record.sendPC,
@@ -54,12 +56,14 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { flagId, name, time, seekCC, sendCC, sendCCValue, sendPC } = await request.json();
+    const { flagId, name, time, seekCC, seekSecondsBefore, sendCC, sendCCValue, sendPC } =
+      await request.json();
 
     const data = {
       name: name,
       time: time,
       seekCC: seekCC,
+      seekSecondsBefore: seekSecondsBefore,
       sendCC: sendCC,
       sendCCValue: sendCCValue,
       sendPC: sendPC
@@ -72,6 +76,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       name: record.name,
       time: record.time,
       seekCC: record.seekCC,
+      seekSecondsBefore: record.seekSecondsBefore,
       sendCC: record.sendCC,
       sendCCValue: record.sendCCValue,
       sendPC: record.sendPC,

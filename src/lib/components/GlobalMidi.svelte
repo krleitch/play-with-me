@@ -23,6 +23,7 @@
 			volumeDownStep: 10,
 			prevFlag: -1,
 			nextFlag: -1,
+			prevNextSecondsBefore: 0,
 			restart: -1
 		};
 	}
@@ -100,27 +101,6 @@
 			</div>
 		</div>
 
-		<!-- Start Stop Slow Fast -->
-		<div class="flex flex-row space-x-2">
-			<div class="flex flex-col">
-				<label for="startStop"> Start / Stop </label>
-				<input
-					id="startStop"
-					autocomplete="off"
-					type="number"
-					bind:value={globalMIDI.value.startStop}
-				/>
-			</div>
-			<div class="flex flex-col">
-				<label for="slow"> Slow Playback </label>
-				<input id="slow" autocomplete="off" type="number" bind:value={globalMIDI.value.slow} />
-			</div>
-			<div class="flex flex-col">
-				<label for="fast"> Fast Playback </label>
-				<input id="fast" autocomplete="off" type="number" bind:value={globalMIDI.value.fast} />
-			</div>
-		</div>
-
 		<!-- Restart, Flag -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
@@ -150,7 +130,38 @@
 					bind:value={globalMIDI.value.nextFlag}
 				/>
 			</div>
+			<div class="flex flex-col">
+				<label for="prevNextSecondsBefore"> Seconds </label>
+				<input
+					id="prevNextSecondsBefore"
+					autocomplete="off"
+					type="number"
+					bind:value={globalMIDI.value.prevNextSecondsBefore}
+				/>
+			</div>
 		</div>
+
+		<!-- Start Stop Slow Fast -->
+		<div class="flex flex-row space-x-2">
+			<div class="flex flex-col">
+				<label for="startStop"> Start / Stop </label>
+				<input
+					id="startStop"
+					autocomplete="off"
+					type="number"
+					bind:value={globalMIDI.value.startStop}
+				/>
+			</div>
+			<div class="flex flex-col">
+				<label for="slow"> Slow Playback </label>
+				<input id="slow" autocomplete="off" type="number" bind:value={globalMIDI.value.slow} />
+			</div>
+			<div class="flex flex-col">
+				<label for="fast"> Fast Playback </label>
+				<input id="fast" autocomplete="off" type="number" bind:value={globalMIDI.value.fast} />
+			</div>
+		</div>
+
 		<!-- Buttons -->
 		<div class="flex flex-row space-x-2">
 			<button class="ml-auto" type="button" onclick={reset}>

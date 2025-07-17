@@ -44,6 +44,7 @@ export const load: PageServerLoad = async ({ locals }) => {
                   name: flag.name,
                   time: flag.time,
                   seekCC: flag.seekCC,
+                  seekSecondsBefore: flag.seekSecondsBefore,
                   sendCC: flag.sendCC,
                   sendCCValue: flag.sendCCValue,
                   sendPC: flag.sendPC,

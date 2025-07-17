@@ -30,6 +30,7 @@
 		volumeDownStep: 10,
 		prevFlag: -1,
 		nextFlag: -1,
+		prevNextSecondsBefore: 0,
 		restart: -1
 	});
 

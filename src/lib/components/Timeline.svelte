@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Playlist, Genre, Instrument, Tag, Flag } from '$lib';
+	import type { Flag } from '$lib';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
 
 	type FlagWithPosition = Flag & { position: number };
@@ -16,6 +16,7 @@
 				time: flag.time,
 				position: (flag.time / timelineState?.timelineLength) * 100,
 				seekCC: flag.seekCC,
+				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC,
@@ -73,11 +74,15 @@
 						youtubeState.youtubePlayer &&
 						!MIDIState.disableMIDI
 					) {
+						MIDIState.lastCCMessage = number;
+						MIDIState.lastCCMessageValue = value;
+
 						// Search Flags first
 						let flagFound = false;
 						playlistState.selectedVideo.flags.forEach((flag) => {
 							if (flag.seekCC == number && youtubeState.youtubePlayer) {
-								youtubeState.youtubePlayer.seekTo(flag.time);
+								const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
+								youtubeState.youtubePlayer.seekTo(newTime);
 								flagFound = true;
 							}
 						});
@@ -108,7 +113,11 @@
 									if (prevFlags && prevFlags.length > 0) {
 										const lastFlag = prevFlags.at(-1);
 										if (lastFlag) {
-											youtubeState.youtubePlayer.seekTo(lastFlag.time);
+											const prevNewTime = Math.max(
+												0,
+												lastFlag.time - globalMIDI.value.prevNextSecondsBefore
+											);
+											youtubeState.youtubePlayer.seekTo(prevNewTime);
 										}
 									} else {
 										youtubeState.youtubePlayer.seekTo(0);
@@ -130,7 +139,11 @@
 									if (nextFlags && nextFlags.length > 0) {
 										const firstFlag = nextFlags.at(0);
 										if (firstFlag) {
-											youtubeState.youtubePlayer.seekTo(firstFlag.time);
+											const nextNewTime = Math.max(
+												0,
+												firstFlag.time - globalMIDI.value.prevNextSecondsBefore
+											);
+											youtubeState.youtubePlayer.seekTo(nextNewTime);
 										}
 									} else {
 										const durationNext = youtubeState.youtubePlayer.getDuration();
@@ -196,15 +209,77 @@
 		}
 	});
 
-	function secondsToStringTime(seconds: number) {
-		let date = new Date(0);
-		date.setSeconds(seconds); // specify value for SECONDS here
-		return date.toISOString().substring(11, 19);
+	function getFlagPoleClass(flag: Flag): string {
+		if (flag.sendPC >= 0) {
+			return 'flag-pole-teal';
+		} else if (flag.sendCC >= 0) {
+			return 'flag-pole-amber';
+		} else if (flag.seekCC >= 0) {
+			return 'flag-pole-violet';
+		} else {
+			return 'flag-pole-blue';
+		}
 	}
 
-	function seek(seconds: number) {
+	function getFlagButtonClass(flag: Flag): string {
+		if (flag.sendPC >= 0) {
+			return 'flag-button-teal';
+		} else if (flag.sendCC >= 0) {
+			return 'flag-button-amber';
+		} else if (flag.seekCC >= 0) {
+			return 'flag-button-violet';
+		} else {
+			return 'flag-button-blue';
+		}
+	}
+
+	function getFlagDescClass(flag: Flag): string {
+		if (flag.sendPC >= 0) {
+			return 'flag-desc-teal';
+		} else if (flag.sendCC >= 0) {
+			return 'flag-desc-amber';
+		} else if (flag.seekCC >= 0) {
+			return 'flag-desc-violet';
+		} else {
+			return 'flag-desc-blue';
+		}
+	}
+
+	function getFlagDesc(flag: Flag): string {
+		if (flag.name.length < 4) {
+			return '';
+		} else if (flag.sendPC >= 0) {
+			return `PC ${flag.sendPC}`;
+		} else if (flag.sendCC >= 0) {
+			return `CC ${flag.sendCC} ${flag.sendCCValue}`;
+		} else if (flag.seekCC >= 0) {
+			return `Seek ${flag.seekCC}`;
+		} else {
+			return secondsToStringTime(flag.time, false);
+		}
+	}
+
+	function secondsToStringTime(seconds: number, includeHour: boolean) {
+		let date = new Date(0);
+		date.setSeconds(seconds); // specify value for SECONDS here
+
+		if (includeHour) {
+			return date.toISOString().substring(11, 19);
+		} else {
+			return date.toISOString().substring(14, 19);
+		}
+	}
+
+	function seek(flag: Flag) {
 		if (youtubeState.youtubePlayer) {
-			youtubeState.youtubePlayer.seekTo(seconds);
+			const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
+			youtubeState.youtubePlayer.seekTo(newTime);
+		}
+	}
+
+	function seekRealTime(time: number) {
+		if (youtubeState.youtubePlayer) {
+			youtubeState.youtubePlayer.seekTo(time);
 		}
 	}
 
@@ -287,13 +362,18 @@
 				>
 					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">alarm</span>
-						<span>{secondsToStringTime(playlistState.selectedFlag.time)}</span>
+						<button
+							class="cursor-pointer hover:text-zinc-300"
+							type="button"
+							onclick={() => seekRealTime(playlistState.selectedFlag.time)}
+						>
+							<span>{secondsToStringTime(playlistState.selectedFlag.time, true)}</span>
+						</button>
 					</div>
 					<!-- Seek -->
 					<button
 						type="button"
-						onclick={() =>
-							playlistState.selectedFlag ? seek(playlistState.selectedFlag.time) : null}
+						onclick={() => (playlistState.selectedFlag ? seek(playlistState.selectedFlag) : null)}
 						aria-label="Add Playlist"
 						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 					>
@@ -315,7 +395,6 @@
 						name="name"
 						autocomplete="off"
 						required
-						maxlength="15"
 						placeholder="Flag Name..."
 					/>
 					<button
@@ -351,17 +430,18 @@
 				{#each flags as flag}
 					{#if flag.position <= 100}
 						<div class="absolute z-100 h-full" style="left: {flag.position}%">
-							<div class="h-full border-l-2 border-sky-800">
+							<div class={getFlagPoleClass(flag)}>
 								<button
 									onclick={() => {
 										playlistState.selectedFlag = flag;
-										// seek(flag.time);
+										// seek(flag);
 									}}
 									type="button"
-									class="cursor-pointer rounded-tr-md rounded-br-md bg-sky-950 p-2 hover:bg-sky-900"
+									class={getFlagButtonClass(flag)}
 								>
 									<span> {flag.name} </span>
 								</button>
+								<div class={getFlagDescClass(flag)}>{getFlagDesc(flag)}</div>
 							</div>
 						</div>
 					{/if}
@@ -382,6 +462,50 @@
 
 <style lang="postcss">
 	@reference "../../app.css";
+
+	.flag-pole-blue {
+		@apply h-full border-l-2 border-sky-800;
+	}
+	.flag-button-blue {
+		@apply cursor-pointer rounded-tr-md rounded-br-md;
+		@apply bg-gradient-to-r from-sky-900 to-sky-950 p-2 hover:from-sky-800;
+	}
+	.flag-desc-blue {
+		@apply ml-1 text-xs text-sky-700;
+	}
+
+	.flag-pole-teal {
+		@apply h-full border-l-2 border-teal-800;
+	}
+	.flag-button-teal {
+		@apply cursor-pointer rounded-tr-md rounded-br-md;
+		@apply bg-gradient-to-r from-teal-900 to-teal-950 p-2 hover:from-teal-800;
+	}
+	.flag-desc-teal {
+		@apply ml-1 text-xs text-teal-700;
+	}
+
+	.flag-pole-violet {
+		@apply h-full border-l-2 border-violet-800;
+	}
+	.flag-button-violet {
+		@apply cursor-pointer rounded-tr-md rounded-br-md;
+		@apply bg-gradient-to-r from-violet-900 to-violet-950 p-2 hover:from-violet-800;
+	}
+	.flag-desc-violet {
+		@apply ml-1 text-xs text-violet-700;
+	}
+
+	.flag-pole-amber {
+		@apply h-full border-l-2 border-amber-800;
+	}
+	.flag-button-amber {
+		@apply cursor-pointer rounded-tr-md rounded-br-md;
+		@apply bg-gradient-to-r from-amber-900 to-amber-950 p-2 hover:from-amber-800;
+	}
+	.flag-desc-amber {
+		@apply ml-1 text-xs text-amber-700;
+	}
 
 	input {
 		outline: none;

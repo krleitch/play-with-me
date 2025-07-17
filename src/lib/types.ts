@@ -39,6 +39,7 @@ type Flag = {
   name: string;
   time: number; // seconds since start
   seekCC: number;
+  seekSecondsBefore: number;
   sendCC: number;
   sendCCValue: number;
   sendPC: number;
