@@ -31,16 +31,35 @@
 	}
 
 	function onPlayerReady(event) {
-		const playlist = playlistState.playlists.at(0);
+		// get the last played playlist
+		let playlist = undefined;
+		playlistState.playlists.forEach((p) => {
+			if (playlist) {
+				let aVal = new Date(playlist.lastPlayed).getTime();
+				let bVal = new Date(p.lastPlayed).getTime();
+				if (aVal < bVal) {
+					playlist = p;
+				} else if (aVal > bVal) {
+					// keep
+				} else {
+					// keep
+				}
+			} else {
+				playlist = p;
+			}
+		});
+		// ENABLE if you want to get the last created playlist
+		// const playlist = playlistState.playlists.at(0);
 
 		if (playlist) {
 			playlistState.selectedPlaylist = playlist;
 			playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
-			const flagResponse = fetch('/api/playlist/lastPlayed', {
-				method: 'PATCH',
-				body: JSON.stringify({ playlistId: playlist.id })
-			});
-			playlist.lastPlayed = new Date().toISOString();
+			// ENABLE if you want it to update the lastPlayed of the playlist when it auto selects
+			// const flagResponse = fetch('/api/playlist/lastPlayed', {
+			// 	method: 'PATCH',
+			// 	body: JSON.stringify({ playlistId: playlist.id })
+			// });
+			// playlist.lastPlayed = new Date().toISOString();
 		}
 		youtubeState.youtubePlayer.options.playerVars.autoplay = 1;
 	}

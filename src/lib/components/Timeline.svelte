@@ -469,7 +469,7 @@
 			{/if}
 		{/if}
 
-		<div class="relative mt-auto w-full">
+		<div class="relative mt-auto w-full border-x-1 border-x-rose-950">
 			{#if percentComplete <= 100}
 				<div
 					class="z-10 h-[15px] bg-gradient-to-r from-rose-800 to-rose-950"
@@ -477,11 +477,22 @@
 				></div>
 			{/if}
 		</div>
+		{#if timelineState.timelineLength}
+			<div class="timeline-length-text">
+				{secondsToStringTime(timelineState.timelineLength)}
+			</div>
+		{/if}
 	</div>
 </div>
 
 <style lang="postcss">
 	@reference "../../app.css";
+
+	.timeline-length-text {
+		@apply absolute text-xs text-rose-900;
+		right: 5px;
+		bottom: -1px;
+	}
 
 	.flag-pole-blue {
 		@apply h-full border-l-2 border-sky-800;

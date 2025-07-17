@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { playlistState, layoutState } from '$lib';
+	import { playlistState, layoutState, youtubeState } from '$lib';
 	import { clickOutside } from '$lib';
 	import type { Playlist } from '$lib/types';
 
@@ -31,6 +31,16 @@
 		layoutState.showEditPlaylist = true;
 		showDropdown = false;
 	}
+
+	function selectPlaylist() {
+		playlistState.selectedPlaylist = playlist;
+		playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
+		const flagResponse = fetch('/api/playlist/lastPlayed', {
+			method: 'PATCH',
+			body: JSON.stringify({ playlistId: playlist.id })
+		});
+		playlist.lastPlayed = new Date().toISOString();
+	}
 </script>
 
 <playlist-item class={playlistState.selectedPlaylist?.id == playlist.id ? 'bg-zinc-900' : ''}>
@@ -39,13 +49,11 @@
 			type="button"
 			class="flex w-full flex-row space-x-2"
 			onclick={() => {
-				playlistState.selectedPlaylist = playlist;
-				playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
-				const flagResponse = fetch('/api/playlist/lastPlayed', {
-					method: 'PATCH',
-					body: JSON.stringify({ playlistId: playlist.id })
-				});
-				playlist.lastPlayed = new Date().toISOString();
+				if (!youtubeState.youtubePlayer) {
+					// if you didnt autoplay the first video, you could wait for the video player here
+				} else {
+					selectPlaylist();
+				}
 			}}
 		>
 			{#if playlist.videos?.length > 0}
