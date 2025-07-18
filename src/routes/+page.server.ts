@@ -26,6 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       instruments: record.instruments,
       created: record.created,
       updated: record.updated,
+      favourite: record.favourite,
       videos: record.expand?.video_via_playlist
         ? record.expand?.video_via_playlist?.map((video) => {
           return {

@@ -4,10 +4,10 @@ import type { RequestHandler } from './$types';
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { playlistId } = await request.json();
+    const { playlistId, favourite } = await request.json();
 
     const data = {
-      lastPlayed: new Date().toISOString()
+      favourite: favourite
     };
 
     const record: Playlist = await locals.pb.collection('playlist').update(playlistId, data);

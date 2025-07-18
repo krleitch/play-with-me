@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Flag } from '$lib';
+	import { slide } from 'svelte/transition';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
+	import { linear } from 'svelte/easing';
 
 	type FlagWithPosition = Flag & { position: number };
 
@@ -451,10 +453,15 @@
 					{#if flag.position <= 100}
 						<div class="absolute z-100 h-full" style="left: {flag.position}%">
 							<div class={getFlagPoleClass(flag)}>
+								<!-- Countdown -->
+								<!-- {#if flag.time - timelineState.currentTime <= 5 && flag.time - timelineState.currentTime >= 0} -->
+								<!-- 	<div class="countdown-text"> -->
+								<!-- 		{(flag.time - timelineState.currentTime).toFixed(2)} -->
+								<!-- 	</div> -->
+								<!-- {/if} -->
 								<button
 									onclick={() => {
 										playlistState.selectedFlag = flag;
-										// seek(flag);
 									}}
 									type="button"
 									class={getFlagButtonClass(flag)}
@@ -479,6 +486,7 @@
 		</div>
 		{#if timelineState.timelineLength}
 			<div class="timeline-length-text">
+				<!-- {secondsToStringTime(timelineState.timelineLength - timelineState.currentTime)} -->
 				{secondsToStringTime(timelineState.timelineLength)}
 			</div>
 		{/if}
@@ -487,6 +495,13 @@
 
 <style lang="postcss">
 	@reference "../../app.css";
+
+	.countdown-text {
+		@apply @text-sm absolute text-rose-600;
+		top: -20px;
+		right: 0px;
+		width: 100%;
+	}
 
 	.timeline-length-text {
 		@apply absolute text-xs text-rose-900;

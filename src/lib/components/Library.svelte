@@ -4,6 +4,8 @@
 
 	let filteredPlaylists = $derived(
 		playlistState.playlists.filter((x) => {
+			let favourite = filterState.showFavourites ? x.favourite : true;
+
 			let titles = x.title.toLowerCase().includes(filterState.searchTerm.toLowerCase());
 			let artists = x.artist.toLowerCase().includes(filterState.searchTerm.toLowerCase());
 			let tags = filterState.tags.every((tag) =>
@@ -14,7 +16,7 @@
 				x.instruments.includes(instrument)
 			);
 			let tunings = filterState.tunings.every((tuning) => x.tunings.includes(tuning));
-			return (titles || artists) && tags && genres && instruments && tunings;
+			return (titles || artists) && favourite && tags && genres && instruments && tunings;
 		})
 	);
 </script>

@@ -11,6 +11,10 @@
 		filterState.searchTerm = '';
 	}
 
+	function toggleFavourite() {
+		filterState.showFavourites = !filterState.showFavourites;
+	}
+
 	function toggleSort() {
 		if (playlistState.playlists) {
 			if (sortType == 'created') {
@@ -112,6 +116,15 @@
 
 	<!-- RIGHT -->
 	<div class="flex flex-row items-center space-x-4">
+		<!-- Favourite -->
+		<button class="!px-2" type="button" onclick={toggleFavourite} aria-label="Sort">
+			{#if filterState.showFavourites}
+				<span class="material-symbols-outlined !text-yellow-500">star</span>
+			{:else}
+				<span class="material-symbols-outlined">star</span>
+			{/if}
+		</button>
+
 		<!-- Sort -->
 		<button type="button" onclick={toggleSort} aria-label="Sort">
 			<span class="material-symbols-outlined">sort</span>

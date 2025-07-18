@@ -32,6 +32,15 @@
 		showDropdown = false;
 	}
 
+	function toggleFavouritePlaylist() {
+		const favouriteResponse = fetch('/api/playlist/favourite', {
+			method: 'PATCH',
+			body: JSON.stringify({ playlistId: playlist.id, favourite: !playlist.favourite })
+		});
+		playlist.favourite = !playlist.favourite;
+		showDropdown = false;
+	}
+
 	function selectPlaylist() {
 		playlistState.selectedPlaylist = playlist;
 		playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
@@ -94,6 +103,18 @@
 					>
 						<span class="material-symbols-outlined">edit</span>
 						<span>Edit Playlist</span>
+					</button>
+					<button
+						class="flex flex-row items-center space-x-2 bg-zinc-800 p-2 hover:bg-zinc-700"
+						type="button"
+						onclick={toggleFavouritePlaylist}
+					>
+						{#if playlist.favourite}
+							<span class="material-symbols-outlined !text-yellow-500">star</span>
+						{:else}
+							<span class="material-symbols-outlined">star</span>
+						{/if}
+						<span> Favourite</span>
 					</button>
 					<button
 						class="flex flex-row items-center space-x-2 rounded-br-xl rounded-bl-xl bg-zinc-800 p-2 hover:bg-zinc-700"

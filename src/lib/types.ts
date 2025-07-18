@@ -32,6 +32,7 @@ type Playlist = {
   notes: Note[];
   created: string;
   updated: string;
+  favourite: boolean;
 };
 
 type Flag = {
