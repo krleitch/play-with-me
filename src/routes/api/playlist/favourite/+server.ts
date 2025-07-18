@@ -19,6 +19,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       lastPlayed: record.lastPlayed,
       tunings: record.tunings,
       genres: record.genres,
+      views: record.views,
       instruments: record.instruments,
       favourite: record.favourite,
       created: record.created,

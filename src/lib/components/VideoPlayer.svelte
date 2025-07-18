@@ -32,7 +32,7 @@
 		// ENABLE if you want it to update the lastPlayed of the playlist when it auto selects
 		// const flagResponse = fetch('/api/playlist/lastPlayed', {
 		// 	method: 'PATCH',
-		// 	body: JSON.stringify({ playlistId: playlist.id })
+		// 	body: JSON.stringify({ playlistId: playlist.id, views: playlist.views + 1 })
 		// });
 		// playlist.lastPlayed = new Date().toISOString();
 	}

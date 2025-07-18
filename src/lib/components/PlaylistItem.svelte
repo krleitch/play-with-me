@@ -46,9 +46,10 @@
 		playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
 		const flagResponse = fetch('/api/playlist/lastPlayed', {
 			method: 'PATCH',
-			body: JSON.stringify({ playlistId: playlist.id })
+			body: JSON.stringify({ playlistId: playlist.id, views: playlist.views + 1 })
 		});
 		playlist.lastPlayed = new Date().toISOString();
+		playlist.views = playlist.views + 1;
 	}
 </script>
 
