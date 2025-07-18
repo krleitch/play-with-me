@@ -34,11 +34,17 @@
 		<!-- LEFT and RIGHT -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
-				<label for="left"> Left </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">arrow_left_alt</span>
+					<label for="left"> Left </label>
+				</div>
 				<input id="left" autocomplete="off" type="number" bind:value={globalMIDI.value.left} />
 			</div>
 			<div class="flex flex-col">
-				<label for="leftStep"> Left Step </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">numbers</span>
+					<label for="leftStep"> Left Step </label>
+				</div>
 				<input
 					id="leftStep"
 					autocomplete="off"
@@ -47,11 +53,17 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="right"> Right </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">arrow_right_alt</span>
+					<label for="right"> Right </label>
+				</div>
 				<input id="right" autocomplete="off" type="number" bind:value={globalMIDI.value.right} />
 			</div>
 			<div class="flex flex-col">
-				<label for="rightStep"> Right Step </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">numbers</span>
+					<label for="rightStep"> Right Step </label>
+				</div>
 				<input
 					id="rightStep"
 					autocomplete="off"
@@ -64,7 +76,10 @@
 		<!--  VOLUME -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
-				<label for="volumeDown"> Volume Down </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">volume_down</span>
+					<label for="volumeDown"> Volume Down </label>
+				</div>
 				<input
 					id="volumeDown"
 					autocomplete="off"
@@ -73,7 +88,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="volumeDownStep"> Down Step </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">numbers</span>
+					<label for="volumeDownStep"> Down Step </label>
+				</div>
 				<input
 					id="volumeDownStep"
 					autocomplete="off"
@@ -82,7 +100,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="volumeUp"> Volume Up </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">volume_up</span>
+					<label for="volumeUp"> Volume Up </label>
+				</div>
 				<input
 					id="volumeUp"
 					autocomplete="off"
@@ -91,7 +112,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="volumeUpStep"> Up Step</label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">numbers</span>
+					<label for="volumeUpStep"> Up Step </label>
+				</div>
 				<input
 					id="volumeUpStep"
 					autocomplete="off"
@@ -104,7 +128,10 @@
 		<!-- Restart, Flag -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
-				<label for="restart"> Restart </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">restart_alt</span>
+					<label for="restart"> Restart </label>
+				</div>
 				<input
 					id="restart"
 					autocomplete="off"
@@ -113,7 +140,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="prevFlag"> Previous Flag </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">flag</span>
+					<label for="prevFlag"> Prev Flag </label>
+				</div>
 				<input
 					id="prevFlag"
 					autocomplete="off"
@@ -122,7 +152,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="nextFlag"> Next Flag </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">flag</span>
+					<label for="nextFlag"> Next Flag </label>
+				</div>
 				<input
 					id="nextFlag"
 					autocomplete="off"
@@ -131,7 +164,10 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="prevNextSecondsBefore"> Seconds </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">timer</span>
+					<label for="prevNextSecondsBefore"> Sec Before </label>
+				</div>
 				<input
 					id="prevNextSecondsBefore"
 					autocomplete="off"
@@ -144,7 +180,10 @@
 		<!-- Start Stop Slow Fast -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
-				<label for="startStop"> Start / Stop </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">play_pause</span>
+					<label for="startStop"> Play / Pause </label>
+				</div>
 				<input
 					id="startStop"
 					autocomplete="off"
@@ -153,11 +192,17 @@
 				/>
 			</div>
 			<div class="flex flex-col">
-				<label for="slow"> Slow Playback </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">arrow_cool_down</span>
+					<label for="slow"> Slow Playback </label>
+				</div>
 				<input id="slow" autocomplete="off" type="number" bind:value={globalMIDI.value.slow} />
 			</div>
 			<div class="flex flex-col">
-				<label for="fast"> Fast Playback </label>
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">arrow_warm_up</span>
+					<label for="fast"> Fast Playback </label>
+				</div>
 				<input id="fast" autocomplete="off" type="number" bind:value={globalMIDI.value.fast} />
 			</div>
 		</div>
@@ -191,8 +236,12 @@
 		@apply text-zinc-300;
 	}
 
+	.material-symbols-outlined {
+		@apply text-zinc-300;
+	}
+
 	label {
-		@apply ml-2 text-sm text-zinc-300;
+		@apply text-zinc-300;
 	}
 
 	button {

@@ -100,6 +100,20 @@
 			flag.seekSecondsBefore = 3;
 		});
 	}
+
+	function getFlagBarClass(flag: Flag): string {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-bar-teal-amber';
+		} else if (flag.sendPC >= 0) {
+			return 'flag-bar-teal';
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-bar-amber';
+		} else if (flag.seekCC >= 0) {
+			return 'flag-bar-violet';
+		} else {
+			return 'flag-bar-blue';
+		}
+	}
 </script>
 
 <Modal
@@ -128,98 +142,126 @@
 			</div>
 		</div>
 
-		<div class="my-2 ml-1 flex flex-row items-center">
-			<span class="material-symbols-outlined">flag</span>
-			<span class="ml-1">Flags</span>
-		</div>
+		<!-- <div class="my-2 ml-1 flex flex-row items-center"> -->
+		<!-- 	<span class="material-symbols-outlined">flag</span> -->
+		<!-- 	<span class="ml-1">Flags</span> -->
+		<!-- </div> -->
 
 		<form onsubmit={onSubmit}>
 			<div class="flex max-h-[435px] flex-col space-y-1 overflow-auto">
 				{#if flags.length >= 1}
 					{#each flags as flag, index}
-						<div class="mb-4 flex flex-col last:mb-0">
-							<!-- Name and time -->
-							<div class="flex flex-row items-center space-x-2">
-								<div class="flex flex-1 flex-col">
-									<label for="flagName"> Flag Name </label>
-									<input
-										id="flagName"
-										bind:value={flag.name}
-										autocomplete="off"
-										type="text"
-										required
-										placeholder="Flag Name..."
-									/>
-								</div>
-								<div class="flex flex-1 flex-col">
-									<label for="flagTime"> Flag Time </label>
-									<input
-										bind:value={flag.time}
-										autocomplete="off"
-										id="flagTime"
-										type="number"
-										step="any"
-										required
-										placeholder="Time..."
-									/>
-								</div>
+						<div class="mt-1 flex flex-row">
+							<div class="mr-1 flex flex-col">
+								<span> {index + 1}: </span>
+								<div class={getFlagBarClass(flag)}></div>
 							</div>
-							<!-- CC and PC and SEEK -->
-							<div class="mt-1 flex flex-row items-center space-x-2">
-								<div class="flex flex-col">
-									<label for="sendPC">Send PC#</label>
-									<input
-										id="sendPC"
-										bind:value={flag.sendPC}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="Send PC"
-									/>
+
+							<div class="mt-1 flex flex-col last:mb-0">
+								<!-- Name and time -->
+								<div class="flex flex-row items-center space-x-2">
+									<div class="flex flex-1 flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">flag</span>
+											<label for="flagName"> Flag Name </label>
+										</div>
+										<input
+											id="flagName"
+											bind:value={flag.name}
+											autocomplete="off"
+											type="text"
+											required
+											placeholder="Flag Name..."
+										/>
+									</div>
+									<div class="flex flex-1 flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">timer</span>
+											<label for="flagTime"> Time (s) </label>
+										</div>
+										<input
+											bind:value={flag.time}
+											autocomplete="off"
+											id="flagTime"
+											type="number"
+											step="any"
+											required
+											placeholder="Time..."
+										/>
+									</div>
 								</div>
-								<div class="flex flex-col">
-									<label for="sendCC">Send CC#</label>
-									<input
-										id="sendCC"
-										bind:value={flag.sendCC}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="Send CC"
-									/>
-								</div>
-								<div class="flex flex-col">
-									<label for="sendCCValue">CC Value</label>
-									<input
-										id="sendCCValue"
-										bind:value={flag.sendCCValue}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="CC Value"
-									/>
-								</div>
-								<div class="flex flex-col">
-									<label for="seekCC">Seek CC#</label>
-									<input
-										id="seekCC"
-										bind:value={flag.seekCC}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="Seek CC"
-									/>
-								</div>
-								<div class="flex flex-col">
-									<label for="seekSecondsBefore">Seconds</label>
-									<input
-										id="seekSecondsBefore"
-										bind:value={flag.seekSecondsBefore}
-										autocomplete="off"
-										type="number"
-										required
-										placeholder="Seconds"
-									/>
+								<!-- CC and PC and SEEK -->
+								<div class="mt-1 flex flex-row items-center space-x-2">
+									<div class="flex flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">computer</span>
+											<label for="sendPC"> Send PC#</label>
+										</div>
+										<input
+											id="sendPC"
+											bind:value={flag.sendPC}
+											autocomplete="off"
+											type="number"
+											required
+											placeholder="Send PC"
+										/>
+									</div>
+									<div class="flex flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">sports_esports</span>
+											<label for="sendPC"> Send CC#</label>
+										</div>
+										<input
+											id="sendCC"
+											bind:value={flag.sendCC}
+											autocomplete="off"
+											type="number"
+											required
+											placeholder="Send CC"
+										/>
+									</div>
+									<div class="flex flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">numbers</span>
+											<label for="sendCCValue"> CC Value </label>
+										</div>
+										<input
+											id="sendCCValue"
+											bind:value={flag.sendCCValue}
+											autocomplete="off"
+											type="number"
+											required
+											placeholder="CC Value"
+										/>
+									</div>
+									<div class="flex flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">video_search</span>
+											<label for="sendCCValue"> Seek CC# </label>
+										</div>
+										<input
+											id="seekCC"
+											bind:value={flag.seekCC}
+											autocomplete="off"
+											type="number"
+											required
+											placeholder="Seek CC"
+										/>
+									</div>
+									<div class="flex flex-col">
+										<div class="flex flex-row items-center">
+											<span class="material-symbols-outlined !text-sm">timer</span>
+											<label for="seekSecondsBefore"> Seek (s) </label>
+										</div>
+										<input
+											id="seekSecondsBefore"
+											bind:value={flag.seekSecondsBefore}
+											autocomplete="off"
+											type="number"
+											required
+											placeholder="Seconds"
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -252,6 +294,22 @@
 <style lang="postcss">
 	@reference "../../app.css";
 
+	.flag-bar-teal-amber {
+		@apply ml-1 h-full w-1 bg-gradient-to-b from-teal-800 to-amber-800;
+	}
+	.flag-bar-violet {
+		@apply ml-1 h-full w-1 bg-violet-800;
+	}
+	.flag-bar-blue {
+		@apply ml-1 h-full w-1 bg-sky-800;
+	}
+	.flag-bar-teal {
+		@apply ml-1 h-full w-1 bg-teal-800;
+	}
+	.flag-bar-amber {
+		@apply ml-1 h-full w-1 bg-amber-800;
+	}
+
 	input {
 		outline: none;
 		border: none;
@@ -269,7 +327,7 @@
 	}
 
 	label {
-		@apply ml-2 text-sm text-zinc-300;
+		@apply text-sm text-zinc-300;
 	}
 
 	select {
