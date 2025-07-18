@@ -161,13 +161,13 @@
 
 					<!-- FONT -->
 					<button
-						class="ml-4 flex cursor-pointer items-center border-x-1 border-x-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
+						class="flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
 						onclick={decrease}
 					>
 						<span class="material-symbols-outlined">text_decrease</span>
 					</button>
 					<button
-						class="mr-4 flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
+						class="flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
 						onclick={increase}
 					>
 						<span class="material-symbols-outlined">text_increase</span>
@@ -175,7 +175,7 @@
 
 					<!-- TAB -->
 					<button
-						class="flex cursor-pointer items-center border-x-1 border-x-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
+						class="flex cursor-pointer items-center border-r-1 border-r-zinc-700 bg-zinc-800 p-1 hover:bg-zinc-700"
 						onclick={insertTab}
 					>
 						<span class="material-symbols-outlined">queue_music</span>
@@ -199,7 +199,7 @@
 						type="submit"
 						class="flex cursor-pointer flex-row items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 					>
-						<span class="material-symbols-outlined">add_circle</span>
+						<span class="material-symbols-outlined">note_stack_add</span>
 						<span>Create Note</span>
 					</button>
 				</div>

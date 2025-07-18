@@ -267,7 +267,7 @@
 						</div>
 					{/each}
 				{:else}
-					<div class="ml-2 text-sm text-zinc-300">No Flags to display</div>
+					<div class="mt-2 ml-2 text-sm text-zinc-300">No Flags to display</div>
 				{/if}
 			</div>
 			<!-- Buttons -->

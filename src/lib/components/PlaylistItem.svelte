@@ -98,15 +98,15 @@
 					class="absolute top-6 right-0 z-100 flex w-38 flex-col rounded-xl"
 				>
 					<button
-						class="flex flex-row items-center space-x-2 rounded-tl-xl rounded-tr-xl bg-zinc-800 p-2 hover:bg-zinc-700"
+						class="flex flex-row items-center space-x-1 rounded-tl-xl rounded-tr-xl bg-zinc-800 p-2 hover:bg-zinc-700"
 						type="button"
 						onclick={editPlaylist}
 					>
-						<span class="material-symbols-outlined">edit</span>
+						<span class="material-symbols-outlined !mt-1">edit_note</span>
 						<span>Edit Playlist</span>
 					</button>
 					<button
-						class="flex flex-row items-center space-x-2 bg-zinc-800 p-2 hover:bg-zinc-700"
+						class="flex flex-row items-center space-x-1 bg-zinc-800 p-2 hover:bg-zinc-700"
 						type="button"
 						onclick={toggleFavouritePlaylist}
 					>
@@ -118,7 +118,7 @@
 						<span> Favourite</span>
 					</button>
 					<button
-						class="flex flex-row items-center space-x-2 rounded-br-xl rounded-bl-xl bg-zinc-800 p-2 hover:bg-zinc-700"
+						class="flex flex-row items-center space-x-1 rounded-br-xl rounded-bl-xl bg-zinc-800 p-2 hover:bg-zinc-700"
 						type="button"
 						onclick={deletePlaylist}
 					>

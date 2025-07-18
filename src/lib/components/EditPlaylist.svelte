@@ -188,7 +188,7 @@
 <Modal
 	bind:showModal={layoutState.showEditPlaylist}
 	closeOnClickOutside={false}
-	title={'Update Playlist'}
+	title={'Edit Playlist'}
 >
 	<form id="edit-playlist" onsubmit={onSubmit}>
 		<div class="flex flex-col space-y-2">
@@ -327,7 +327,7 @@
 				<span>Add Video</span>
 			</button>
 			<button type="submit">
-				<span class="material-symbols-outlined">edit</span>
+				<span class="material-symbols-outlined !mt-1">edit_note</span>
 				<span>Update Playlist</span>
 			</button>
 		</div>

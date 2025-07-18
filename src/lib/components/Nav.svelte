@@ -64,7 +64,7 @@
 			onclick={() => (layoutState.showCreatePlaylist = true)}
 			aria-label="Add Playlist"
 		>
-			<span class="material-symbols-outlined">add_circle</span>
+			<span class="material-symbols-outlined !mt-1">playlist_add</span>
 			<span> Add Playlist </span>
 		</button>
 
@@ -108,7 +108,7 @@
 		</button>
 		{#if MIDIState.selectedMIDIOutput && MIDIState.selectedMIDIOutput.name == 'Line 6 HX Stomp'}
 			<button type="button" onclick={openTuner} aria-label="HxStomp Tuner">
-				<span class="material-symbols-outlined">genetics</span>
+				<span class="material-symbols-outlined">graphic_eq</span>
 				<span> HxStomp Tuner </span>
 			</button>
 		{/if}

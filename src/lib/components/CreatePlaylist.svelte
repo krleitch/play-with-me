@@ -198,7 +198,7 @@
 				<span>Add Video</span>
 			</button>
 			<button type="submit">
-				<span class="material-symbols-outlined">add_circle</span>
+				<span class="material-symbols-outlined !mt-1">playlist_add</span>
 				<span>Create Playlist</span>
 			</button>
 		</div>

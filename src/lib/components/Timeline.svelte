@@ -263,7 +263,7 @@
 		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return `CC ${flag.sendCC} ${flag.sendCCValue}`;
 		} else if (flag.seekCC >= 0) {
-			return `Seek ${flag.seekCC}`;
+			return `${secondsToStringTime(flag.time)} (${flag.seekCC})`;
 		} else {
 			return secondsToStringTime(flag.time);
 		}
@@ -423,7 +423,7 @@
 						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 						type="submit"
 					>
-						<span class="material-symbols-outlined">add_circle</span>
+						<span class="material-symbols-outlined">flag_check</span>
 					</button>
 				</div>
 			</form>
