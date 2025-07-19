@@ -141,7 +141,7 @@
 	title={'MIDI Assign'}
 >
 	<div class="flex flex-col">
-		<div class="mx-2 mt-2 flex flex-row space-x-2">
+		<div class="mx-2 mt-2 mb-4 flex flex-row space-x-2">
 			<div class="flex flex-1 flex-col">
 				<label class="ml-2" for="midi-input">MIDI Input Device</label>
 				<select bind:value={MIDIState.selectedMIDIInput} name="input" id="midi-input">
@@ -162,7 +162,7 @@
 		</div>
 
 		<form onsubmit={onSubmit}>
-			<div class="flex max-h-[435px] flex-col space-y-1 overflow-auto">
+			<div class="flex max-h-[565px] flex-col space-y-1 overflow-auto">
 				{#if flags.length >= 1}
 					{#each flags as flag, index}
 						<div class="mt-1 flex flex-row">

@@ -23,7 +23,8 @@
 			volumeDownStep: 10,
 			prevFlag: -1,
 			nextFlag: -1,
-			prevNextSecondsBefore: 0,
+			prevNextSecondsBefore: 3,
+			addFlag: -1,
 			restart: -1
 		};
 	}
@@ -125,20 +126,8 @@
 			</div>
 		</div>
 
-		<!-- Restart, Flag -->
+		<!-- Flag -->
 		<div class="flex flex-row space-x-2">
-			<div class="flex flex-col">
-				<div class="flex flex-row items-center">
-					<span class="material-symbols-outlined !text-sm">restart_alt</span>
-					<label for="restart"> Restart </label>
-				</div>
-				<input
-					id="restart"
-					autocomplete="off"
-					type="number"
-					bind:value={globalMIDI.value.restart}
-				/>
-			</div>
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">flag</span>
@@ -166,13 +155,25 @@
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">timer</span>
-					<label for="prevNextSecondsBefore"> Sec Before </label>
+					<label for="prevNextSecondsBefore"> Before (s) </label>
 				</div>
 				<input
 					id="prevNextSecondsBefore"
 					autocomplete="off"
 					type="number"
 					bind:value={globalMIDI.value.prevNextSecondsBefore}
+				/>
+			</div>
+			<div class="flex flex-col">
+				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">flag_check</span>
+					<label for="addFlag"> Add Flag </label>
+				</div>
+				<input
+					id="addFlag"
+					autocomplete="off"
+					type="number"
+					bind:value={globalMIDI.value.addFlag}
 				/>
 			</div>
 		</div>
@@ -193,15 +194,27 @@
 			</div>
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
+					<span class="material-symbols-outlined !text-sm">restart_alt</span>
+					<label for="restart"> Restart </label>
+				</div>
+				<input
+					id="restart"
+					autocomplete="off"
+					type="number"
+					bind:value={globalMIDI.value.restart}
+				/>
+			</div>
+			<div class="flex flex-col">
+				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">arrow_cool_down</span>
-					<label for="slow"> Slow Playback </label>
+					<label for="slow"> Slow Play </label>
 				</div>
 				<input id="slow" autocomplete="off" type="number" bind:value={globalMIDI.value.slow} />
 			</div>
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">arrow_warm_up</span>
-					<label for="fast"> Fast Playback </label>
+					<label for="fast"> Fast Play </label>
 				</div>
 				<input id="fast" autocomplete="off" type="number" bind:value={globalMIDI.value.fast} />
 			</div>

@@ -109,6 +109,9 @@
 						// CHECK GLOBAL MIDI
 						if (!flagFound) {
 							switch (number) {
+								case globalMIDI.value.addFlag:
+									midiAddFlag('Flag');
+									break;
 								case globalMIDI.value.prevFlag:
 									let currentTimePrev;
 									// check if ended
@@ -349,6 +352,27 @@
 		}
 	}
 
+	async function midiAddFlag(flagName: string) {
+		const formData = new FormData();
+
+		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
+			let seconds = youtubeState.youtubePlayer.getCurrentTime();
+
+			formData.set('name', flagName);
+			formData.set('time', seconds.toString());
+			formData.set('videoId', playlistState.selectedVideo.id);
+
+			const flagResponse = await fetch('/api/flag', {
+				method: 'POST',
+				body: formData
+			});
+
+			const createdFlag: Flag = await flagResponse.json();
+
+			playlistState.selectedVideo.flags.push(createdFlag);
+		}
+	}
+
 	async function deleteFlag() {
 		if (
 			window.confirm('Are you sure you would like to delete this flag?') &&
@@ -379,7 +403,7 @@
 			{#if playlistState.selectedFlag}
 				<!-- Flag name -->
 				<div
-					class="flex max-h-[40px] max-w-64 flex-1 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
+					class="flex max-h-[40px] max-w-58 flex-1 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
 				>
 					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">flag</span>
@@ -423,13 +447,12 @@
 				<button
 					type="button"
 					class={playlistState.selectedFlag.disabled
-						? 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-4 py-2 text-nowrap hover:bg-rose-900'
-						: 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 text-nowrap hover:bg-zinc-700 '}
+						? 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-2 py-2 text-nowrap hover:bg-rose-900'
+						: 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 '}
 					onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
 					aria-label="Disable Flag"
 				>
 					<span class="material-symbols-outlined">sports_score</span>
-					<span> Disable </span>
 				</button>
 			{/if}
 		</div>
@@ -462,9 +485,9 @@
 				type="button"
 				onclick={() => {
 					layoutState.showMidiAssign = true;
-					if (youtubeState.youtubePlayer) {
-						youtubeState.youtubePlayer.pauseVideo();
-					}
+					// if (youtubeState.youtubePlayer) {
+					// 	youtubeState.youtubePlayer.pauseVideo();
+					// }
 				}}
 				aria-label="Add Playlist"
 			>
@@ -597,6 +620,8 @@
 	input {
 		outline: none;
 		border: none;
+		min-width: 0;
+		width: 100%;
 		@apply bg-zinc-950;
 	}
 	input:focus {
