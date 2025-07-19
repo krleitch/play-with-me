@@ -20,6 +20,7 @@
 				seekCC: flag.seekCC,
 				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
+				disabled: flag.disabled,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC,
 				created: flag.created,
@@ -29,6 +30,21 @@
 	);
 
 	let percentComplete = $derived((timelineState.currentTime / timelineState.timelineLength) * 100);
+
+	function toggleDisableFlag(flag: Flag | undefined) {
+		if (flag) {
+			const disableResponse = fetch('/api/flag/disabled', {
+				method: 'PATCH',
+				body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
+			});
+			playlistState.selectedVideo?.flags.forEach((f) => {
+				if (f.id == flag.id) {
+					f.disabled = !flag.disabled;
+				}
+			});
+			flag.disabled = !flag.disabled;
+		}
+	}
 
 	// CHECK FLAGS
 	$effect(() => {
@@ -43,7 +59,8 @@
 						if (
 							MIDIState.selectedMIDIOutput &&
 							playlistState.selectedVideo &&
-							!MIDIState.disableMIDI
+							!MIDIState.disableMIDI &&
+							!flag.disabled
 						) {
 							if (flag.sendPC >= 0) {
 								const pcMessage = [0xc0, flag.sendPC];
@@ -82,7 +99,7 @@
 						// Search Flags first
 						let flagFound = false;
 						playlistState.selectedVideo.flags.forEach((flag) => {
-							if (flag.seekCC == number && youtubeState.youtubePlayer) {
+							if (flag.seekCC == number && youtubeState.youtubePlayer && !flag.disabled) {
 								const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
 								youtubeState.youtubePlayer.seekTo(newTime);
 								flagFound = true;
@@ -380,7 +397,7 @@
 				</div>
 				<!-- Flag time -->
 				<div
-					class="flex max-h-[40px] min-w-32 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
+					class="flex max-h-[40px] flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
 				>
 					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
 						<span class="material-symbols-outlined">alarm</span>
@@ -402,6 +419,18 @@
 						<span class="material-symbols-outlined">video_search</span>
 					</button>
 				</div>
+				<!-- Disable -->
+				<button
+					type="button"
+					class={playlistState.selectedFlag.disabled
+						? 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-4 py-2 text-nowrap hover:bg-rose-900'
+						: 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 text-nowrap hover:bg-zinc-700 '}
+					onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
+					aria-label="Disable Flag"
+				>
+					<span class="material-symbols-outlined">sports_score</span>
+					<span> Disable </span>
+				</button>
 			{/if}
 		</div>
 

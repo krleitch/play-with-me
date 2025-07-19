@@ -58,14 +58,14 @@
 <div class="flex flex-row items-center justify-between px-28 py-4">
 	<!-- LEFT -->
 	<div class="flex flex-row space-x-4">
-		<!-- Add Playlist -->
+		<!-- Create Playlist -->
 		<button
 			type="button"
 			onclick={() => (layoutState.showCreatePlaylist = true)}
-			aria-label="Add Playlist"
+			aria-label="Create Playlist"
 		>
 			<span class="material-symbols-outlined !mt-1">playlist_add</span>
-			<span> Add Playlist </span>
+			<span> Create Playlist </span>
 		</button>
 
 		<!-- Toggle Library -->
@@ -115,7 +115,7 @@
 	</div>
 
 	<!-- RIGHT -->
-	<div class="flex flex-row items-center space-x-4">
+	<div class="ml-4 flex flex-row items-center space-x-4">
 		<!-- Favourite -->
 		<button class="!px-2" type="button" onclick={toggleFavourite} aria-label="Sort">
 			{#if filterState.showFavourites}
@@ -181,7 +181,7 @@
 	}
 
 	button {
-		@apply flex cursor-pointer flex-row items-center space-x-1;
+		@apply flex cursor-pointer flex-row items-center space-x-1 text-nowrap;
 		@apply rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700;
 	}
 

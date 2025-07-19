@@ -30,7 +30,7 @@
 </script>
 
 <Modal bind:showModal={layoutState.showGlobalMidi} closeOnClickOutside={true} title={'Global MIDI'}>
-	<form class="flex flex-col space-y-2">
+	<form class="m-2 flex flex-col space-y-2">
 		<!-- LEFT and RIGHT -->
 		<div class="flex flex-row space-x-2">
 			<div class="flex flex-col">
@@ -78,7 +78,7 @@
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">volume_down</span>
-					<label for="volumeDown"> Volume Down </label>
+					<label for="volumeDown"> Vol Down </label>
 				</div>
 				<input
 					id="volumeDown"
@@ -102,7 +102,7 @@
 			<div class="flex flex-col">
 				<div class="flex flex-row items-center">
 					<span class="material-symbols-outlined !text-sm">volume_up</span>
-					<label for="volumeUp"> Volume Up </label>
+					<label for="volumeUp"> Vol Up </label>
 				</div>
 				<input
 					id="volumeUp"
@@ -208,7 +208,7 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="flex flex-row space-x-2">
+		<div class="mt-2 flex flex-row space-x-2">
 			<button class="ml-auto" type="button" onclick={reset}>
 				<span class="material-symbols-outlined">restart_alt</span>
 				<span>Reset</span>

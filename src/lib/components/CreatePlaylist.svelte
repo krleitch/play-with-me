@@ -118,7 +118,7 @@
 	<form id="create-playlist" onsubmit={onSubmit}>
 		<div class="flex flex-col space-y-2">
 			<!-- TEXT -->
-			<div class="flex flex-col space-y-2">
+			<div class="mx-2 mt-2 flex flex-col space-y-2">
 				<input autocomplete="off" name="title" type="text" required placeholder="Title..." />
 				<input autocomplete="off" name="artist" type="text" required placeholder="Artist..." />
 			</div>
@@ -147,7 +147,7 @@
 				/>
 			</div>
 
-			<div class="flex max-h-[415px] flex-col space-y-2 overflow-auto">
+			<div class="mx-2 flex max-h-[415px] flex-col space-y-2 overflow-auto">
 				{#each videos as video, index}
 					<div class="flex flex-row items-center space-x-2">
 						<input
@@ -158,7 +158,7 @@
 							required
 							bind:value={video.youtubeUrl}
 						/>
-						<button type="button" onclick={() => removeVideo(index)}>
+						<button class="!px-2" type="button" onclick={() => removeVideo(index)}>
 							<span class="material-symbols-outlined">close</span>
 						</button>
 					</div>
@@ -192,7 +192,7 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="mt-4 flex flex-row space-x-2">
+		<div class="m-2 flex flex-row space-x-2">
 			<button type="button" class="ml-auto" onclick={addVideo}>
 				<span class="material-symbols-outlined">youtube_activity</span>
 				<span>Add Video</span>

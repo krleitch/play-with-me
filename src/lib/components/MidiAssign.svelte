@@ -53,6 +53,23 @@
 		console.error('Failed to get MIDI access:', error);
 	}
 
+	function toggleDisableFlag(flag: Flag | undefined) {
+		if (flag) {
+			const disableResponse = fetch('/api/flag/disabled', {
+				method: 'PATCH',
+				body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
+			});
+			playlistState.selectedVideo?.flags.forEach((f) => {
+				if (f.id == flag.id) {
+					f.disabled = !flag.disabled;
+				}
+			});
+			if (playlistState.selectedFlag && playlistState.selectedFlag.id == flag.id) {
+				playlistState.selectedFlag.disabled = !flag.disabled;
+			}
+		}
+	}
+
 	async function onSubmit(
 		event: SubmitEvent & {
 			currentTarget: EventTarget & HTMLFormElement;
@@ -72,6 +89,7 @@
 				seekCC: flag.seekCC,
 				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
+				disabled: flag.disabled,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC
 			});
@@ -98,6 +116,7 @@
 			flag.sendPC = -1;
 			flag.sendCCValue = -1;
 			flag.seekSecondsBefore = 3;
+			flag.disabled = false;
 		});
 	}
 
@@ -122,9 +141,9 @@
 	title={'MIDI Assign'}
 >
 	<div class="flex flex-col">
-		<div class="flex flex-row space-x-2">
+		<div class="mx-2 mt-2 flex flex-row space-x-2">
 			<div class="flex flex-1 flex-col">
-				<label for="midi-input">MIDI Input Device</label>
+				<label class="ml-2" for="midi-input">MIDI Input Device</label>
 				<select bind:value={MIDIState.selectedMIDIInput} name="input" id="midi-input">
 					{#each MIDIInputs as input}
 						<option value={input}>{input.name}</option>
@@ -133,7 +152,7 @@
 			</div>
 
 			<div class="flex flex-1 flex-col">
-				<label for="midi-output">MIDI Output Device</label>
+				<label class="ml-2" for="midi-output">MIDI Output Device</label>
 				<select bind:value={MIDIState.selectedMIDIOutput} name="output" id="midi-output">
 					{#each MIDIOutputs as output}
 						<option value={output}>{output.name}</option>
@@ -141,11 +160,6 @@
 				</select>
 			</div>
 		</div>
-
-		<!-- <div class="my-2 ml-1 flex flex-row items-center"> -->
-		<!-- 	<span class="material-symbols-outlined">flag</span> -->
-		<!-- 	<span class="ml-1">Flags</span> -->
-		<!-- </div> -->
 
 		<form onsubmit={onSubmit}>
 			<div class="flex max-h-[435px] flex-col space-y-1 overflow-auto">
@@ -157,8 +171,8 @@
 								<div class={getFlagBarClass(flag)}></div>
 							</div>
 
-							<div class="mt-1 flex flex-col last:mb-0">
-								<!-- Name and time -->
+							<div class="mt-1 mr-2 flex flex-col">
+								<!-- Name and time and disable -->
 								<div class="flex flex-row items-center space-x-2">
 									<div class="flex flex-1 flex-col">
 										<div class="flex flex-row items-center">
@@ -189,6 +203,14 @@
 											placeholder="Time..."
 										/>
 									</div>
+									<button
+										type="button"
+										class={flag.disabled ? 'mt-auto !bg-rose-900 !px-2' : 'mt-auto !px-2'}
+										onclick={() => toggleDisableFlag(flag)}
+										aria-label="Disable Flag"
+									>
+										<span class="material-symbols-outlined">sports_score</span>
+									</button>
 								</div>
 								<!-- CC and PC and SEEK -->
 								<div class="mt-1 flex flex-row items-center space-x-2">
@@ -271,7 +293,7 @@
 				{/if}
 			</div>
 			<!-- Buttons -->
-			<div class="mt-2 flex flex-row items-center space-x-2">
+			<div class="mx-2 mt-4 mb-2 flex flex-row items-center space-x-2">
 				{#if MIDIState.lastCCMessage}
 					<div class="ml-1 text-sm text-zinc-700">
 						Last CC Message: {MIDIState.lastCCMessage}
