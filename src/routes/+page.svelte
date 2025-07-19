@@ -3,6 +3,7 @@
 	import { layoutState, playlistState, youtubeState, timelineState } from '$lib';
 	import { slide, fade } from 'svelte/transition';
 	import { localStore } from '$lib';
+	import { onMount } from 'svelte';
 
 	import {
 		CreatePlaylist,
@@ -36,8 +37,30 @@
 	});
 
 	let { data }: PageProps = $props();
-
 	playlistState.playlists = data.playlists;
+
+	let showPlaylists = $state(false);
+
+	onMount(() => {
+		let defaultSort = localStorage.getItem('sort');
+
+		if (defaultSort == 'recent') {
+			data.playlists.sort((a, b) => {
+				let aVal = new Date(a.lastPlayed).getTime();
+				let bVal = new Date(b.lastPlayed).getTime();
+				if (aVal < bVal) {
+					return 1;
+				} else if (aVal > bVal) {
+					return -1;
+				} else {
+					return 0;
+				}
+			});
+		}
+
+		showPlaylists = true;
+		playlistState.playlists = data.playlists;
+	});
 
 	$effect(() => {
 		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
@@ -73,7 +96,7 @@
 		{#if layoutState.showLibrary}
 			<div transition:slide={{ axis: 'x' }}>
 				<div class="ml-4 flex h-full max-h-full" transition:fade>
-					<Library />
+					<Library {showPlaylists} />
 				</div>
 			</div>
 		{/if}

@@ -1,7 +1,17 @@
 <script lang="ts">
 	import { MIDIState, filterState, layoutState, playlistState } from '$lib';
+	import { onMount } from 'svelte';
 
-	let sortType: 'created' | 'recent' = $state('created');
+	let sortType: 'created' | 'recent' | undefined = $state(undefined);
+
+	onMount(() => {
+		let defaultSort = localStorage.getItem('sort');
+		if (defaultSort == 'created') {
+			sortType = defaultSort;
+		} else if (defaultSort == 'recent') {
+			sortType = defaultSort;
+		}
+	});
 
 	function resetFilters() {
 		filterState.tags = [];
@@ -19,6 +29,7 @@
 		if (playlistState.playlists) {
 			if (sortType == 'created') {
 				sortType = 'recent';
+				localStorage.setItem('sort', 'recent');
 				playlistState.playlists.sort((a, b) => {
 					let aVal = new Date(a.lastPlayed).getTime();
 					let bVal = new Date(b.lastPlayed).getTime();
@@ -32,6 +43,7 @@
 				});
 			} else {
 				sortType = 'created';
+				localStorage.setItem('sort', 'created');
 				playlistState.playlists.sort((a, b) => {
 					let aVal = new Date(a.created).getTime();
 					let bVal = new Date(b.created).getTime();
@@ -57,7 +69,7 @@
 
 <div class="flex flex-row items-center justify-between px-28 py-4">
 	<!-- LEFT -->
-	<div class="flex flex-row space-x-4">
+	<div class="flex h-[40px] flex-row space-x-2">
 		<!-- Create Playlist -->
 		<button
 			type="button"
@@ -115,31 +127,24 @@
 	</div>
 
 	<!-- RIGHT -->
-	<div class="ml-4 flex flex-row items-center space-x-4">
-		<!-- Favourite -->
-		<button class="!px-2" type="button" onclick={toggleFavourite} aria-label="Sort">
-			{#if filterState.showFavourites}
-				<span class="material-symbols-outlined !text-yellow-500">star</span>
-			{:else}
-				<span class="material-symbols-outlined">star</span>
-			{/if}
-		</button>
-
+	<div class="ml-2 flex flex-row items-center space-x-2">
 		<!-- Sort -->
-		<button type="button" onclick={toggleSort} aria-label="Sort">
-			<span class="material-symbols-outlined">sort</span>
-			{#if sortType == 'created'}
-				<span> Sort by recent </span>
-			{:else if sortType == 'recent'}
-				<span> Sort by created </span>
-			{/if}
-		</button>
+		{#if sortType}
+			<button type="button" onclick={toggleSort} aria-label="Sort">
+				<span class="material-symbols-outlined">sort</span>
+				{#if sortType == 'created'}
+					<span> Created </span>
+				{:else if sortType == 'recent'}
+					<span> Recent </span>
+				{/if}
+			</button>
+		{/if}
 
 		<!-- Input -->
 		<div class="flex flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950">
 			<span class="material-symbols-outlined ml-2">search</span>
 			<input
-				class="w-60 flex-1"
+				class="w-68 flex-1"
 				bind:value={filterState.searchTerm}
 				type="text"
 				placeholder="Search..."
@@ -153,11 +158,20 @@
 		<!-- Filter -->
 		<button
 			type="button"
+			class="!px-2"
 			onclick={() => (filterState.showFilters = !filterState.showFilters)}
 			aria-label="Filters"
 		>
 			<span class="material-symbols-outlined">tune</span>
-			<span> Filters </span>
+		</button>
+
+		<!-- Favourite -->
+		<button class="!px-2" type="button" onclick={toggleFavourite} aria-label="Sort">
+			{#if filterState.showFavourites}
+				<span class="material-symbols-outlined !text-yellow-500">star</span>
+			{:else}
+				<span class="material-symbols-outlined">star</span>
+			{/if}
 		</button>
 	</div>
 </div>

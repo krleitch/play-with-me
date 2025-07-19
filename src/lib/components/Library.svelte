@@ -2,6 +2,8 @@
 	import { Filter, PlaylistItem, VideoItem } from '$lib/components';
 	import { playlistState, filterState } from '$lib';
 
+	let { showPlaylists } = $props();
+
 	let filteredPlaylists = $derived(
 		playlistState.playlists.filter((x) => {
 			let favourite = filterState.showFavourites ? x.favourite : true;
@@ -26,9 +28,11 @@
 
 	<div class="mb-2 flex flex-1 flex-col overflow-auto">
 		<!-- Playlist -->
-		{#each filteredPlaylists as playlist (playlist.id)}
-			<PlaylistItem {playlist} />
-		{/each}
+		{#if showPlaylists}
+			{#each filteredPlaylists as playlist (playlist.id)}
+				<PlaylistItem {playlist} />
+			{/each}
+		{/if}
 	</div>
 	<!-- VIDEOS -->
 	<span class="border border-zinc-800"></span>
