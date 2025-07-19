@@ -518,9 +518,13 @@
 									type="button"
 									class={getFlagButtonClass(flag)}
 								>
-									<span> {flag.name} </span>
+									<span class={flag.disabled ? 'text-rose-700' : 'text-zinc-100'}>
+										{flag.name}
+									</span>
 								</button>
-								<div class={getFlagDescClass(flag)}>{getFlagDesc(flag)}</div>
+								<div class={getFlagDescClass(flag)}>
+									{getFlagDesc(flag)}
+								</div>
 							</div>
 						</div>
 					{/if}
