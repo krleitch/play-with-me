@@ -11,3 +11,8 @@
 body {
 	overflow-y: hidden;
 }
+
+html {
+	/* scrollbar-width: none; */
+	scrollbar-color: #18181b #27272a;
+}

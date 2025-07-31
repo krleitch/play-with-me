@@ -447,8 +447,8 @@
 				<button
 					type="button"
 					class={playlistState.selectedFlag.disabled
-						? 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-2 py-2 text-nowrap hover:bg-rose-900'
-						: 'flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 '}
+						? 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-2 py-2 text-nowrap hover:bg-rose-900 lg:flex'
+						: 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 lg:flex '}
 					onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
 					aria-label="Disable Flag"
 				>
@@ -491,8 +491,8 @@
 				}}
 				aria-label="Add Playlist"
 			>
-				<span class="material-symbols-outlined">piano</span>
-				<span>MIDI Assign</span>
+				<span class="material-symbols-outlined !mr-0">piano</span>
+				<span class="ml-1 hidden lg:block">MIDI Assign</span>
 			</button>
 		</div>
 	</div>
@@ -553,7 +553,7 @@
 	@reference "../../app.css";
 
 	.countdown-text {
-		@apply text-sm absolute text-rose-600;
+		@apply absolute text-sm text-rose-600;
 		top: -20px;
 		right: 0px;
 		width: 100%;

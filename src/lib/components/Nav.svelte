@@ -10,6 +10,8 @@
 			sortType = defaultSort;
 		} else if (defaultSort == 'recent') {
 			sortType = defaultSort;
+		} else {
+			localStorage.setItem('sort', 'created');
 		}
 	});
 
@@ -67,7 +69,7 @@
 	}
 </script>
 
-<div class="flex flex-row items-center justify-between px-28 py-4">
+<div class="flex flex-row items-center justify-between px-4 py-4 lg:px-28">
 	<!-- LEFT -->
 	<div class="flex h-[40px] flex-row space-x-2">
 		<!-- Create Playlist -->
@@ -77,7 +79,7 @@
 			aria-label="Create Playlist"
 		>
 			<span class="material-symbols-outlined !mt-1">playlist_add</span>
-			<span> Create Playlist </span>
+			<span class="ml-1 hidden lg:block"> Create Playlist </span>
 		</button>
 
 		<!-- Toggle Library -->
@@ -87,7 +89,7 @@
 			aria-label="Library"
 		>
 			<span class="material-symbols-outlined">newsstand</span>
-			<span> Library </span>
+			<span class="ml-1 hidden lg:block"> Library </span>
 		</button>
 
 		<!-- Toggle Notes -->
@@ -97,7 +99,7 @@
 			aria-label="Notes"
 		>
 			<span class="material-symbols-outlined">edit</span>
-			<span> Notes </span>
+			<span class="ml-1 hidden lg:block"> Notes </span>
 		</button>
 		<!-- Global MIDI -->
 		<button
@@ -106,7 +108,7 @@
 			aria-label="Global MIDI"
 		>
 			<span class="material-symbols-outlined">globe</span>
-			<span> Global MIDI </span>
+			<span class="ml-1 hidden lg:block"> Global MIDI </span>
 		</button>
 		<!-- Disable MIDI -->
 		<button
@@ -116,12 +118,12 @@
 			aria-label="Disable MIDI"
 		>
 			<span class="material-symbols-outlined">piano_off</span>
-			<span> Disable MIDI </span>
+			<span class="ml-1 hidden lg:block"> Disable MIDI </span>
 		</button>
 		{#if MIDIState.selectedMIDIOutput && MIDIState.selectedMIDIOutput.name == 'Line 6 HX Stomp'}
 			<button type="button" onclick={openTuner} aria-label="HxStomp Tuner">
 				<span class="material-symbols-outlined">graphic_eq</span>
-				<span> HxStomp Tuner </span>
+				<span class="ml-1 hidden lg:block"> HxStomp Tuner </span>
 			</button>
 		{/if}
 	</div>
@@ -131,11 +133,13 @@
 		<!-- Sort -->
 		{#if sortType}
 			<button type="button" onclick={toggleSort} aria-label="Sort">
-				<span class="material-symbols-outlined">sort</span>
+				<!-- <span class="material-symbols-outlined">sort</span> -->
 				{#if sortType == 'created'}
-					<span> Created </span>
+					<!-- <span> Created </span> -->
+					<span class="material-symbols-outlined">calendar_clock</span>
 				{:else if sortType == 'recent'}
-					<span> Recent </span>
+					<!-- <span> Recent </span> -->
+					<span class="material-symbols-outlined">update</span>
 				{/if}
 			</button>
 		{/if}
@@ -195,7 +199,7 @@
 	}
 
 	button {
-		@apply flex cursor-pointer flex-row items-center space-x-1 text-nowrap;
+		@apply flex cursor-pointer flex-row items-center text-nowrap;
 		@apply rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700;
 	}
 

@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     watch: {
       ignored: ['**/pocketbase/**'] // Ignore pocketbase
-    }
+    },
+    port: 3000 // For the development server
   }
 });
