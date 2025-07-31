@@ -10,14 +10,22 @@
 
 			let titles = x.title.toLowerCase().includes(filterState.searchTerm.toLowerCase());
 			let artists = x.artist.toLowerCase().includes(filterState.searchTerm.toLowerCase());
-			let tags = filterState.tags.every((tag) =>
-				x.videos?.some((video) => video.tags.includes(tag))
-			);
-			let genres = filterState.genres.every((genre) => x.genres.includes(genre));
-			let instruments = filterState.instruments.every((instrument) =>
-				x.instruments.includes(instrument)
-			);
-			let tunings = filterState.tunings.every((tuning) => x.tunings.includes(tuning));
+			let tags =
+				filterState.tags.length > 0
+					? filterState.tags.some((tag) => x.videos?.some((video) => video.tags.includes(tag)))
+					: true;
+			let genres =
+				filterState.genres.length > 0
+					? filterState.genres.some((genre) => x.genres.includes(genre))
+					: true;
+			let instruments =
+				filterState.instruments.length > 0
+					? filterState.instruments.some((instrument) => x.instruments.includes(instrument))
+					: true;
+			let tunings =
+				filterState.tunings.length > 0
+					? filterState.tunings.some((tuning) => x.tunings.includes(tuning))
+					: true;
 			return (titles || artists) && favourite && tags && genres && instruments && tunings;
 		})
 	);

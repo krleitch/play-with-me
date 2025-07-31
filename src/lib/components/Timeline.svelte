@@ -553,7 +553,7 @@
 	@reference "../../app.css";
 
 	.countdown-text {
-		@apply @text-sm absolute text-rose-600;
+		@apply text-sm absolute text-rose-600;
 		top: -20px;
 		right: 0px;
 		width: 100%;
