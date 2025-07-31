@@ -43,6 +43,7 @@
 
 	function onPlayerStateChange(event) {
 		if (event.data == YT.PlayerState.PLAYING) {
+			localStorage.setItem('youtubePlayerVolume', youtubeState.youtubePlayer.getVolume());
 			timelineState.timelineLength = youtubeState.youtubePlayer.getDuration();
 
 			stopwatch = setInterval(() => {
@@ -65,6 +66,11 @@
 
 	function onPlayerReady(event) {
 		timelineState.timelineLength = youtubeState.youtubePlayer.getDuration();
+
+		let storedVolume = localStorage.getItem('youtubePlayerVolume');
+		if (storedVolume !== null) {
+			event.target.setVolume(parseInt(storedVolume, 10));
+		}
 	}
 
 	// pass the player to let the collection viewer control it
