@@ -74,6 +74,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>PWM - {playlistState.selectedPlaylist?.title}</title>
+</svelte:head>
+
 <div class="font-roboto flex h-screen max-h-screen min-w-fit flex-col bg-zinc-950 text-zinc-100">
 	<Nav />
 
