@@ -46,6 +46,26 @@
 		}
 	}
 
+	function clickFlagText(flag: Flag) {
+		if (MIDIState.selectedMIDIOutput && playlistState.selectedVideo) {
+			if (flag.sendPC >= 0 || (flag.sendCC >= 0 && flag.sendCCValue >= 0)) {
+				if (flag.sendPC >= 0) {
+					const pcMessage = [0xc0, flag.sendPC];
+					MIDIState.selectedMIDIOutput.send(pcMessage);
+				}
+				if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+					const ccMessage = [0xb0, flag.sendCC, flag.sendCCValue];
+					MIDIState.selectedMIDIOutput.send(ccMessage);
+				}
+			} else {
+				if (youtubeState.youtubePlayer) {
+					const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
+					youtubeState.youtubePlayer.seekTo(newTime);
+				}
+			}
+		}
+	}
+
 	// CHECK FLAGS
 	$effect(() => {
 		if (flags) {
@@ -518,13 +538,13 @@
 									type="button"
 									class={getFlagButtonClass(flag)}
 								>
-									<span class={flag.disabled ? 'text-rose-700' : 'text-zinc-100'}>
+									<span class={flag.disabled ? 'text-rose-500' : 'text-zinc-100'}>
 										{flag.name}
 									</span>
 								</button>
-								<div class={getFlagDescClass(flag)}>
+								<button class={getFlagDescClass(flag)} onclick={() => clickFlagText(flag)}>
 									{getFlagDesc(flag)}
-								</div>
+								</button>
 							</div>
 						</div>
 					{/if}
@@ -566,59 +586,59 @@
 	}
 
 	.flag-pole-blue {
-		@apply h-full border-l-2 border-sky-800;
+		@apply flex h-full flex-col items-start border-l-2 border-sky-800;
 	}
 	.flag-button-blue {
 		@apply cursor-pointer rounded-tr-md rounded-br-md;
 		@apply bg-gradient-to-r from-sky-900 to-sky-950 p-2 hover:from-sky-800;
 	}
 	.flag-desc-blue {
-		@apply ml-1 text-xs text-sky-700;
+		@apply cursor-pointer p-1 text-xs text-sky-700 hover:text-sky-600;
 	}
 
 	.flag-pole-teal {
-		@apply h-full border-l-2 border-teal-800;
+		@apply flex h-full flex-col items-start border-l-2 border-teal-800;
 	}
 	.flag-button-teal {
 		@apply cursor-pointer rounded-tr-md rounded-br-md;
 		@apply bg-gradient-to-r from-teal-900 to-teal-950 p-2 hover:from-teal-800;
 	}
 	.flag-desc-teal {
-		@apply ml-1 text-xs text-teal-700;
+		@apply cursor-pointer p-1 text-xs text-teal-700 hover:text-teal-600;
 	}
 
 	.flag-pole-violet {
-		@apply h-full border-l-2 border-violet-800;
+		@apply flex h-full flex-col items-start border-l-2 border-violet-800;
 	}
 	.flag-button-violet {
 		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-violet-900 to-violet-950 p-2 hover:from-violet-800;
+		@apply bg-gradient-to-r from-violet-900 to-violet-950 p-2 hover:text-violet-800;
 	}
 	.flag-desc-violet {
-		@apply ml-1 text-xs text-violet-700;
+		@apply cursor-pointer p-1 text-xs text-violet-700 hover:text-violet-600;
 	}
 
 	.flag-pole-amber {
-		@apply h-full border-l-2 border-amber-800;
+		@apply flex h-full flex-col items-start border-l-2 border-amber-800;
 	}
 	.flag-button-amber {
 		@apply cursor-pointer rounded-tr-md rounded-br-md;
 		@apply bg-gradient-to-r from-amber-900 to-amber-950 p-2 hover:from-amber-800;
 	}
 	.flag-desc-amber {
-		@apply ml-1 text-xs text-amber-700;
+		@apply cursor-pointer p-1 text-xs text-amber-700 hover:text-amber-600;
 	}
 
 	.flag-pole-teal-amber {
-		@apply h-full border-l-2 border-teal-800;
+		@apply flex h-full flex-col items-start border-l-2 border-teal-800;
 	}
 	.flag-button-teal-amber {
 		@apply cursor-pointer rounded-tr-md rounded-br-md;
 		@apply bg-gradient-to-r from-teal-900 to-amber-950 p-2 hover:from-teal-800;
 	}
 	.flag-desc-teal-amber {
-		@apply ml-1 text-xs;
-		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent;
+		@apply cursor-pointer p-1 text-xs;
+		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent hover:from-teal-600;
 	}
 
 	input {

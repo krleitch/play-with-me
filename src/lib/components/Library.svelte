@@ -44,7 +44,7 @@
 	</div>
 	<!-- VIDEOS -->
 	<span class="border border-zinc-800"></span>
-	<div class="flex h-48 flex-col overflow-auto pt-2">
+	<div class="mt-2 flex h-48 flex-col overflow-auto">
 		<!-- Videos -->
 		{#if playlistState.selectedPlaylist}
 			{#each playlistState.selectedPlaylist.videos as video (video.id)}
