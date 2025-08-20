@@ -4,10 +4,10 @@ import type { RequestHandler } from './$types';
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { flagId, disabled } = await request.json();
+    const { flagId, showCountdown } = await request.json();
 
     const data = {
-      disabled: disabled
+      showCountdown: showCountdown
     };
 
     const record: Flag = await locals.pb.collection('flag').update(flagId, data);

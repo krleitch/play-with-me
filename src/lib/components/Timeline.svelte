@@ -1,14 +1,23 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import type { Flag } from '$lib';
+	import { Timer } from '$lib/components';
 	import { slide } from 'svelte/transition';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
 	import { linear } from 'svelte/easing';
+
+	const dispatch = createEventDispatcher();
 
 	type FlagWithPosition = Flag & { position: number };
 
 	let { globalMIDI } = $props();
 
 	let newFlagName: string = $state('');
+
+	let displayCountdown: boolean = $state(false);
+	let countdownName: string = $state('');
+	let countdownTime: number = $state(5);
+	let countdownColor: 'red' | 'blue' | 'purple' | 'amber' | 'teal' | 'teal-orange' = $state('blue');
 
 	let flags: FlagWithPosition[] | undefined = $derived(
 		playlistState.selectedVideo?.flags?.map((flag) => {
@@ -21,6 +30,7 @@
 				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
 				disabled: flag.disabled,
+				showCountdown: flag.showCountdown,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC,
 				created: flag.created,
@@ -47,15 +57,17 @@
 	}
 
 	function clickFlagText(flag: Flag) {
-		if (MIDIState.selectedMIDIOutput && playlistState.selectedVideo) {
+		if (playlistState.selectedVideo) {
 			if (flag.sendPC >= 0 || (flag.sendCC >= 0 && flag.sendCCValue >= 0)) {
-				if (flag.sendPC >= 0) {
-					const pcMessage = [0xc0, flag.sendPC];
-					MIDIState.selectedMIDIOutput.send(pcMessage);
-				}
-				if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
-					const ccMessage = [0xb0, flag.sendCC, flag.sendCCValue];
-					MIDIState.selectedMIDIOutput.send(ccMessage);
+				if (MIDIState.selectedMIDIOutput) {
+					if (flag.sendPC >= 0) {
+						const pcMessage = [0xc0, flag.sendPC];
+						MIDIState.selectedMIDIOutput.send(pcMessage);
+					}
+					if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+						const ccMessage = [0xb0, flag.sendCC, flag.sendCCValue];
+						MIDIState.selectedMIDIOutput.send(ccMessage);
+					}
 				}
 			} else {
 				if (youtubeState.youtubePlayer) {
@@ -71,6 +83,41 @@
 		if (flags) {
 			flags.forEach((flag) => {
 				if (timelineState.currentTime - timelineState.prevCurrentTime <= 0.2) {
+					let baseCountdown = Math.min(5, Math.floor(flag.time));
+
+					if (flag.showCountdown && baseCountdown >= 1) {
+						if (
+							timelineState.currentTime >= flag.time - baseCountdown &&
+							timelineState.prevCurrentTime <= flag.time - baseCountdown
+						) {
+							// WE ARE GOING TO HIT A FLAG SOON
+							countdownTime = baseCountdown;
+							countdownName = flag.name;
+
+							if (flag.disabled) {
+								countdownColor = 'red';
+							} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+								countdownColor = 'teal-orange';
+							} else if (flag.sendPC >= 0) {
+								countdownColor = 'teal';
+							} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+								countdownColor = 'amber';
+							} else if (flag.seekCC >= 0) {
+								countdownColor = 'purple';
+							} else {
+								countdownColor = 'blue';
+							}
+
+							displayCountdown = true;
+							setTimeout(
+								() => {
+									displayCountdown = false;
+								},
+								(baseCountdown + 1) * 1000
+							);
+						}
+					}
+
 					if (
 						timelineState.currentTime >= flag.time &&
 						timelineState.prevCurrentTime <= flag.time
@@ -155,10 +202,11 @@
 									if (prevFlags && prevFlags.length > 0) {
 										const lastFlag = prevFlags.at(-1);
 										if (lastFlag) {
-											const prevNewTime = Math.max(
-												0,
-												lastFlag.time - globalMIDI.value.prevNextSecondsBefore
-											);
+											const lastBefore =
+												globalMIDI.value.prevNextSecondsBefore >= 0
+													? globalMIDI.value.prevNextSecondsBefore
+													: lastFlag.seekSecondsBefore;
+											const prevNewTime = Math.max(0, lastFlag.time - lastBefore);
 											youtubeState.youtubePlayer.seekTo(prevNewTime);
 										}
 									} else {
@@ -181,10 +229,12 @@
 									if (nextFlags && nextFlags.length > 0) {
 										const firstFlag = nextFlags.at(0);
 										if (firstFlag) {
-											const nextNewTime = Math.max(
-												0,
-												firstFlag.time - globalMIDI.value.prevNextSecondsBefore
-											);
+											// const nextBefore =
+											// 	globalMIDI.value.prevNextSecondsBefore >= 0
+											// 		? globalMIDI.value.prevNextSecondsBefore
+											// 		: firstFlag.seekSecondsBefore;
+											const nextBefore = 0;
+											const nextNewTime = Math.max(0, firstFlag.time - nextBefore);
 											youtubeState.youtubePlayer.seekTo(nextNewTime);
 										}
 									} else {
@@ -252,7 +302,9 @@
 	});
 
 	function getFlagPoleClass(flag: Flag): string {
-		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+		if (flag.disabled) {
+			return 'flag-pole-disabled';
+		} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-pole-teal-amber';
 		} else if (flag.sendPC >= 0) {
 			return 'flag-pole-teal';
@@ -407,7 +459,7 @@
 			const deleteResponse = await response.json();
 
 			playlistState.selectedVideo.flags = playlistState.selectedVideo.flags.filter(
-				(f) => f.id !== playlistState.selectedFlag.id
+				(f) => f.id !== playlistState.selectedFlag?.id
 			);
 			playlistState.selectedFlag = undefined;
 		} else {
@@ -415,7 +467,13 @@
 	}
 </script>
 
-<div class="flex h-36 flex-col rounded-xl px-[10px] pt-2">
+<div class="relative flex h-36 flex-col rounded-xl px-[10px] pt-2">
+	{#if displayCountdown}
+		<div class="absolute top-[-180px] left-[-17px] box-border w-full px-8">
+			<Timer {countdownName} {countdownTime} {countdownColor} />
+		</div>
+	{/if}
+
 	<!-- NAV -->
 	<div class="flex w-full flex-row justify-between">
 		<!-- Left -->
@@ -538,7 +596,7 @@
 									type="button"
 									class={getFlagButtonClass(flag)}
 								>
-									<span class={flag.disabled ? 'text-rose-500' : 'text-zinc-100'}>
+									<span class={flag.disabled ? 'text-rose-300' : 'text-zinc-100'}>
 										{flag.name}
 									</span>
 								</button>
@@ -552,7 +610,7 @@
 			{/if}
 		{/if}
 
-		<div class="relative mt-auto w-full border-r-2 border-r-rose-950">
+		<div class="relative mt-auto w-full bg-zinc-900">
 			{#if percentComplete <= 100}
 				<div
 					class="z-10 h-[15px] bg-gradient-to-r from-rose-800 to-rose-950"
@@ -583,6 +641,10 @@
 		@apply absolute text-xs text-rose-900;
 		right: 5px;
 		bottom: -1px;
+	}
+
+	.flag-pole-disabled {
+		@apply flex h-full flex-col items-start border-l-2 border-rose-800;
 	}
 
 	.flag-pole-blue {

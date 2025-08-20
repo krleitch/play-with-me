@@ -46,6 +46,7 @@ type Flag = {
   sendCCValue: number;
   sendPC: number;
   disabled: boolean;
+  showCountdown: boolean;
   created: string;
   updated: string;
 };

@@ -51,6 +51,7 @@ export const load: PageServerLoad = async ({ locals }) => {
                   sendCCValue: flag.sendCCValue,
                   sendPC: flag.sendPC,
                   disabled: flag.disabled,
+                  showCountdown: flag.showCountdown,
                   created: flag.created,
                   updated: flag.updated
                 };

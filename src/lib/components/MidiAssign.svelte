@@ -69,6 +69,22 @@
 			}
 		}
 	}
+	function toggleShowCountdown(flag: Flag | undefined) {
+		if (flag) {
+			const disableResponse = fetch('/api/flag/showCountdown', {
+				method: 'PATCH',
+				body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
+			});
+			playlistState.selectedVideo?.flags.forEach((f) => {
+				if (f.id == flag.id) {
+					f.showCountdown = !flag.showCountdown;
+				}
+			});
+			if (playlistState.selectedFlag && playlistState.selectedFlag.id == flag.id) {
+				playlistState.selectedFlag.showCountdown = !flag.showCountdown;
+			}
+		}
+	}
 
 	async function onSubmit(
 		event: SubmitEvent & {
@@ -90,6 +106,7 @@
 				seekSecondsBefore: flag.seekSecondsBefore,
 				sendCC: flag.sendCC,
 				disabled: flag.disabled,
+				showCountdown: flag.showCountdown,
 				sendCCValue: flag.sendCCValue,
 				sendPC: flag.sendPC
 			});
@@ -117,6 +134,7 @@
 			flag.sendCCValue = -1;
 			flag.seekSecondsBefore = 3;
 			flag.disabled = false;
+			flag.showCountdown = false;
 		});
 	}
 
@@ -205,6 +223,14 @@
 									</div>
 									<button
 										type="button"
+										class={flag.showCountdown ? 'mt-auto !bg-sky-900 !px-2' : 'mt-auto !px-2'}
+										onclick={() => toggleShowCountdown(flag)}
+										aria-label="Show Countdown"
+									>
+										<span class="material-symbols-outlined">timer</span>
+									</button>
+									<button
+										type="button"
 										class={flag.disabled ? 'mt-auto !bg-rose-900 !px-2' : 'mt-auto !px-2'}
 										onclick={() => toggleDisableFlag(flag)}
 										aria-label="Disable Flag"
@@ -280,6 +306,7 @@
 											bind:value={flag.seekSecondsBefore}
 											autocomplete="off"
 											type="number"
+											step="any"
 											required
 											placeholder="Seconds"
 										/>

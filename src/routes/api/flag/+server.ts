@@ -14,6 +14,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       seekSecondsBefore: 3,
       sendCC: -1,
       disabled: false,
+      showCountdown: false,
       sendCCValue: -1,
       sendPC: -1
     };
@@ -58,7 +59,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { flagId, disabled, name, time, seekCC, seekSecondsBefore, sendCC, sendCCValue, sendPC } =
+    const { flagId, showCountdown, disabled, name, time, seekCC, seekSecondsBefore, sendCC, sendCCValue, sendPC } =
       await request.json();
 
     const data = {
@@ -69,7 +70,8 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       sendCC: sendCC,
       sendCCValue: sendCCValue,
       sendPC: sendPC,
-      disabled: disabled
+      disabled: disabled,
+      showCountdown: showCountdown
     };
 
     const record: Flag = await locals.pb.collection('flag').update(flagId, data);
@@ -84,6 +86,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       sendCCValue: record.sendCCValue,
       sendPC: record.sendPC,
       disabled: record.disabled,
+      showCountdown: record.showCountdown,
       created: record.created,
       updated: record.updated
     });
