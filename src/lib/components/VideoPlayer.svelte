@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { playlistState, timelineState, youtubeState } from '$lib';
+	import { layoutState, playlistState, timelineState, youtubeState } from '$lib';
 
 	let initialVideoId = $state('');
 
@@ -45,6 +45,7 @@
 		if (event.data == YT.PlayerState.PLAYING) {
 			localStorage.setItem('youtubePlayerVolume', youtubeState.youtubePlayer.getVolume());
 			timelineState.timelineLength = youtubeState.youtubePlayer.getDuration();
+			layoutState.showCountdown = false;
 
 			stopwatch = setInterval(() => {
 				timelineState.prevCurrentTime = timelineState.currentTime;
@@ -54,13 +55,16 @@
 			window.clearInterval(stopwatch);
 			timelineState.currentTime = youtubeState.youtubePlayer.getCurrentTime();
 			timelineState.prevCurrentTime = youtubeState.youtubePlayer.getCurrentTime();
+			layoutState.showCountdown = false;
 		} else if (event.data == YT.PlayerState.ENDED) {
 			window.clearInterval(stopwatch);
 			timelineState.currentTime = youtubeState.youtubePlayer.getCurrentTime();
 			timelineState.prevCurrentTime = youtubeState.youtubePlayer.getCurrentTime();
+			layoutState.showCountdown = false;
 		} else if (event.data == YT.PlayerState.UNSTARTED) {
 			timelineState.currentTime = youtubeState.youtubePlayer.getCurrentTime();
 			timelineState.prevCurrentTime = youtubeState.youtubePlayer.getCurrentTime();
+			layoutState.showCountdown = false;
 		}
 	}
 

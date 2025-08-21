@@ -1,12 +1,7 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import type { Flag } from '$lib';
 	import { Timer } from '$lib/components';
-	import { slide } from 'svelte/transition';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
-	import { linear } from 'svelte/easing';
-
-	const dispatch = createEventDispatcher();
 
 	type FlagWithPosition = Flag & { position: number };
 
@@ -14,7 +9,7 @@
 
 	let newFlagName: string = $state('');
 
-	let displayCountdown: boolean = $state(false);
+	let countdownInterval: number | undefined = undefined;
 	let countdownName: string = $state('');
 	let countdownTime: number = $state(5);
 	let countdownColor: 'red' | 'blue' | 'purple' | 'amber' | 'teal' | 'teal-orange' = $state('blue');
@@ -55,6 +50,20 @@
 			flag.disabled = !flag.disabled;
 		}
 	}
+	function toggleShowCountdown(flag: Flag | undefined) {
+		if (flag) {
+			const toggleResponse = fetch('/api/flag/showCountdown', {
+				method: 'PATCH',
+				body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
+			});
+			playlistState.selectedVideo?.flags.forEach((f) => {
+				if (f.id == flag.id) {
+					f.showCountdown = !flag.showCountdown;
+				}
+			});
+			flag.showCountdown = !flag.showCountdown;
+		}
+	}
 
 	function clickFlagText(flag: Flag) {
 		if (playlistState.selectedVideo) {
@@ -71,8 +80,12 @@
 				}
 			} else {
 				if (youtubeState.youtubePlayer) {
-					const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
-					youtubeState.youtubePlayer.seekTo(newTime);
+					// const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
+					layoutState.showCountdown = false;
+					if (countdownInterval) {
+						clearInterval(countdownInterval);
+					}
+					youtubeState.youtubePlayer.seekTo(flag.time);
 				}
 			}
 		}
@@ -91,6 +104,10 @@
 							timelineState.prevCurrentTime <= flag.time - baseCountdown
 						) {
 							// WE ARE GOING TO HIT A FLAG SOON
+							if (countdownInterval) {
+								clearInterval(countdownInterval);
+							}
+
 							countdownTime = baseCountdown;
 							countdownName = flag.name;
 
@@ -108,10 +125,10 @@
 								countdownColor = 'blue';
 							}
 
-							displayCountdown = true;
-							setTimeout(
+							layoutState.showCountdown = true;
+							countdownInterval = setTimeout(
 								() => {
-									displayCountdown = false;
+									layoutState.showCountdown = false;
 								},
 								(baseCountdown + 1) * 1000
 							);
@@ -168,6 +185,10 @@
 						playlistState.selectedVideo.flags.forEach((flag) => {
 							if (flag.seekCC == number && youtubeState.youtubePlayer && !flag.disabled) {
 								const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
+								layoutState.showCountdown = false;
+								if (countdownInterval) {
+									clearInterval(countdownInterval);
+								}
 								youtubeState.youtubePlayer.seekTo(newTime);
 								flagFound = true;
 							}
@@ -207,9 +228,17 @@
 													? globalMIDI.value.prevNextSecondsBefore
 													: lastFlag.seekSecondsBefore;
 											const prevNewTime = Math.max(0, lastFlag.time - lastBefore);
+											layoutState.showCountdown = false;
+											if (countdownInterval) {
+												clearInterval(countdownInterval);
+											}
 											youtubeState.youtubePlayer.seekTo(prevNewTime);
 										}
 									} else {
+										layoutState.showCountdown = false;
+										if (countdownInterval) {
+											clearInterval(countdownInterval);
+										}
 										youtubeState.youtubePlayer.seekTo(0);
 									}
 									break;
@@ -235,10 +264,18 @@
 											// 		: firstFlag.seekSecondsBefore;
 											const nextBefore = 0;
 											const nextNewTime = Math.max(0, firstFlag.time - nextBefore);
+											layoutState.showCountdown = false;
+											if (countdownInterval) {
+												clearInterval(countdownInterval);
+											}
 											youtubeState.youtubePlayer.seekTo(nextNewTime);
 										}
 									} else {
 										const durationNext = youtubeState.youtubePlayer.getDuration();
+										layoutState.showCountdown = false;
+										if (countdownInterval) {
+											clearInterval(countdownInterval);
+										}
 										youtubeState.youtubePlayer.seekTo(durationNext - 0.2);
 									}
 									break;
@@ -253,6 +290,10 @@
 								case globalMIDI.value.left:
 									const currentTimeLeft = youtubeState.youtubePlayer.getCurrentTime();
 									const newTimeLeft = Math.max(0, currentTimeLeft - globalMIDI.value.leftStep);
+									layoutState.showCountdown = false;
+									if (countdownInterval) {
+										clearInterval(countdownInterval);
+									}
 									youtubeState.youtubePlayer.seekTo(newTimeLeft);
 									break;
 								case globalMIDI.value.right:
@@ -262,6 +303,10 @@
 										durationRight,
 										currentTimeRight + globalMIDI.value.rightStep
 									);
+									layoutState.showCountdown = false;
+									if (countdownInterval) {
+										clearInterval(countdownInterval);
+									}
 									youtubeState.youtubePlayer.seekTo(newTimeRight);
 									break;
 								case globalMIDI.value.volumeDown:
@@ -291,6 +336,10 @@
 									youtubeState.youtubePlayer.setPlaybackRate(newPlaybackFast);
 									break;
 								case globalMIDI.value.restart:
+									layoutState.showCountdown = false;
+									if (countdownInterval) {
+										clearInterval(countdownInterval);
+									}
 									youtubeState.youtubePlayer.seekTo(0);
 									break;
 							}
@@ -302,9 +351,7 @@
 	});
 
 	function getFlagPoleClass(flag: Flag): string {
-		if (flag.disabled) {
-			return 'flag-pole-disabled';
-		} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-pole-teal-amber';
 		} else if (flag.sendPC >= 0) {
 			return 'flag-pole-teal';
@@ -328,6 +375,20 @@
 			return 'flag-button-violet';
 		} else {
 			return 'flag-button-blue';
+		}
+	}
+
+	function getFlagSelectClass(flag: Flag): string {
+		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-select-teal-amber';
+		} else if (flag.sendPC >= 0) {
+			return 'flag-select-teal';
+		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+			return 'flag-select-amber';
+		} else if (flag.seekCC >= 0) {
+			return 'flag-select-violet';
+		} else {
+			return 'flag-select-blue';
 		}
 	}
 
@@ -386,6 +447,10 @@
 
 	function seek(flag: Flag) {
 		if (youtubeState.youtubePlayer) {
+			layoutState.showCountdown = false;
+			if (countdownInterval) {
+				clearInterval(countdownInterval);
+			}
 			const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
 			youtubeState.youtubePlayer.seekTo(newTime);
 		}
@@ -393,6 +458,10 @@
 
 	function seekRealTime(time: number) {
 		if (youtubeState.youtubePlayer) {
+			layoutState.showCountdown = false;
+			if (countdownInterval) {
+				clearInterval(countdownInterval);
+			}
 			youtubeState.youtubePlayer.seekTo(time);
 		}
 	}
@@ -468,7 +537,7 @@
 </script>
 
 <div class="relative flex h-36 flex-col rounded-xl px-[10px] pt-2">
-	{#if displayCountdown}
+	{#if layoutState.showCountdown}
 		<div class="absolute top-[-180px] left-[-17px] box-border w-full px-8">
 			<Timer {countdownName} {countdownTime} {countdownColor} />
 		</div>
@@ -521,6 +590,17 @@
 						<span class="material-symbols-outlined">video_search</span>
 					</button>
 				</div>
+				<!-- Show Countdown -->
+				<button
+					type="button"
+					class={playlistState.selectedFlag.showCountdown
+						? 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-sky-900 px-2 py-2 text-nowrap hover:bg-sky-900 lg:flex'
+						: 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 lg:flex '}
+					onclick={() => toggleShowCountdown(playlistState.selectedFlag)}
+					aria-label="Show Countdown"
+				>
+					<span class="material-symbols-outlined">timer</span>
+				</button>
 				<!-- Disable -->
 				<button
 					type="button"
@@ -589,20 +669,37 @@
 								<!-- 		{(flag.time - timelineState.currentTime).toFixed(2)} -->
 								<!-- 	</div> -->
 								<!-- {/if} -->
-								<button
-									onclick={() => {
-										playlistState.selectedFlag = flag;
-									}}
-									type="button"
-									class={getFlagButtonClass(flag)}
-								>
-									<span class={flag.disabled ? 'text-rose-300' : 'text-zinc-100'}>
-										{flag.name}
-									</span>
-								</button>
+								<div class="flex flex-col">
+									<button
+										type="button"
+										aria-label="Select"
+										onclick={() => {
+											playlistState.selectedFlag = flag;
+										}}
+										class={getFlagSelectClass(flag)}
+									>
+									</button>
+									<button
+										onclick={() => {
+											seek(flag);
+										}}
+										type="button"
+										class={getFlagButtonClass(flag)}
+									>
+										<span class={flag.disabled ? 'text-rose-500' : 'text-zinc-100'}>
+											{flag.name}
+										</span>
+									</button>
+								</div>
 								<button class={getFlagDescClass(flag)} onclick={() => clickFlagText(flag)}>
 									{getFlagDesc(flag)}
 								</button>
+								{#if flag.showCountdown}
+									<span
+										class="material-symbols-outlined mt-[1.5px] pl-0.5 !text-[13px] text-zinc-100"
+										>timer</span
+									>
+								{/if}
 							</div>
 						</div>
 					{/if}
@@ -643,63 +740,79 @@
 		bottom: -1px;
 	}
 
-	.flag-pole-disabled {
-		@apply flex h-full flex-col items-start border-l-2 border-rose-800;
-	}
-
 	.flag-pole-blue {
 		@apply flex h-full flex-col items-start border-l-2 border-sky-800;
 	}
+	.flag-select-blue {
+		@apply flex h-3 cursor-pointer rounded-tr-md;
+		@apply bg-sky-800 hover:bg-sky-900;
+	}
 	.flag-button-blue {
-		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-sky-900 to-sky-950 p-2 hover:from-sky-800;
+		@apply cursor-pointer rounded-br-md;
+		@apply bg-gradient-to-r from-sky-900 to-sky-950 pr-2 pb-2 pl-1 hover:from-sky-800;
 	}
 	.flag-desc-blue {
-		@apply cursor-pointer p-1 text-xs text-sky-700 hover:text-sky-600;
+		@apply cursor-pointer pt-0.5 pl-1 text-xs text-sky-700 hover:text-sky-600;
 	}
 
 	.flag-pole-teal {
 		@apply flex h-full flex-col items-start border-l-2 border-teal-800;
 	}
+	.flag-select-teal {
+		@apply flex h-3 cursor-pointer rounded-tr-md;
+		@apply bg-teal-800 hover:bg-teal-900;
+	}
 	.flag-button-teal {
-		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-teal-900 to-teal-950 p-2 hover:from-teal-800;
+		@apply cursor-pointer rounded-br-md;
+		@apply bg-gradient-to-r from-teal-900 to-teal-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal {
-		@apply cursor-pointer p-1 text-xs text-teal-700 hover:text-teal-600;
+		@apply cursor-pointer pt-0.5 pl-1 text-xs text-teal-700 hover:text-teal-600;
 	}
 
 	.flag-pole-violet {
 		@apply flex h-full flex-col items-start border-l-2 border-violet-800;
 	}
+	.flag-select-violet {
+		@apply flex h-3 cursor-pointer rounded-tr-md;
+		@apply bg-violet-800 hover:bg-violet-900;
+	}
 	.flag-button-violet {
-		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-violet-900 to-violet-950 p-2 hover:text-violet-800;
+		@apply cursor-pointer rounded-br-md;
+		@apply bg-gradient-to-r from-violet-900 to-violet-950 pr-2 pb-2 pl-1 hover:text-violet-800;
 	}
 	.flag-desc-violet {
-		@apply cursor-pointer p-1 text-xs text-violet-700 hover:text-violet-600;
+		@apply cursor-pointer pt-0.5 pl-1 text-xs text-violet-700 hover:text-violet-600;
 	}
 
 	.flag-pole-amber {
 		@apply flex h-full flex-col items-start border-l-2 border-amber-800;
 	}
+	.flag-select-amber {
+		@apply flex h-3 cursor-pointer rounded-tr-md;
+		@apply bg-amber-800 hover:bg-amber-900;
+	}
 	.flag-button-amber {
-		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-amber-900 to-amber-950 p-2 hover:from-amber-800;
+		@apply cursor-pointer rounded-br-md;
+		@apply bg-gradient-to-r from-amber-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-amber-800;
 	}
 	.flag-desc-amber {
-		@apply cursor-pointer p-1 text-xs text-amber-700 hover:text-amber-600;
+		@apply cursor-pointer pt-0.5 pl-1 text-xs text-amber-700 hover:text-amber-600;
 	}
 
 	.flag-pole-teal-amber {
 		@apply flex h-full flex-col items-start border-l-2 border-teal-800;
 	}
+	.flag-select-teal-amber {
+		@apply flex h-3 cursor-pointer rounded-tr-md;
+		@apply bg-gradient-to-r from-teal-800 to-amber-800 hover:from-teal-900;
+	}
 	.flag-button-teal-amber {
-		@apply cursor-pointer rounded-tr-md rounded-br-md;
-		@apply bg-gradient-to-r from-teal-900 to-amber-950 p-2 hover:from-teal-800;
+		@apply cursor-pointer rounded-br-md;
+		@apply bg-gradient-to-r from-teal-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal-amber {
-		@apply cursor-pointer p-1 text-xs;
+		@apply cursor-pointer pt-0.5 pl-1 text-xs;
 		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent hover:from-teal-600;
 	}
 

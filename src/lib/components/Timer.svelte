@@ -47,11 +47,14 @@
 	>
 		<div class={getCountdownClass()}></div>
 	</div>
-	<div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-		<span class="material-symbols-outlined !text-7xl">timer</span>
-		<span class="max-w-1/2 overflow-hidden text-7xl text-nowrap text-zinc-100">{countdownName}</span
+	<div class="absolute top-0 left-0 box-border flex h-full w-full items-center justify-center">
+		<span class="hidden lg:block">
+			<span class="material-symbols-outlined !text-7xl">timer</span>
+		</span>
+		<span class="ml-4 overflow-hidden text-7xl text-nowrap overflow-ellipsis text-zinc-100 lg:ml-0"
+			>{countdownName}</span
 		>
-		<span class="mt-1 ml-4 text-7xl font-bold text-rose-500">{count}</span>
+		<span class="mt-1 mr-4 ml-4 text-7xl font-bold text-rose-500">{count}</span>
 	</div>
 	{#each times as _, index}
 		<span

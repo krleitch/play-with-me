@@ -67,6 +67,7 @@
 			if (youtubeState.youtubePlayer.loadVideoById) {
 				youtubeState.youtubePlayer.loadVideoById(playlistState.selectedVideo.youtubeId);
 			}
+			layoutState.showCountdown = false;
 			timelineState.timelineLength = 0;
 			timelineState.currentTime = 0;
 			playlistState.selectedFlag = undefined;
