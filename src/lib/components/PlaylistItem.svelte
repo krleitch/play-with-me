@@ -6,7 +6,7 @@
 	interface PlaylistItem {
 		playlist: Playlist;
 	}
-	let { playlist }: PlaylistItem = $props();
+	let { playlist = $bindable() }: PlaylistItem = $props();
 
 	let showDropdown = $state(false);
 

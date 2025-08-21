@@ -37,8 +37,8 @@
 	<div class="mb-2 flex flex-1 flex-col overflow-auto">
 		<!-- Playlist -->
 		{#if showPlaylists}
-			{#each filteredPlaylists as playlist (playlist.id)}
-				<PlaylistItem {playlist} />
+			{#each filteredPlaylists as playlist, index (playlist.id)}
+				<PlaylistItem bind:playlist={filteredPlaylists[index]} />
 			{/each}
 		{/if}
 	</div>
@@ -47,8 +47,8 @@
 	<div class="mt-2 flex h-48 flex-col overflow-auto">
 		<!-- Videos -->
 		{#if playlistState.selectedPlaylist}
-			{#each playlistState.selectedPlaylist.videos as video (video.id)}
-				<VideoItem {video} />
+			{#each playlistState.selectedPlaylist.videos as video, index (video.id)}
+				<VideoItem bind:video={playlistState.selectedPlaylist.videos[index]} />
 			{/each}
 		{/if}
 	</div>

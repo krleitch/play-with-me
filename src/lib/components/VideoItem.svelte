@@ -5,7 +5,7 @@
 	interface VideoItem {
 		video: Video;
 	}
-	let { video }: VideoItem = $props();
+	let { video = $bindable() }: VideoItem = $props();
 </script>
 
 <button
