@@ -681,6 +681,7 @@
 									</button>
 									<button
 										onclick={() => {
+											playlistState.selectedFlag = flag;
 											seek(flag);
 										}}
 										type="button"
