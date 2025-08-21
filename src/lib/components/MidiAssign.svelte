@@ -132,7 +132,7 @@
 			flag.sendCC = -1;
 			flag.sendPC = -1;
 			flag.sendCCValue = -1;
-			flag.seekSecondsBefore = 3;
+			flag.seekSecondsBefore = 4;
 			flag.disabled = false;
 			flag.showCountdown = false;
 		});

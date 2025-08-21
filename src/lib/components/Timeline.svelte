@@ -10,6 +10,7 @@
 	let newFlagName: string = $state('');
 
 	let countdownInterval: number | undefined = undefined;
+	let countdownDefaultBase: number = $state(5);
 	let countdownName: string = $state('');
 	let countdownTime: number = $state(5);
 	let countdownColor: 'red' | 'blue' | 'purple' | 'amber' | 'teal' | 'teal-orange' = $state('blue');
@@ -96,7 +97,7 @@
 		if (flags) {
 			flags.forEach((flag) => {
 				if (timelineState.currentTime - timelineState.prevCurrentTime <= 0.2) {
-					let baseCountdown = Math.min(5, Math.floor(flag.time));
+					let baseCountdown = Math.min(countdownDefaultBase, Math.floor(flag.time));
 
 					if (flag.showCountdown && baseCountdown >= 1) {
 						if (
@@ -109,6 +110,7 @@
 							}
 
 							countdownTime = baseCountdown;
+							countdownDefaultBase = 5; // reset the base if it was changed from a seek
 							countdownName = flag.name;
 
 							if (flag.disabled) {
@@ -190,6 +192,9 @@
 									clearInterval(countdownInterval);
 								}
 								youtubeState.youtubePlayer.seekTo(newTime);
+								if (flag.seekSecondsBefore > 1) {
+									countdownDefaultBase = Math.min(5, Math.floor(flag.seekSecondsBefore - 1));
+								}
 								flagFound = true;
 							}
 						});
@@ -210,7 +215,7 @@
 									}
 
 									const prevFlags = flags
-										?.filter((flag) => flag.time < currentTimePrev - 1) // give 1 second grace
+										?.filter((flag) => flag.time < currentTimePrev - 1 && !flag.disabled) // give 1 second grace
 										.sort((a, b) => {
 											if (a.time < b.time) {
 												return -1;
@@ -233,6 +238,13 @@
 												clearInterval(countdownInterval);
 											}
 											youtubeState.youtubePlayer.seekTo(prevNewTime);
+
+											if (lastFlag.seekSecondsBefore > 1) {
+												countdownDefaultBase = Math.min(
+													5,
+													Math.floor(lastFlag.seekSecondsBefore - 1)
+												);
+											}
 										}
 									} else {
 										layoutState.showCountdown = false;
@@ -245,7 +257,7 @@
 								case globalMIDI.value.nextFlag:
 									const currentTimeNext = youtubeState.youtubePlayer.getCurrentTime();
 									const nextFlags = flags
-										?.filter((flag) => flag.time > currentTimeNext)
+										?.filter((flag) => flag.time > currentTimeNext && !flag.disabled)
 										.sort((a, b) => {
 											if (a.time < b.time) {
 												return -1;
@@ -281,6 +293,12 @@
 															clearInterval(countdownInterval);
 														}
 														youtubeState.youtubePlayer.seekTo(nextNewTimeSecond);
+														if (secondFlag.seekSecondsBefore > 1) {
+															countdownDefaultBase = Math.min(
+																5,
+																Math.floor(secondFlag.seekSecondsBefore - 1)
+															);
+														}
 													}
 												} else {
 													const durationNext = youtubeState.youtubePlayer.getDuration();
@@ -297,6 +315,12 @@
 													clearInterval(countdownInterval);
 												}
 												youtubeState.youtubePlayer.seekTo(nextNewTime);
+												if (firstFlag.seekSecondsBefore > 1) {
+													countdownDefaultBase = Math.min(
+														5,
+														Math.floor(firstFlag.seekSecondsBefore - 1)
+													);
+												}
 											}
 										}
 									} else {
@@ -484,6 +508,9 @@
 			}
 			const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
 			youtubeState.youtubePlayer.seekTo(newTime);
+			if (flag.seekSecondsBefore > 1) {
+				countdownDefaultBase = Math.min(5, Math.floor(flag.seekSecondsBefore - 1));
+			}
 		}
 	}
 

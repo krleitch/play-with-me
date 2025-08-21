@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       time: formData.get('time'),
       video: formData.get('videoId'),
       seekCC: -1,
-      seekSecondsBefore: 3,
+      seekSecondsBefore: 4,
       sendCC: -1,
       disabled: false,
       showCountdown: false,
