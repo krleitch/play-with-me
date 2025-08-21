@@ -258,17 +258,46 @@
 									if (nextFlags && nextFlags.length > 0) {
 										const firstFlag = nextFlags.at(0);
 										if (firstFlag) {
-											// const nextBefore =
-											// 	globalMIDI.value.prevNextSecondsBefore >= 0
-											// 		? globalMIDI.value.prevNextSecondsBefore
-											// 		: firstFlag.seekSecondsBefore;
-											const nextBefore = 0;
-											const nextNewTime = Math.max(0, firstFlag.time - nextBefore);
-											layoutState.showCountdown = false;
-											if (countdownInterval) {
-												clearInterval(countdownInterval);
+											const nextBefore =
+												globalMIDI.value.prevNextSecondsBefore >= 0
+													? globalMIDI.value.prevNextSecondsBefore
+													: firstFlag.seekSecondsBefore;
+											// const nextBefore = 0;
+											if (currentTimeNext >= firstFlag.time - nextBefore) {
+												// go to the second flag
+												if (nextFlags.length > 1) {
+													const secondFlag = nextFlags.at(1);
+													if (secondFlag) {
+														const nextBeforeSecond =
+															globalMIDI.value.prevNextSecondsBefore >= 0
+																? globalMIDI.value.prevNextSecondsBefore
+																: secondFlag.seekSecondsBefore;
+														const nextNewTimeSecond = Math.max(
+															0,
+															secondFlag.time - nextBeforeSecond
+														);
+														layoutState.showCountdown = false;
+														if (countdownInterval) {
+															clearInterval(countdownInterval);
+														}
+														youtubeState.youtubePlayer.seekTo(nextNewTimeSecond);
+													}
+												} else {
+													const durationNext = youtubeState.youtubePlayer.getDuration();
+													layoutState.showCountdown = false;
+													if (countdownInterval) {
+														clearInterval(countdownInterval);
+													}
+													youtubeState.youtubePlayer.seekTo(durationNext - 0.2);
+												}
+											} else {
+												const nextNewTime = Math.max(0, firstFlag.time - nextBefore);
+												layoutState.showCountdown = false;
+												if (countdownInterval) {
+													clearInterval(countdownInterval);
+												}
+												youtubeState.youtubePlayer.seekTo(nextNewTime);
 											}
-											youtubeState.youtubePlayer.seekTo(nextNewTime);
 										}
 									} else {
 										const durationNext = youtubeState.youtubePlayer.getDuration();
@@ -393,9 +422,9 @@
 	}
 
 	function getFlagDescClass(flag: Flag): string {
-    if (flag.disabled) {
-      return 'flag-desc-disabled';
-    } else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+		if (flag.disabled) {
+			return 'flag-desc-disabled';
+		} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-desc-teal-amber';
 		} else if (flag.sendPC >= 0) {
 			return 'flag-desc-teal';
