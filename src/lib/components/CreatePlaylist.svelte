@@ -64,6 +64,8 @@
 		const createdPlaylist: Playlist = await playlistResponse.json();
 
 		// Add the videos
+		// add in reverse order so the first is the lastPlayed
+		videos.reverse();
 		for (const video of videos) {
 			const youtubeId = youtubeUrlToId(video.youtubeUrl);
 

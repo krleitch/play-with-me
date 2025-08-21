@@ -13,6 +13,7 @@
 		tags: Tag[];
 		youtubeUrl: string;
 		flags: Flag[];
+		lastPlayed: string;
 	};
 
 	let genres: Genre[] = $state([]);
@@ -37,6 +38,7 @@
 					artist: video.artist,
 					tags: video.tags,
 					flags: video.flags,
+					lastPlayed: video.lastPlayed,
 					youtubeUrl: 'https://www.youtube.com/watch?v=' + video.youtubeId
 				};
 			});
@@ -57,6 +59,7 @@
 			title: '',
 			artist: '',
 			youtubeUrl: '',
+			lastPlayed: new Date().toISOString(),
 			tags: [],
 			flags: []
 		});
@@ -122,7 +125,8 @@
 					artist: video.artist,
 					youtubeId: youtubeId,
 					playlistId: updatedPlaylist.id,
-					tags: JSON.stringify(video.tags)
+					tags: JSON.stringify(video.tags),
+					lastPlayed: video.lastPlayed
 				});
 
 				const videoResponse = await fetch('/api/video', {
@@ -146,6 +150,7 @@
 					artist: video.artist,
 					youtubeId: youtubeId,
 					playlistId: updatedPlaylist.id,
+					lastPlayed: video.lastPlayed,
 					tags: JSON.stringify(video.tags)
 				});
 
@@ -179,7 +184,17 @@
 		// RESET
 		if (playlistState.selectedPlaylist?.id == updatedPlaylist.id) {
 			playlistState.selectedPlaylist = updatedPlaylist;
-			playlistState.selectedVideo = playlistState.selectedPlaylist.videos.at(0);
+			// select most recently played video
+			if (playlistState.selectedPlaylist.videos?.length > 0) {
+				playlistState.selectedVideo = playlistState.selectedPlaylist.videos.reduce(
+					(mostRecent, current) => {
+						const dateMostRecent = new Date(mostRecent.lastPlayed).getTime();
+						const dateCurrent = new Date(current.lastPlayed).getTime();
+						return dateCurrent > dateMostRecent ? current : mostRecent;
+					},
+					playlistState.selectedPlaylist.videos[0]
+				);
+			}
 		}
 		layoutState.showEditPlaylist = false;
 	}

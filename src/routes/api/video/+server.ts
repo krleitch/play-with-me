@@ -51,13 +51,13 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
-    const { videoId, playlistId, youtubeId, title, artist, tags } = await request.json();
+    const { videoId, playlistId, youtubeId, title, artist, tags, lastPlayed } = await request.json();
 
     const data = {
       title: title,
       artist: artist,
       youtubeId: youtubeId,
-      lastPlayed: new Date().toISOString(),
+      lastPlayed: lastPlayed,
       tags: JSON.parse(tags),
       playlist: playlistId
     };
@@ -70,7 +70,9 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       artist: record.artist,
       created: record.created,
       tags: record.tags,
+      flags: record.flags,
       updated: record.updated,
+      lastPlayed: record.lastPlayed,
       youtubeId: record.youtubeId
     });
   } catch (err: any) {
