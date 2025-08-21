@@ -39,7 +39,7 @@
 <div
 	in:fade={{ duration: 500 }}
 	out:fade={{ duration: 500 }}
-	class="relative m-4 h-24 w-full max-w-full bg-zinc-800"
+	class="relative m-4 box-border h-24 w-full max-w-full border-r-4 border-rose-500 bg-zinc-800"
 >
 	<div
 		class="relative h-full w-full bg-zinc-900"
@@ -47,14 +47,17 @@
 	>
 		<div class={getCountdownClass()}></div>
 	</div>
-	<div class="absolute top-0 left-0 box-border flex h-full w-full items-center justify-center">
-		<span class="hidden lg:block">
-			<span class="material-symbols-outlined !text-7xl">timer</span>
-		</span>
-		<span class="ml-4 overflow-hidden text-7xl text-nowrap overflow-ellipsis text-zinc-100 lg:ml-0"
-			>{countdownName}</span
-		>
-		<span class="mt-1 mr-4 ml-4 text-7xl font-bold text-rose-500">{count}</span>
+	<div class="absolute top-0 left-0 box-border flex h-full w-full items-center justify-between">
+		<div class="ml-4 flex items-center">
+			<span class="hidden lg:block">
+				<span class="material-symbols-outlined !text-7xl">timer</span>
+			</span>
+			<span
+				class="ml-4 overflow-hidden text-7xl text-nowrap overflow-ellipsis text-zinc-100 lg:ml-0"
+				>{countdownName}</span
+			>
+		</div>
+		<span class="mt-1 mr-6 ml-4 text-7xl font-bold text-rose-500">{count}</span>
 	</div>
 	{#each times as _, index}
 		<span
