@@ -393,7 +393,9 @@
 	}
 
 	function getFlagDescClass(flag: Flag): string {
-		if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
+    if (flag.disabled) {
+      return 'flag-desc-disabled';
+    } else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
 			return 'flag-desc-teal-amber';
 		} else if (flag.sendPC >= 0) {
 			return 'flag-desc-teal';
@@ -687,7 +689,7 @@
 										type="button"
 										class={getFlagButtonClass(flag)}
 									>
-										<span class={flag.disabled ? 'text-rose-500' : 'text-zinc-100'}>
+										<span class="text-zinc-100">
 											{flag.name}
 										</span>
 									</button>
@@ -739,6 +741,10 @@
 		@apply absolute text-xs text-rose-900;
 		right: 5px;
 		bottom: -1px;
+	}
+
+	.flag-desc-disabled {
+		@apply cursor-pointer pt-0.5 pl-1 text-xs text-rose-700 hover:text-rose-600;
 	}
 
 	.flag-pole-blue {
