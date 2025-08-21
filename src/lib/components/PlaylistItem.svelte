@@ -43,8 +43,17 @@
 
 	function selectPlaylist() {
 		playlistState.selectedPlaylist = playlist;
-		playlistState.selectedVideo = playlist.videos?.length > 0 ? playlist.videos[0] : undefined;
-		const flagResponse = fetch('/api/playlist/lastPlayed', {
+
+		// select most recently played video
+		if (playlist.videos?.length > 0) {
+			playlistState.selectedVideo = playlist.videos.reduce((mostRecent, current) => {
+				const dateMostRecent = new Date(mostRecent.lastPlayed).getTime();
+				const dateCurrent = new Date(current.lastPlayed).getTime();
+				return dateCurrent > dateMostRecent ? current : mostRecent;
+			}, playlist.videos[0]);
+		}
+
+		const lastPlayedResponse = fetch('/api/playlist/lastPlayed', {
 			method: 'PATCH',
 			body: JSON.stringify({ playlistId: playlist.id, views: playlist.views + 1 })
 		});

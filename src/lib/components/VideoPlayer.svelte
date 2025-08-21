@@ -26,8 +26,13 @@
 
 	if (initialPlaylist) {
 		playlistState.selectedPlaylist = initialPlaylist;
-		playlistState.selectedVideo =
-			initialPlaylist.videos?.length > 0 ? initialPlaylist.videos[0] : undefined;
+		if (initialPlaylist.videos?.length > 0) {
+			playlistState.selectedVideo = initialPlaylist.videos.reduce((mostRecent, current) => {
+				const dateMostRecent = new Date(mostRecent.lastPlayed).getTime();
+				const dateCurrent = new Date(current.lastPlayed).getTime();
+				return dateCurrent > dateMostRecent ? current : mostRecent;
+			}, initialPlaylist.videos[0]);
+		}
 		initialVideoId = playlistState.selectedVideo ? playlistState.selectedVideo.youtubeId : '';
 		// ENABLE if you want it to update the lastPlayed of the playlist when it auto selects
 		// const flagResponse = fetch('/api/playlist/lastPlayed', {

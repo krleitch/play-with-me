@@ -12,6 +12,11 @@
 	class={playlistState.selectedVideo?.id == video.id ? 'bg-zinc-900' : ''}
 	onclick={() => {
 		playlistState.selectedVideo = video;
+		const lastPlayedResponse = fetch('/api/video/lastPlayed', {
+			method: 'PATCH',
+			body: JSON.stringify({ videoId: video.id })
+		});
+		video.lastPlayed = new Date().toISOString();
 	}}
 >
 	<div class="flex h-[65px] flex-row space-x-2">
