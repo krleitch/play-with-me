@@ -187,7 +187,7 @@
 										currentTimePrev = youtubeState.youtubePlayer.getCurrentTime();
 									}
 
-									const prevFlags = flags
+									const prevFlags = playlistState.selectedVideo.flags
 										?.filter((flag) => flag.time < currentTimePrev - 1 && !flag.disabled) // give 1 second grace
 										.sort((a, b) => {
 											if (a.time < b.time) {
@@ -230,7 +230,7 @@
 									break;
 								case globalMIDI.value.nextFlag:
 									const currentTimeNext = youtubeState.youtubePlayer.getCurrentTime();
-									const nextFlags = flags
+									const nextFlags = playlistState.selectedVideo.flags
 										?.filter((flag) => flag.time > currentTimeNext && !flag.disabled)
 										.sort((a, b) => {
 											if (a.time < b.time) {
@@ -644,7 +644,7 @@
 								onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
 								aria-label="Disable Flag"
 								class={playlistState.selectedFlag.disabled
-									? 'flex cursor-pointer text-rose-600'
+									? 'flex cursor-pointer text-rose-700'
 									: 'flex cursor-pointer text-zinc-100'}
 							>
 								<span class="material-symbols-outlined">flag</span>
