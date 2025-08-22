@@ -223,7 +223,7 @@
 									</div>
 									<button
 										type="button"
-										class={flag.showCountdown ? 'mt-auto !bg-sky-900 !px-2' : 'mt-auto !px-2'}
+										class={flag.showCountdown ? 'mt-auto !bg-sky-700 !px-2' : 'mt-auto !px-2'}
 										onclick={() => toggleShowCountdown(flag)}
 										aria-label="Show Countdown"
 									>
@@ -231,11 +231,11 @@
 									</button>
 									<button
 										type="button"
-										class={flag.disabled ? 'mt-auto !bg-rose-900 !px-2' : 'mt-auto !px-2'}
+										class={flag.disabled ? 'mt-auto !bg-rose-700 !px-2' : 'mt-auto !px-2'}
 										onclick={() => toggleDisableFlag(flag)}
 										aria-label="Disable Flag"
 									>
-										<span class="material-symbols-outlined">sports_score</span>
+										<span class="material-symbols-outlined">flag</span>
 									</button>
 								</div>
 								<!-- CC and PC and SEEK -->

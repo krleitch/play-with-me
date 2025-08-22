@@ -132,7 +132,7 @@
 	<div class="ml-2 flex flex-row items-center space-x-2">
 		<!-- Sort -->
 		{#if sortType}
-			<button type="button" onclick={toggleSort} aria-label="Sort">
+			<button class="!px-2" type="button" onclick={toggleSort} aria-label="Sort">
 				<!-- <span class="material-symbols-outlined">sort</span> -->
 				{#if sortType == 'created'}
 					<!-- <span> Created </span> -->
@@ -154,7 +154,11 @@
 				placeholder="Search..."
 				id="searchInput"
 			/>
-			<button type="button" class="!rounded-tl-none !rounded-bl-none !px-2" onclick={resetFilters}>
+			<button
+				type="button"
+				class="!rounded-tl-none !rounded-bl-none !bg-zinc-950 !px-2 hover:!bg-zinc-950"
+				onclick={resetFilters}
+			>
 				<span class="material-symbols-outlined">close</span>
 			</button>
 		</div>

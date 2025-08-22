@@ -556,6 +556,40 @@
 			event.originalTarget.reset();
 		}
 	}
+	async function onSubmitMIDI(
+		event: SubmitEvent & {
+			currentTarget: EventTarget & HTMLFormElement;
+			originalTarget: EventTarget & HTMLFormElement;
+		}
+	) {
+		if (!playlistState.selectedVideo || !playlistState.selectedFlag) return;
+
+		const data = JSON.stringify({
+			flagId: playlistState.selectedFlag.id,
+			name: playlistState.selectedFlag.name,
+			time: playlistState.selectedFlag.time,
+			seekCC: playlistState.selectedFlag.seekCC,
+			seekSecondsBefore: playlistState.selectedFlag.seekSecondsBefore,
+			sendCC: playlistState.selectedFlag.sendCC,
+			disabled: playlistState.selectedFlag.disabled,
+			showCountdown: playlistState.selectedFlag.showCountdown,
+			sendCCValue: playlistState.selectedFlag.sendCCValue,
+			sendPC: playlistState.selectedFlag.sendPC
+		});
+
+		const flagResponse = await fetch('/api/flag', {
+			method: 'PATCH',
+			body: data
+		});
+		const updatedFlag: Flag = await flagResponse.json();
+
+		// Update state
+		let flagIndex = playlistState.selectedVideo.flags.findIndex(
+			(flag) => flag.id == updatedFlag.id
+		);
+		playlistState.selectedVideo.flags.splice(flagIndex, 1);
+		playlistState.selectedVideo.flags.splice(flagIndex, 0, updatedFlag);
+	}
 
 	async function midiAddFlag(flagName: string) {
 		const formData = new FormData();
@@ -600,7 +634,7 @@
 	}
 </script>
 
-<div class="relative flex h-36 flex-col rounded-xl px-[10px] pt-2">
+<div class="relative flex h-36 flex-col rounded-xl px-[10px]">
 	{#if layoutState.showCountdown}
 		<div class="absolute top-[-180px] left-[-17px] box-border w-full px-8">
 			<Timer {countdownName} {countdownTime} {countdownColor} />
@@ -608,119 +642,207 @@
 	{/if}
 
 	<!-- NAV -->
-	<div class="flex w-full flex-row justify-between">
+	<div class="flex min-h-[52px] w-full flex-row justify-between">
 		<!-- Left -->
 		<div class="mr-2 flex flex-1 flex-row space-x-2">
 			{#if playlistState.selectedFlag}
-				<!-- Flag name -->
-				<div
-					class="flex max-h-[40px] max-w-58 flex-1 flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
-				>
-					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
-						<span class="material-symbols-outlined">flag</span>
-						<span>{playlistState.selectedFlag.name}</span>
-					</div>
-					<!-- Delete -->
-					<button
-						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
-						type="button"
-						onclick={deleteFlag}
-						aria-label="Add Playlist"
-					>
-						<span class="material-symbols-outlined">delete_forever</span>
-					</button>
-				</div>
-				<!-- Flag time -->
-				<div
-					class="flex max-h-[40px] flex-row items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950"
-				>
-					<div class="flex flex-row items-center space-x-1 overflow-hidden px-2 text-nowrap">
-						<span class="material-symbols-outlined">alarm</span>
+				<div class="flex flex-col space-y-1">
+					<!-- Flag Name -->
+					<div class="flex flex-row items-center space-x-1 text-nowrap">
 						<button
-							class="cursor-pointer hover:text-zinc-300"
 							type="button"
-							onclick={() => seekRealTime(playlistState.selectedFlag.time)}
+							onclick={deleteFlag}
+							aria-label="Delete Flag"
+							class="mr-1 flex w-[74px] cursor-pointer items-center rounded bg-zinc-800 px-1 py-0.5 text-sm hover:bg-zinc-700"
 						>
-							<span>{secondsToStringTime(playlistState.selectedFlag.time)}</span>
+							<span class="material-symbols-outlined !text-[18px]">delete_forever</span>
+							<span class="mx-1 text-sm">Delete</span>
+						</button>
+						<button
+							type="button"
+							onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
+							aria-label="Disable Flag"
+							style="color: {playlistState.selectedFlag.disabled ? '#e11d48' : '#d4d4d8'}"
+							class={'flex cursor-pointer hover:text-rose-500'}
+						>
+							<span class="material-symbols-outlined">flag</span>
+						</button>
+						<span class="text-md flex-1">{playlistState.selectedFlag.name}</span>
+					</div>
+					<!-- Flag Time -->
+					<div class="flex flex-row items-center space-x-1 text-nowrap">
+						<button
+							type="button"
+							onclick={() => (playlistState.selectedFlag ? seek(playlistState.selectedFlag) : null)}
+							aria-label="Seek"
+							class="mr-1 flex w-[74px] cursor-pointer items-center rounded bg-zinc-800 px-1 py-0.5 text-sm hover:bg-zinc-700"
+						>
+							<span class="material-symbols-outlined !text-[18px]">video_search</span>
+							<span class="mx-1 text-sm">Seek</span>
+						</button>
+						<button
+							type="button"
+							onclick={() => toggleShowCountdown(playlistState.selectedFlag)}
+							aria-label="Show Countdown"
+							style="color: {playlistState.selectedFlag.showCountdown ? '#0284c7' : '#d4d4d8'}"
+							class={'flex cursor-pointer hover:text-rose-500'}
+						>
+							<span class="material-symbols-outlined">alarm</span>
+						</button>
+						<button
+							type="button"
+							onclick={() =>
+								playlistState.selectedFlag ? seekRealTime(playlistState.selectedFlag.time) : null}
+							class="text-md mr-auto flex flex-1 cursor-pointer justify-start text-zinc-400 hover:text-zinc-300"
+						>
+							{secondsToStringTime(playlistState.selectedFlag.time)}
 						</button>
 					</div>
-					<!-- Seek -->
-					<button
-						type="button"
-						onclick={() => (playlistState.selectedFlag ? seek(playlistState.selectedFlag) : null)}
-						aria-label="Add Playlist"
-						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
-					>
-						<span class="material-symbols-outlined">video_search</span>
-					</button>
 				</div>
-				<!-- Show Countdown -->
-				<button
-					type="button"
-					class={playlistState.selectedFlag.showCountdown
-						? 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-sky-900 px-2 py-2 text-nowrap hover:bg-sky-900 lg:flex'
-						: 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 lg:flex '}
-					onclick={() => toggleShowCountdown(playlistState.selectedFlag)}
-					aria-label="Show Countdown"
-				>
-					<span class="material-symbols-outlined">timer</span>
-				</button>
-				<!-- Disable -->
-				<button
-					type="button"
-					class={playlistState.selectedFlag.disabled
-						? 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-rose-900 px-2 py-2 text-nowrap hover:bg-rose-900 lg:flex'
-						: 'hidden max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-2 py-2 text-nowrap hover:bg-zinc-700 lg:flex '}
-					onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
-					aria-label="Disable Flag"
-				>
-					<span class="material-symbols-outlined">sports_score</span>
-				</button>
 			{/if}
 		</div>
 
 		<!-- Right -->
 		<div class="flex flex-row space-x-2">
-			<!-- Add -->
-			<form id="add-flag" onsubmit={onSubmit}>
-				<div class="flex flex-row items-center rounded-xl border border-zinc-800 bg-zinc-950">
-					<input
-						class="w-48 rounded-tl-xl rounded-bl-xl"
-						bind:value={newFlagName}
-						type="text"
-						name="name"
-						autocomplete="off"
-						required
-						placeholder="Flag Name..."
-					/>
-					<button
-						class="flex cursor-pointer items-center rounded-tr-xl rounded-br-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
-						type="submit"
-					>
-						<span class="material-symbols-outlined">flag_check</span>
-					</button>
+			<!-- MIDI -->
+			{#if playlistState.selectedFlag}
+				<form
+					class="mr-2 hidden flex-row space-x-2 border-r-2 border-r-zinc-900 pr-2 lg:flex"
+					onsubmit={onSubmitMIDI}
+				>
+					<!-- CC -->
+					<div class="flex flex-col">
+						<div
+							class="mt-1 flex max-w-16 flex-row items-center space-x-1 border-b-1 border-amber-800"
+						>
+							<span class="material-symbols-outlined !text-[16px]">sports_esports</span>
+							<input
+								class="p-0 text-sm"
+								id="sendCC"
+								bind:value={playlistState.selectedFlag.sendCC}
+								autocomplete="off"
+								type="number"
+								required
+								placeholder="CC"
+							/>
+						</div>
+						<div
+							class="mt-1 flex max-w-16 flex-row items-center space-x-1 border-b-1 border-amber-800"
+						>
+							<span class="material-symbols-outlined !text-[16px]">numbers</span>
+							<input
+								class="p-0 text-sm"
+								id="sendCCValue"
+								bind:value={playlistState.selectedFlag.sendCCValue}
+								autocomplete="off"
+								type="number"
+								required
+								placeholder="Val"
+							/>
+						</div>
+					</div>
+					<!-- SEEK -->
+					<div class="flex flex-col">
+						<div
+							class="mt-1 flex max-w-16 flex-row items-center space-x-1 border-b-1 border-violet-800"
+						>
+							<span class="material-symbols-outlined !text-[16px]">video_search</span>
+							<input
+								class="p-0 text-sm"
+								id="seekCC"
+								bind:value={playlistState.selectedFlag.seekCC}
+								autocomplete="off"
+								type="number"
+								required
+								placeholder="Seek"
+							/>
+						</div>
+						<div
+							class="mt-1 flex max-w-16 flex-row items-center space-x-1 border-b-1 border-violet-800"
+						>
+							<span class="material-symbols-outlined !text-[16px]">timer</span>
+							<input
+								class="p-0 text-sm"
+								id="seekSecondsBefore"
+								bind:value={playlistState.selectedFlag.seekSecondsBefore}
+								autocomplete="off"
+								type="number"
+								step="any"
+								required
+								placeholder="Sec"
+							/>
+						</div>
+					</div>
+					<!-- PC + Save -->
+					<div class="flex flex-col">
+						<div
+							class="mt-1 flex max-w-16 flex-row items-center space-x-1 border-b-1 border-teal-800"
+						>
+							<span class="material-symbols-outlined !text-[16px]">computer</span>
+							<input
+								class="p-0 text-sm"
+								id="sendPC"
+								bind:value={playlistState.selectedFlag.sendPC}
+								autocomplete="off"
+								type="number"
+								required
+								placeholder="PC"
+							/>
+						</div>
+						<button
+							class="mt-1 flex flex-1 cursor-pointer items-center rounded bg-zinc-800 py-0.5 pr-2 pl-1 text-sm hover:bg-zinc-700"
+							type="submit"
+						>
+							<span class="material-symbols-outlined mx-1 !text-sm">save</span>
+							<span class="text-sm">Save</span>
+						</button>
+					</div>
+				</form>
+			{/if}
+
+			<!-- ADD -->
+			<form class="flex items-center" id="add-flag" onsubmit={onSubmit}>
+				<div class="flex flex-col">
+					<!-- TOP -->
+					<div class="flex flex-row items-center border-b-1 border-zinc-800">
+						<input
+							class="p-0"
+							bind:value={newFlagName}
+							type="text"
+							name="name"
+							autocomplete="off"
+							required
+							placeholder="Flag Name..."
+						/>
+					</div>
+					<!-- Bottom -->
+					<div class="mt-1 flex flex-row space-x-1 text-nowrap">
+						<button
+							class="flex flex-1 cursor-pointer items-center rounded bg-zinc-800 py-0.5 pr-2 pl-1 text-sm hover:bg-zinc-700"
+							type="submit"
+						>
+							<span class="material-symbols-outlined mx-1 !text-sm">flag_check</span>
+							<span class="text-sm">Create</span>
+						</button>
+						<button
+							class="flex cursor-pointer items-center rounded bg-zinc-800 py-0.5 pr-2 pl-1 text-sm hover:bg-zinc-700"
+							type="button"
+							onclick={() => {
+								layoutState.showMidiAssign = true;
+							}}
+							aria-label="Midi Assign"
+						>
+							<span class="material-symbols-outlined mx-1 !text-sm">piano</span>
+							<span class="text-sm">MIDI Assign</span>
+						</button>
+					</div>
 				</div>
 			</form>
-			<!--  MIDI Assign -->
-			<button
-				class="flex max-h-[40px] cursor-pointer items-center space-x-1 rounded-xl bg-zinc-800 px-4 py-2 text-nowrap hover:bg-zinc-700"
-				type="button"
-				onclick={() => {
-					layoutState.showMidiAssign = true;
-					// if (youtubeState.youtubePlayer) {
-					// 	youtubeState.youtubePlayer.pauseVideo();
-					// }
-				}}
-				aria-label="Add Playlist"
-			>
-				<span class="material-symbols-outlined !mr-0">piano</span>
-				<span class="ml-1 hidden lg:block">MIDI Assign</span>
-			</button>
 		</div>
 	</div>
 
 	<!-- Timeline -->
-	<div class="relative mt-4 flex h-full flex-col justify-between">
+	<div class="relative mt-2 flex h-full flex-col justify-between">
 		{#if playlistState.selectedVideo}
 			{#if flags}
 				{#each flags as flag}
@@ -760,8 +882,7 @@
 									{getFlagDesc(flag)}
 								</button>
 								{#if flag.showCountdown}
-									<span
-										class="material-symbols-outlined mt-[1.5px] pl-0.5 !text-[13px] text-zinc-100"
+									<span class="material-symbols-outlined mt-[6px] pl-0.5 !text-[13px] text-zinc-100"
 										>timer</span
 									>
 								{/if}
@@ -806,7 +927,7 @@
 	}
 
 	.flag-desc-disabled {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs text-rose-700 hover:text-rose-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-rose-700 hover:text-rose-600;
 	}
 
 	.flag-pole-blue {
@@ -821,7 +942,7 @@
 		@apply bg-gradient-to-r from-sky-900 to-sky-950 pr-2 pb-2 pl-1 hover:from-sky-800;
 	}
 	.flag-desc-blue {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs text-sky-700 hover:text-sky-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-sky-700 hover:text-sky-600;
 	}
 
 	.flag-pole-teal {
@@ -836,7 +957,7 @@
 		@apply bg-gradient-to-r from-teal-900 to-teal-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs text-teal-700 hover:text-teal-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-teal-700 hover:text-teal-600;
 	}
 
 	.flag-pole-violet {
@@ -851,7 +972,7 @@
 		@apply bg-gradient-to-r from-violet-900 to-violet-950 pr-2 pb-2 pl-1 hover:text-violet-800;
 	}
 	.flag-desc-violet {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs text-violet-700 hover:text-violet-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-violet-700 hover:text-violet-600;
 	}
 
 	.flag-pole-amber {
@@ -866,7 +987,7 @@
 		@apply bg-gradient-to-r from-amber-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-amber-800;
 	}
 	.flag-desc-amber {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs text-amber-700 hover:text-amber-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-amber-700 hover:text-amber-600;
 	}
 
 	.flag-pole-teal-amber {
@@ -881,7 +1002,7 @@
 		@apply bg-gradient-to-r from-teal-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal-amber {
-		@apply cursor-pointer pt-0.5 pl-1 text-xs;
+		@apply cursor-pointer pt-1 pl-1 text-xs;
 		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent hover:from-teal-600;
 	}
 
@@ -901,8 +1022,14 @@
 		opacity: 0.5;
 		@apply text-zinc-300;
 	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
 
-	.material-symbols-outlined {
-		@apply text-zinc-300;
+	/* Firefox */
+	input[type='number'] {
+		-moz-appearance: textfield;
 	}
 </style>
