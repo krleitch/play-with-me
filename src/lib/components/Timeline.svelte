@@ -611,7 +611,7 @@
 	<!-- NAV -->
 	<div class="flex min-h-[52px] w-full flex-row justify-between">
 		<!-- Left -->
-		<div class="mr-2 flex flex-1 flex-row space-x-2">
+		<div class="mr-2 flex flex-row space-x-2">
 			{#if playlistState.selectedFlag}
 				<div class="flex flex-row space-x-2">
 					<!-- Buttons -->
@@ -651,7 +651,7 @@
 							</button>
 							<input
 								class={getFlagNameClass(playlistState.selectedFlag)}
-								style="padding: 0"
+								style="padding: 0; min-width:85px"
 								bind:value={playlistState.selectedFlag.name}
 							/>
 						</div>
@@ -675,6 +675,7 @@
 							>
 								{secondsToStringTime(playlistState.selectedFlag.time)}
 							</button>
+							<div class="flex-1"></div>
 						</div>
 					</div>
 				</div>
