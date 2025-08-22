@@ -204,7 +204,7 @@
 
 	button {
 		@apply flex cursor-pointer flex-row items-center text-nowrap;
-		@apply rounded-xl bg-zinc-800 px-4 py-2 hover:bg-zinc-700;
+		@apply rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4;
 	}
 
 	.material-symbols-outlined {

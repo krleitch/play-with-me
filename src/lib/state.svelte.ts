@@ -26,6 +26,7 @@ interface LayoutState {
   showMidiAssign: boolean;
   showGlobalMidi: boolean;
   showCountdown: boolean;
+  showAddFlag: boolean;
 }
 
 interface YoutubeState {
@@ -107,5 +108,6 @@ export const layoutState: LayoutState = $state({
   showEditPlaylist: false,
   showMidiAssign: false,
   showGlobalMidi: false,
-  showCountdown: false
+  showCountdown: false,
+  showAddFlag: false
 });
