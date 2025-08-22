@@ -192,7 +192,7 @@
 									clearInterval(countdownInterval);
 								}
 								youtubeState.youtubePlayer.seekTo(newTime);
-								if (flag.seekSecondsBefore > 1) {
+								if (flag.seekSecondsBefore > 1 && flag.showCountdown) {
 									countdownDefaultBase = Math.min(5, Math.floor(flag.seekSecondsBefore - 1));
 								}
 								flagFound = true;
@@ -239,11 +239,12 @@
 											}
 											youtubeState.youtubePlayer.seekTo(prevNewTime);
 
-											if (lastFlag.seekSecondsBefore > 1) {
-												countdownDefaultBase = Math.min(
-													5,
-													Math.floor(lastFlag.seekSecondsBefore - 1)
-												);
+											const newDefaultCountdown =
+												globalMIDI.value.prevNextSecondsBefore >= 0
+													? globalMIDI.value.prevNextSecondsBefore
+													: lastFlag.seekSecondsBefore;
+											if (newDefaultCountdown > 1 && lastFlag.showCountdown) {
+												countdownDefaultBase = Math.min(5, Math.floor(newDefaultCountdown - 1));
 											}
 										}
 									} else {
@@ -293,10 +294,14 @@
 															clearInterval(countdownInterval);
 														}
 														youtubeState.youtubePlayer.seekTo(nextNewTimeSecond);
-														if (secondFlag.seekSecondsBefore > 1) {
+														const newDefaultCountdown =
+															globalMIDI.value.prevNextSecondsBefore >= 0
+																? globalMIDI.value.prevNextSecondsBefore
+																: secondFlag.seekSecondsBefore;
+														if (newDefaultCountdown > 1 && secondFlag.showCountdown) {
 															countdownDefaultBase = Math.min(
 																5,
-																Math.floor(secondFlag.seekSecondsBefore - 1)
+																Math.floor(newDefaultCountdown - 1)
 															);
 														}
 													}
@@ -315,11 +320,12 @@
 													clearInterval(countdownInterval);
 												}
 												youtubeState.youtubePlayer.seekTo(nextNewTime);
-												if (firstFlag.seekSecondsBefore > 1) {
-													countdownDefaultBase = Math.min(
-														5,
-														Math.floor(firstFlag.seekSecondsBefore - 1)
-													);
+												const newDefaultCountdown =
+													globalMIDI.value.prevNextSecondsBefore >= 0
+														? globalMIDI.value.prevNextSecondsBefore
+														: firstFlag.seekSecondsBefore;
+												if (newDefaultCountdown > 1 && firstFlag.showCountdown) {
+													countdownDefaultBase = Math.min(5, Math.floor(newDefaultCountdown - 1));
 												}
 											}
 										}
@@ -508,7 +514,7 @@
 			}
 			const newTime = Math.max(0, flag.time - flag.seekSecondsBefore);
 			youtubeState.youtubePlayer.seekTo(newTime);
-			if (flag.seekSecondsBefore > 1) {
+			if (flag.seekSecondsBefore > 1 && flag.showCountdown) {
 				countdownDefaultBase = Math.min(5, Math.floor(flag.seekSecondsBefore - 1));
 			}
 		}
