@@ -3,8 +3,6 @@
 	import { Timer } from '$lib/components';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
 
-	type FlagWithPosition = Flag & { position: number };
-
 	let { globalMIDI } = $props();
 
 	let countdownInterval: number | undefined = undefined;
@@ -12,26 +10,6 @@
 	let countdownName: string = $state('');
 	let countdownTime: number = $state(5);
 	let countdownColor: 'red' | 'blue' | 'purple' | 'amber' | 'teal' | 'teal-orange' = $state('blue');
-
-	let flags: FlagWithPosition[] | undefined = $derived(
-		playlistState.selectedVideo?.flags?.map((flag) => {
-			return {
-				id: flag.id,
-				name: flag.name,
-				time: flag.time,
-				position: (flag.time / timelineState?.timelineLength) * 100,
-				seekCC: flag.seekCC,
-				seekSecondsBefore: flag.seekSecondsBefore,
-				sendCC: flag.sendCC,
-				disabled: flag.disabled,
-				showCountdown: flag.showCountdown,
-				sendCCValue: flag.sendCCValue,
-				sendPC: flag.sendPC,
-				created: flag.created,
-				updated: flag.updated
-			};
-		})
-	);
 
 	let percentComplete = $derived((timelineState.currentTime / timelineState.timelineLength) * 100);
 
@@ -41,12 +19,10 @@
 				method: 'PATCH',
 				body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
 			});
-			playlistState.selectedVideo?.flags.forEach((f) => {
-				if (f.id == flag.id) {
-					f.disabled = !flag.disabled;
-				}
-			});
-			flag.disabled = !flag.disabled;
+
+			if (playlistState.selectedFlag) {
+				playlistState.selectedFlag.disabled = !flag.disabled;
+			}
 		}
 	}
 	function toggleShowCountdown(flag: Flag | undefined) {
@@ -55,12 +31,10 @@
 				method: 'PATCH',
 				body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
 			});
-			playlistState.selectedVideo?.flags.forEach((f) => {
-				if (f.id == flag.id) {
-					f.showCountdown = !flag.showCountdown;
-				}
-			});
-			flag.showCountdown = !flag.showCountdown;
+
+			if (playlistState.selectedFlag) {
+				playlistState.selectedFlag.showCountdown = !flag.showCountdown;
+			}
 		}
 	}
 
@@ -92,8 +66,8 @@
 
 	// CHECK FLAGS
 	$effect(() => {
-		if (flags) {
-			flags.forEach((flag) => {
+		if (playlistState.selectedVideo?.flags) {
+			playlistState.selectedVideo.flags.forEach((flag) => {
 				if (timelineState.currentTime - timelineState.prevCurrentTime <= 0.2) {
 					let baseCountdown = Math.min(countdownDefaultBase, Math.floor(flag.time));
 
@@ -669,14 +643,17 @@
 								type="button"
 								onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
 								aria-label="Disable Flag"
-								style="color: {playlistState.selectedFlag.disabled ? '#e11d48' : '#d4d4d8'}"
-								class={'flex cursor-pointer hover:text-rose-500'}
+								class={playlistState.selectedFlag.disabled
+									? 'flex cursor-pointer text-rose-600'
+									: 'flex cursor-pointer text-zinc-100'}
 							>
 								<span class="material-symbols-outlined">flag</span>
 							</button>
-							<span class={getFlagNameClass(playlistState.selectedFlag)}
-								>{playlistState.selectedFlag.name}</span
-							>
+							<input
+								class={getFlagNameClass(playlistState.selectedFlag)}
+								style="padding: 0"
+								bind:value={playlistState.selectedFlag.name}
+							/>
 						</div>
 						<!-- Flag Time -->
 						<div class="flex flex-row items-center space-x-1 text-nowrap">
@@ -684,8 +661,9 @@
 								type="button"
 								onclick={() => toggleShowCountdown(playlistState.selectedFlag)}
 								aria-label="Show Countdown"
-								style="color: {playlistState.selectedFlag.showCountdown ? '#0284c7' : '#d4d4d8'}"
-								class={'flex cursor-pointer hover:text-rose-500'}
+								class={playlistState.selectedFlag.showCountdown
+									? 'flex cursor-pointer text-sky-600'
+									: 'flex cursor-pointer text-zinc-100'}
 							>
 								<span class="material-symbols-outlined">alarm</span>
 							</button>
@@ -831,10 +809,13 @@
 	<!-- Timeline -->
 	<div class="relative mt-2 flex h-full flex-col justify-between">
 		{#if playlistState.selectedVideo}
-			{#if flags}
-				{#each flags as flag}
-					{#if flag.position <= 100}
-						<div class="absolute z-100 h-full" style="left: {flag.position}%">
+			{#if playlistState.selectedVideo?.flags}
+				{#each playlistState.selectedVideo.flags as flag}
+					{#if (flag.time / timelineState?.timelineLength) * 100 <= 100}
+						<div
+							class="absolute z-100 h-full"
+							style="left: {(flag.time / timelineState?.timelineLength) * 100}%"
+						>
 							<div class={getFlagPoleClass(flag)}>
 								<!-- Countdown -->
 								<!-- {#if flag.time - timelineState.currentTime <= 5 && flag.time - timelineState.currentTime >= 0} -->
@@ -928,11 +909,11 @@
 		@apply bg-sky-800 hover:bg-sky-900;
 	}
 	.flag-button-blue {
-		@apply cursor-pointer rounded-br-md;
+		@apply min-h-[32px] cursor-pointer rounded-br-md;
 		@apply bg-gradient-to-r from-sky-900 to-sky-950 pr-2 pb-2 pl-1 hover:from-sky-800;
 	}
 	.flag-desc-blue {
-		@apply cursor-pointer pt-1 pl-1 text-xs text-sky-700 hover:text-sky-600;
+		@apply min-h-[20px] cursor-pointer pt-1 pl-1 text-xs text-sky-700 hover:text-sky-600;
 	}
 
 	.flag-pole-teal {
@@ -946,11 +927,11 @@
 		@apply bg-teal-800 hover:bg-teal-900;
 	}
 	.flag-button-teal {
-		@apply cursor-pointer rounded-br-md;
+		@apply min-h-[32px] cursor-pointer rounded-br-md;
 		@apply bg-gradient-to-r from-teal-900 to-teal-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal {
-		@apply cursor-pointer pt-1 pl-1 text-xs text-teal-700 hover:text-teal-600;
+		@apply min-h-[20px] cursor-pointer pt-1 pl-1 text-xs text-teal-700 hover:text-teal-600;
 	}
 
 	.flag-pole-violet {
@@ -964,11 +945,11 @@
 		@apply bg-violet-800 hover:bg-violet-900;
 	}
 	.flag-button-violet {
-		@apply cursor-pointer rounded-br-md;
+		@apply min-h-[32px] cursor-pointer rounded-br-md;
 		@apply bg-gradient-to-r from-violet-900 to-violet-950 pr-2 pb-2 pl-1 hover:text-violet-800;
 	}
 	.flag-desc-violet {
-		@apply cursor-pointer pt-1 pl-1 text-xs text-violet-700 hover:text-violet-600;
+		@apply min-h-[20px] cursor-pointer pt-1 pl-1 text-xs text-violet-700 hover:text-violet-600;
 	}
 
 	.flag-pole-amber {
@@ -982,11 +963,11 @@
 		@apply bg-amber-800 hover:bg-amber-900;
 	}
 	.flag-button-amber {
-		@apply cursor-pointer rounded-br-md;
+		@apply min-h-[32px] cursor-pointer rounded-br-md;
 		@apply bg-gradient-to-r from-amber-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-amber-800;
 	}
 	.flag-desc-amber {
-		@apply cursor-pointer pt-1 pl-1 text-xs text-amber-700 hover:text-amber-600;
+		@apply min-h-[20px] cursor-pointer pt-1 pl-1 text-xs text-amber-700 hover:text-amber-600;
 	}
 
 	.flag-pole-teal-amber {
@@ -1000,11 +981,11 @@
 		@apply bg-gradient-to-r from-teal-800 to-amber-800 hover:from-teal-900;
 	}
 	.flag-button-teal-amber {
-		@apply cursor-pointer rounded-br-md;
+		@apply min-h-[32px] cursor-pointer rounded-br-md;
 		@apply bg-gradient-to-r from-teal-900 to-amber-950 pr-2 pb-2 pl-1 hover:from-teal-800;
 	}
 	.flag-desc-teal-amber {
-		@apply cursor-pointer pt-1 pl-1 text-xs;
+		@apply min-h-[20px] cursor-pointer pt-1 pl-1 text-xs;
 		@apply bg-gradient-to-r from-teal-700 to-amber-700 bg-clip-text text-transparent hover:from-teal-600;
 	}
 
