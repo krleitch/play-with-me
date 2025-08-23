@@ -125,6 +125,11 @@
 				<span class="material-symbols-outlined">graphic_eq</span>
 				<span class="ml-1 hidden lg:block"> HxStomp Tuner </span>
 			</button>
+		{:else if !MIDIState.selectedMIDIOutput}
+			<div class="flex flex-row items-center text-nowrap">
+				<span class="material-symbols-outlined !text-yellow-500">warning</span>
+				<span class="ml-1 text-yellow-500">MIDI Device Closed</span>
+			</div>
 		{/if}
 	</div>
 
