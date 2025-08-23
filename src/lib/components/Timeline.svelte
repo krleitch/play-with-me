@@ -710,7 +710,7 @@
 								class="text-md mr-auto flex flex-1 cursor-pointer justify-start text-zinc-400 hover:text-zinc-300"
 							>
 								{#if recentMicroTime}
-									{playlistState.selectedFlag.time}
+									{playlistState.selectedFlag.time.toFixed(6)}
 								{:else}
 									{secondsToStringTime(playlistState.selectedFlag.time)}
 								{/if}
