@@ -55,10 +55,10 @@
 
 	function toggleDisableFlag(flag: Flag | undefined) {
 		if (flag) {
-			const disableResponse = fetch('/api/flag/disabled', {
-				method: 'PATCH',
-				body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
-			});
+			// const disableResponse = fetch('/api/flag/disabled', {
+			// 	method: 'PATCH',
+			// 	body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
+			// });
 			playlistState.selectedVideo?.flags.forEach((f) => {
 				if (f.id == flag.id) {
 					f.disabled = !flag.disabled;
@@ -71,10 +71,10 @@
 	}
 	function toggleShowCountdown(flag: Flag | undefined) {
 		if (flag) {
-			const disableResponse = fetch('/api/flag/showCountdown', {
-				method: 'PATCH',
-				body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
-			});
+			// const disableResponse = fetch('/api/flag/showCountdown', {
+			// 	method: 'PATCH',
+			// 	body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
+			// });
 			playlistState.selectedVideo?.flags.forEach((f) => {
 				if (f.id == flag.id) {
 					f.showCountdown = !flag.showCountdown;
@@ -202,7 +202,6 @@
 											bind:value={flag.name}
 											autocomplete="off"
 											type="text"
-											required
 											placeholder="Flag Name..."
 										/>
 									</div>
@@ -251,7 +250,7 @@
 											autocomplete="off"
 											type="number"
 											required
-											placeholder="Send PC"
+											placeholder="PC"
 										/>
 									</div>
 									<div class="flex flex-col">
@@ -265,7 +264,7 @@
 											autocomplete="off"
 											type="number"
 											required
-											placeholder="Send CC"
+											placeholder="CC"
 										/>
 									</div>
 									<div class="flex flex-col">
@@ -279,7 +278,7 @@
 											autocomplete="off"
 											type="number"
 											required
-											placeholder="CC Value"
+											placeholder="Val"
 										/>
 									</div>
 									<div class="flex flex-col">
@@ -293,7 +292,7 @@
 											autocomplete="off"
 											type="number"
 											required
-											placeholder="Seek CC"
+											placeholder="Seek"
 										/>
 									</div>
 									<div class="flex flex-col">
@@ -308,7 +307,7 @@
 											type="number"
 											step="any"
 											required
-											placeholder="Seconds"
+											placeholder="Sec"
 										/>
 									</div>
 								</div>

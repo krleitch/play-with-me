@@ -1,10 +1,14 @@
 <script lang="ts">
 	import type { Flag } from '$lib';
+	import { fade } from 'svelte/transition';
 	import { Timer } from '$lib/components';
 	import { playlistState, youtubeState, timelineState, layoutState, MIDIState } from '$lib';
 
 	let { globalMIDI } = $props();
 
+	let recentMicroTime = $state(false);
+	let recentMicroInterval: number;
+	let MIDISubmitSuccess = $state(false);
 	let countdownInterval: number | undefined = undefined;
 	let countdownDefaultBase: number = $state(5);
 	let countdownName: string = $state('');
@@ -15,10 +19,10 @@
 
 	function toggleDisableFlag(flag: Flag | undefined) {
 		if (flag) {
-			const disableResponse = fetch('/api/flag/disabled', {
-				method: 'PATCH',
-				body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
-			});
+			// const disableResponse = fetch('/api/flag/disabled', {
+			// 	method: 'PATCH',
+			// 	body: JSON.stringify({ flagId: flag.id, disabled: !flag.disabled })
+			// });
 
 			if (playlistState.selectedFlag) {
 				playlistState.selectedFlag.disabled = !flag.disabled;
@@ -27,10 +31,10 @@
 	}
 	function toggleShowCountdown(flag: Flag | undefined) {
 		if (flag) {
-			const toggleResponse = fetch('/api/flag/showCountdown', {
-				method: 'PATCH',
-				body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
-			});
+			// const toggleResponse = fetch('/api/flag/showCountdown', {
+			// 	method: 'PATCH',
+			// 	body: JSON.stringify({ flagId: flag.id, showCountdown: !flag.showCountdown })
+			// });
 
 			if (playlistState.selectedFlag) {
 				playlistState.selectedFlag.showCountdown = !flag.showCountdown;
@@ -464,13 +468,13 @@
 		if (flag.name.length < 4) {
 			return '';
 		} else if (flag.sendPC >= 0 && flag.sendCC >= 0 && flag.sendCCValue >= 0) {
-			return `PC ${flag.sendPC} CC ${flag.sendCC} ${flag.sendCCValue}`;
+			return `PC ${flag.sendPC ? flag.sendPC : 0} CC ${flag.sendCC ? flag.sendCC : 0} ${flag.sendCCValue ? flag.sendCCValue : 0}`;
 		} else if (flag.sendPC >= 0) {
-			return `PC ${flag.sendPC}`;
+			return `PC ${flag.sendPC ? flag.sendPC : 0}`;
 		} else if (flag.sendCC >= 0 && flag.sendCCValue >= 0) {
-			return `CC ${flag.sendCC} ${flag.sendCCValue}`;
+			return `CC ${flag.sendCC ? flag.sendCC : 0} ${flag.sendCCValue ? flag.sendCCValue : 0}`;
 		} else if (flag.seekCC >= 0) {
-			return `${secondsToStringTime(flag.time)} (${flag.seekCC})`;
+			return `${secondsToStringTime(flag.time)} (${flag.seekCC ? flag.seekCC : 0})`;
 		} else {
 			return secondsToStringTime(flag.time);
 		}
@@ -556,6 +560,11 @@
 		);
 		playlistState.selectedVideo.flags.splice(flagIndex, 1);
 		playlistState.selectedVideo.flags.splice(flagIndex, 0, updatedFlag);
+
+		MIDISubmitSuccess = true;
+		setTimeout(() => {
+			MIDISubmitSuccess = false;
+		}, 2000);
 	}
 
 	async function midiAddFlag(flagName: string) {
@@ -615,7 +624,7 @@
 			{#if playlistState.selectedFlag}
 				<div class="flex flex-row space-x-2">
 					<!-- Buttons -->
-					<div class="mt-1 flex flex-row items-center space-x-2 text-nowrap">
+					<div class="flex flex-row items-center space-x-2 text-nowrap">
 						<button
 							type="button"
 							onclick={deleteFlag}
@@ -673,7 +682,11 @@
 									playlistState.selectedFlag ? seekRealTime(playlistState.selectedFlag.time) : null}
 								class="text-md mr-auto flex flex-1 cursor-pointer justify-start text-zinc-400 hover:text-zinc-300"
 							>
-								{secondsToStringTime(playlistState.selectedFlag.time)}
+								{#if recentMicroTime}
+									{playlistState.selectedFlag.time}
+								{:else}
+									{secondsToStringTime(playlistState.selectedFlag.time)}
+								{/if}
 							</button>
 							<div class="flex-1"></div>
 						</div>
@@ -753,7 +766,7 @@
 							/>
 						</div>
 					</div>
-					<!-- PC + Save -->
+					<!-- PC + Microshift -->
 					<div class="flex flex-col">
 						<div
 							class="mt-1 flex max-w-16 min-w-16 flex-row items-center space-x-1 border-b-1 border-teal-800"
@@ -769,19 +782,81 @@
 								placeholder="PC"
 							/>
 						</div>
+
+						<div class="mt-1 flex flex-row space-x-1">
+							<button
+								class="flex flex-1 cursor-pointer items-center rounded bg-zinc-800 px-1 py-0.5 text-sm hover:bg-zinc-700"
+								type="button"
+								onclick={() => {
+									if (playlistState.selectedFlag) {
+										playlistState.selectedFlag.time = Math.max(
+											0,
+											playlistState.selectedFlag.time - 0.05
+										);
+										if (recentMicroInterval) {
+											clearInterval(recentMicroInterval);
+										}
+										recentMicroTime = true;
+										recentMicroInterval = setTimeout(() => {
+											recentMicroTime = false;
+										}, 2000);
+									}
+								}}
+							>
+								<span class="material-symbols-outlined !text-[20px]">clock_arrow_down</span>
+							</button>
+							<button
+								class="flex flex-1 cursor-pointer items-center rounded bg-zinc-800 px-1 py-0.5 text-sm hover:bg-zinc-700"
+								type="button"
+								onclick={() => {
+									if (playlistState.selectedFlag && youtubeState.youtubePlayer) {
+										playlistState.selectedFlag.time = Math.min(
+											youtubeState.youtubePlayer.getDuration(),
+											playlistState.selectedFlag.time + 0.05
+										);
+										if (recentMicroInterval) {
+											clearInterval(recentMicroInterval);
+										}
+										recentMicroTime = true;
+										recentMicroInterval = setTimeout(() => {
+											recentMicroTime = false;
+										}, 2000);
+									}
+								}}
+							>
+								<span class="material-symbols-outlined !text-[20px]">clock_arrow_up</span>
+							</button>
+						</div>
+					</div>
+					<div class="flex w-[95px] min-w-[95px] items-center justify-center">
 						<button
-							class="mt-1 flex flex-1 cursor-pointer items-center rounded bg-zinc-800 py-0.5 pr-2 pl-1 text-sm hover:bg-zinc-700"
+							class={MIDISubmitSuccess
+								? 'mt-auto mb-auto flex w-[35px] cursor-pointer items-center justify-center rounded-xl bg-emerald-700 py-2 hover:bg-emerald-700'
+								: 'mt-auto mb-auto flex w-[95px] cursor-pointer items-center justify-center rounded-xl bg-zinc-800 py-2 hover:bg-zinc-700'}
+							style="transition: width 0.2s ease-in-out;"
 							type="submit"
 						>
-							<span class="material-symbols-outlined mx-1 !text-sm">save</span>
-							<span class="text-sm">Save</span>
+							{#if MIDISubmitSuccess}
+								<span
+									in:fade={{ duration: 250, delay: 150 }}
+									class="spinner material-symbols-outlined">check</span
+								>
+							{:else}
+								<div
+									in:fade={{ duration: 250, delay: 250 }}
+									class="flex flex-row items-center justify-center"
+								>
+									<span class="material-symbols-outlined">save</span>
+									<span class="ml-1">Save</span>
+								</div>
+							{/if}
 						</button>
 					</div>
 				</form>
 			{/if}
 
 			<!-- ADD -->
-			<div class="mt-1 flex flex-row items-center space-x-2 text-nowrap">
+			<div class="flex flex-row items-center space-x-2 text-nowrap">
 				<button
 					class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4"
 					type="button"
@@ -830,6 +905,7 @@
 										aria-label="Select"
 										onclick={() => {
 											playlistState.selectedFlag = flag;
+											MIDISubmitSuccess = false;
 										}}
 										class={getFlagSelectClass(flag)}
 									>
@@ -837,6 +913,7 @@
 									<button
 										onclick={() => {
 											playlistState.selectedFlag = flag;
+											MIDISubmitSuccess = false;
 											seek(flag);
 										}}
 										type="button"
@@ -881,6 +958,19 @@
 
 <style lang="postcss">
 	@reference "../../app.css";
+
+	.spinner {
+		animation: spin 0.25s linear 0.2s; /* Apply the animation */
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
 
 	.countdown-text {
 		@apply absolute text-sm text-rose-600;
