@@ -14,8 +14,7 @@
 		VideoPlayer,
 		Timeline,
 		MidiAssign,
-		GlobalMidi,
-		AddFlag
+		GlobalMidi
 	} from '$lib/components';
 
 	const globalMIDI = localStore('globalMIDI', {
@@ -113,7 +112,6 @@
 	<EditPlaylist />
 	<MidiAssign />
 	<GlobalMidi {globalMIDI} />
-	<AddFlag />
 </div>
 
 <style>

@@ -527,6 +527,33 @@
 		}
 	}
 
+	async function onSubmit(
+		event: SubmitEvent & {
+			currentTarget: EventTarget & HTMLFormElement;
+			originalTarget: EventTarget & HTMLFormElement;
+		}
+	) {
+		const formData = new FormData(event.currentTarget);
+
+		if (youtubeState.youtubePlayer && playlistState.selectedVideo) {
+			let seconds = youtubeState.youtubePlayer.getCurrentTime();
+
+			formData.set('time', seconds.toString());
+			formData.set('videoId', playlistState.selectedVideo.id);
+
+			const flagResponse = await fetch('/api/flag', {
+				method: 'POST',
+				body: formData
+			});
+
+			const createdFlag: Flag = await flagResponse.json();
+
+			playlistState.selectedVideo.flags.push(createdFlag);
+
+			event.originalTarget.reset();
+		}
+	}
+
 	async function onSubmitMIDI(
 		event: SubmitEvent & {
 			currentTarget: EventTarget & HTMLFormElement;
@@ -856,17 +883,26 @@
 			{/if}
 
 			<!-- ADD -->
-			<div class="flex flex-row items-center space-x-2 text-nowrap">
-				<button
-					class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4"
-					type="button"
-					onclick={() => {
-						layoutState.showAddFlag = true;
-					}}
-				>
-					<span class="material-symbols-outlined">flag_check</span>
-					<span class="ml-1 hidden lg:block">Add Flag</span>
-				</button>
+			<div class="flex flex-row items-center space-x-1 text-nowrap">
+				<form class="flex flex-row items-center" onsubmit={onSubmit}>
+					<div class="mr-2 flex flex-row space-x-1 border-b-1 border-b-zinc-800">
+						<span class="material-symbols-outlined text-zinc-400">flag</span>
+						<input
+							id="name"
+							class="!min-w-12 p-0"
+							name="name"
+							autocomplete="off"
+							type="text"
+							placeholder="Flag Name..."
+						/>
+						<button
+							class="flex cursor-pointer items-center text-zinc-100 hover:text-zinc-300"
+							type="submit"
+						>
+							<span class="material-symbols-outlined text-[14px]">add</span>
+						</button>
+					</div>
+				</form>
 				<button
 					class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4"
 					type="button"
@@ -876,7 +912,7 @@
 					aria-label="Midi Assign"
 				>
 					<span class="material-symbols-outlined">piano</span>
-					<span class="ml-1 hidden lg:block">MIDI Assign</span>
+					<span class="ml-1 hidden lg:block">MIDI</span>
 				</button>
 			</div>
 		</div>

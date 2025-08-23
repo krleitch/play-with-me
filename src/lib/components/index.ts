@@ -13,4 +13,3 @@ export { default as EditPlaylist } from './EditPlaylist.svelte';
 export { default as MidiAssign } from './MidiAssign.svelte';
 export { default as GlobalMidi } from './GlobalMidi.svelte';
 export { default as Timer } from './Timer.svelte';
-export { default as AddFlag } from './AddFlag.svelte';
