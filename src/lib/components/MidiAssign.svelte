@@ -230,7 +230,7 @@
 									</button>
 									<button
 										type="button"
-										class={flag.disabled ? 'mt-auto !bg-rose-700 !px-2' : 'mt-auto !px-2'}
+										class={flag.disabled ? 'mt-auto !bg-rose-800 !px-2' : 'mt-auto !px-2'}
 										onclick={() => toggleDisableFlag(flag)}
 										aria-label="Disable Flag"
 									>

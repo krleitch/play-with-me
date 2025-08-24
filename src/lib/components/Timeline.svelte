@@ -680,8 +680,8 @@
 								onclick={() => toggleDisableFlag(playlistState.selectedFlag)}
 								aria-label="Disable Flag"
 								class={playlistState.selectedFlag.disabled
-									? 'flex cursor-pointer text-rose-700'
-									: 'flex cursor-pointer text-zinc-100'}
+									? 'flex cursor-pointer text-rose-800'
+									: 'flex cursor-pointer text-zinc-400'}
 							>
 								<span class="material-symbols-outlined">flag</span>
 							</button>
@@ -698,8 +698,8 @@
 								onclick={() => toggleShowCountdown(playlistState.selectedFlag)}
 								aria-label="Show Countdown"
 								class={playlistState.selectedFlag.showCountdown
-									? 'flex cursor-pointer text-sky-600'
-									: 'flex cursor-pointer text-zinc-100'}
+									? 'flex cursor-pointer text-sky-700'
+									: 'flex cursor-pointer text-zinc-400'}
 							>
 								<span class="material-symbols-outlined">alarm</span>
 							</button>
@@ -707,7 +707,7 @@
 								type="button"
 								onclick={() =>
 									playlistState.selectedFlag ? seekRealTime(playlistState.selectedFlag.time) : null}
-								class="text-md mr-auto flex flex-1 cursor-pointer justify-start text-zinc-400 hover:text-zinc-300"
+								class="text-md mr-auto flex flex-1 cursor-pointer justify-start text-zinc-500 hover:text-zinc-400"
 							>
 								{#if recentMicroTime}
 									{playlistState.selectedFlag.time.toFixed(6)}
@@ -1022,7 +1022,7 @@
 	}
 
 	.flag-desc-disabled {
-		@apply cursor-pointer pt-1 pl-1 text-xs text-rose-700 hover:text-rose-600;
+		@apply cursor-pointer pt-1 pl-1 text-xs text-rose-800 hover:text-rose-700;
 	}
 
 	.flag-pole-blue {
