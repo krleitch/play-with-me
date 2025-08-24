@@ -6,9 +6,6 @@
 	import { playlistState } from '$lib';
 	import { layoutState, MIDIState } from '$lib';
 
-	let MIDIInputs: MIDIInput[] = $state([]);
-	let MIDIOutputs: MIDIOutput[] = $state([]);
-
 	let flags: Flag[] = $state([]);
 
 	$effect(() => {
@@ -38,14 +35,14 @@
 			if (!MIDIState.selectedMIDIInput) {
 				MIDIState.selectedMIDIInput = input;
 			}
-			MIDIInputs.push(input);
+			MIDIState.MIDIInputs.push(input);
 		});
 
 		MIDIAccess.outputs.forEach(function (output) {
 			if (!MIDIState.selectedMIDIOutput) {
 				MIDIState.selectedMIDIOutput = output;
 			}
-			MIDIOutputs.push(output);
+			MIDIState.MIDIOutputs.push(output);
 		});
 	}
 
@@ -163,7 +160,7 @@
 			<div class="flex flex-1 flex-col">
 				<label class="ml-2" for="midi-input">MIDI Input Device</label>
 				<select bind:value={MIDIState.selectedMIDIInput} name="input" id="midi-input">
-					{#each MIDIInputs as input}
+					{#each MIDIState.MIDIInputs as input}
 						<option value={input}>{input.name}</option>
 					{/each}
 				</select>
@@ -172,7 +169,7 @@
 			<div class="flex flex-1 flex-col">
 				<label class="ml-2" for="midi-output">MIDI Output Device</label>
 				<select bind:value={MIDIState.selectedMIDIOutput} name="output" id="midi-output">
-					{#each MIDIOutputs as output}
+					{#each MIDIState.MIDIOutputs as output}
 						<option value={output}>{output.name}</option>
 					{/each}
 				</select>

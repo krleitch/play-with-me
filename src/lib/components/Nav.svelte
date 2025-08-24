@@ -15,6 +15,30 @@
 		}
 	});
 
+	function requestMIDIAccess() {
+		window.navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+	}
+
+	function onMIDISuccess(MIDIAccess: MIDIAccess) {
+		MIDIAccess.inputs.forEach(function (input) {
+			if (!MIDIState.selectedMIDIInput) {
+				MIDIState.selectedMIDIInput = input;
+			}
+			MIDIState.MIDIInputs.push(input);
+		});
+
+		MIDIAccess.outputs.forEach(function (output) {
+			if (!MIDIState.selectedMIDIOutput) {
+				MIDIState.selectedMIDIOutput = output;
+			}
+			MIDIState.MIDIOutputs.push(output);
+		});
+	}
+
+	function onMIDIFailure(error: any) {
+		console.error('Failed to get MIDI access:', error);
+	}
+
 	function resetFilters() {
 		filterState.tags = [];
 		filterState.genres = [];
@@ -126,10 +150,10 @@
 				<span class="ml-1 hidden lg:block"> HxStomp Tuner </span>
 			</button>
 		{:else if !MIDIState.selectedMIDIOutput}
-			<div class="flex flex-row items-center text-nowrap">
+			<button type="button" onclick={requestMIDIAccess}>
 				<span class="material-symbols-outlined !text-yellow-500">warning</span>
 				<span class="ml-1 text-yellow-500">MIDI Device Closed</span>
-			</div>
+			</button>
 		{/if}
 	</div>
 

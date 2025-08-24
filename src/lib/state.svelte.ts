@@ -57,6 +57,8 @@ interface TimelineState {
 interface MidiState {
   selectedMIDIInput: MIDIInput | undefined;
   selectedMIDIOutput: MIDIOutput | undefined;
+  MIDIInputs: MIDIInput[];
+  MIDIOutputs: MIDIOutput[];
   lastCCMessage: number | undefined;
   lastCCMessageValue: number | undefined;
   disableMIDI: boolean;
@@ -65,6 +67,8 @@ interface MidiState {
 export const MIDIState: MidiState = $state({
   selectedMIDIInput: undefined,
   selectedMIDIOutput: undefined,
+  MIDIInputs: [],
+  MIDIOutputs: [],
   lastCCMessage: undefined,
   lastCCMessageValue: undefined,
   disableMIDI: false
