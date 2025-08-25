@@ -63,10 +63,9 @@
 
 		const createdPlaylist: Playlist = await playlistResponse.json();
 
-		// Add the videos
-		// add in reverse order so the first is the lastPlayed
-		videos.reverse();
-		for (const video of videos) {
+		const lastPlayed = new Date();
+
+		for (const [index, video] of videos.entries()) {
 			const youtubeId = youtubeUrlToId(video.youtubeUrl);
 
 			if (youtubeId) {
@@ -75,6 +74,7 @@
 					artist: video.artist,
 					youtubeId: youtubeId,
 					playlistId: createdPlaylist.id,
+					lastPlayed: lastPlayed.setSeconds(lastPlayed.getSeconds() - index),
 					tags: JSON.stringify(video.tags)
 				});
 

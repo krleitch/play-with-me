@@ -4,13 +4,13 @@ import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const { playlistId, youtubeId, title, artist, tags } = await request.json();
+    const { playlistId, youtubeId, title, artist, tags, lastPlayed } = await request.json();
 
     const data = {
       title: title,
       artist: artist,
       youtubeId: youtubeId,
-      lastPlayed: new Date().toISOString(),
+      lastPlayed: lastPlayed,
       tags: JSON.parse(tags),
       playlist: playlistId
     };

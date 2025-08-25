@@ -113,6 +113,7 @@
 
 		const updatedPlaylist: Playlist = await playlistResponse.json();
 
+		let oldestLastPlayedDate = new Date();
 		let updatedVideos = [];
 		// PATCH the old videos
 		for (const video of videos) {
@@ -134,6 +135,10 @@
 					body: data
 				});
 
+				oldestLastPlayedDate = new Date(
+					Math.min(oldestLastPlayedDate.getTime(), new Date(video.lastPlayed).getTime())
+				);
+
 				const updatedVideo: Video = await videoResponse.json();
 				updatedVideo.flags = video.flags;
 
@@ -141,7 +146,7 @@
 			}
 		}
 		// Create the new Videos
-		for (const video of newVideos) {
+		for (const [index, video] of newVideos.entries()) {
 			const youtubeId = youtubeUrlToId(video.youtubeUrl);
 
 			if (youtubeId) {
@@ -150,7 +155,7 @@
 					artist: video.artist,
 					youtubeId: youtubeId,
 					playlistId: updatedPlaylist.id,
-					lastPlayed: video.lastPlayed,
+					lastPlayed: oldestLastPlayedDate.setSeconds(oldestLastPlayedDate.getSeconds() - index),
 					tags: JSON.stringify(video.tags)
 				});
 
