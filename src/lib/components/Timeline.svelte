@@ -656,19 +656,19 @@
 							type="button"
 							onclick={deleteFlag}
 							aria-label="Delete Flag"
-							class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4"
+							class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 						>
 							<span class="material-symbols-outlined">delete_forever</span>
-							<span class="ml-1 hidden lg:block">Delete</span>
+							<!-- <span class="ml-1 hidden lg:block">Delete</span> -->
 						</button>
 						<button
 							type="button"
 							onclick={() => (playlistState.selectedFlag ? seek(playlistState.selectedFlag) : null)}
 							aria-label="Seek"
-							class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700 lg:px-4"
+							class="flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
 						>
 							<span class="material-symbols-outlined">video_search</span>
-							<span class="ml-1 hidden lg:block">Seek</span>
+							<!-- <span class="ml-1 hidden lg:block">Seek</span> -->
 						</button>
 					</div>
 
@@ -913,6 +913,46 @@
 				>
 					<span class="material-symbols-outlined">piano</span>
 					<span class="ml-1 hidden lg:block">MIDI</span>
+				</button>
+				<button
+					type="button"
+					class="ml-1 flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
+					onclick={() => {
+						if (youtubeState.youtubePlayer) {
+							youtubeState.youtubePlayer.seekTo(
+								Math.max(0, youtubeState.youtubePlayer.getCurrentTime() - 5)
+							);
+						}
+					}}
+				>
+					<span class="material-symbols-outlined">replay_5</span>
+				</button>
+				<button
+					type="button"
+					class="ml-1 flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
+					onclick={() => {
+						if (youtubeState.youtubePlayer) {
+							youtubeState.youtubePlayer.seekTo(
+								Math.min(
+									youtubeState.youtubePlayer.getDuration(),
+									youtubeState.youtubePlayer.getCurrentTime() + 5
+								)
+							);
+						}
+					}}
+				>
+					<span class="material-symbols-outlined">forward_5</span>
+				</button>
+				<button
+					type="button"
+					class="ml-1 flex cursor-pointer items-center rounded-xl bg-zinc-800 px-2 py-2 hover:bg-zinc-700"
+					onclick={() => {
+						if (youtubeState.youtubePlayer) {
+							youtubeState.youtubePlayer.seekTo(0);
+						}
+					}}
+				>
+					<span class="material-symbols-outlined">restart_alt</span>
 				</button>
 			</div>
 		</div>
